@@ -22,7 +22,7 @@ class MeganLogger {
             command: '⌨️',
             group: '👥',
             status: '📱'
-        };}
+        };
     }
 
     getTimestamp() {
@@ -38,7 +38,7 @@ class MeganLogger {
         const timestamp = this.getTimestamp();
         const prefix = this.levels[level] || '📌';
         console.log(`[${timestamp}] [${this.botName}] ${prefix} ${emoji} ${message}`);
-    
+    }
 
     // Special formatted message log
     messageLog(msgType, from, content, id, isGroup = false, groupName = null) {
