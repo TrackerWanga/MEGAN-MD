@@ -1,0 +1,47 @@
+{
+  "name": "MEGAN-MD WhatsApp Bot",
+  "description": "Multi-Device Intelligent WhatsApp Bot with 196+ commands",
+  "keywords": ["whatsapp", "bot", "nodejs", "baileys", "megan"],
+  "repository": "https://github.com/wangake/MEGAN-MD",
+  "logo": "https://files.catbox.moe/u29yah.jpg",
+  "env": {
+    "SESSION": {
+      "description": "Your Megan~ base64 session string",
+      "required": true
+    },
+    "BOT_NAME": {
+      "description": "Bot display name",
+      "value": "𝐌𝐄𝐆𝐀𝐍-𝐌𝐃"
+    },
+    "OWNER_NAME": {
+      "description": "Your name",
+      "value": "Wanga"
+    },
+    "OWNER_NUMBER": {
+      "description": "Your phone number with country code",
+      "value": "254758476795"
+    },
+    "PREFIX": {
+      "description": "Command prefix",
+      "value": "."
+    },
+    "MODE": {
+      "description": "Bot mode (public/private)",
+      "value": "public"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}
