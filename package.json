@@ -1,0 +1,111 @@
+{
+
+  "name": "megan-bot",
+
+  "version": "2.0.0",
+
+  "description": "MEGAN-MD Perfect Bot to use made by Baileys",
+
+  "main": "index.js",
+
+  "scripts": {
+
+    "start": "node index.js",
+
+    "dev": "nodemon index.js",
+
+    "migrate": "node megan/scripts/migrateToSQLite.js"
+
+  },
+
+  "dependencies": {
+
+    "@ffmpeg/core": "^0.12.10",
+
+    "@ffmpeg/ffmpeg": "^0.12.15",
+
+    "@hapi/boom": "^10.0.1",
+
+    "@faker-js/faker": "^9.4.0",
+
+    "@iamtraction/google-translate": "^2.0.1",
+
+    "axios": "^1.13.5",
+
+    "cheerio": "^1.2.0",
+
+    "crypto-js": "^4.2.0",
+
+    "dotenv": "^16.4.5",
+
+    "ffmpeg-static": "^5.2.0",
+
+    "file-type": "^21.3.0",
+
+    "fluent-ffmpeg": "^2.1.2",
+
+    "form-data": "^4.0.5",
+
+    "fs-extra": "^11.3.3",
+
+    "gifted-baileys": "^2.0.6",
+
+    "gifted-btns": "^1.0.2",
+
+    "google-tts-api": "^2.0.2",
+
+    "jimp": "^1.6.0",
+
+    "mathjs": "*",
+
+    "moment-timezone": "^0.6.0",
+
+    "morse": "*",
+
+    "newsapi": "^2.4.1",
+
+    "node-cache": "^5.1.2",
+
+    "node-cron": "^3.0.3",
+
+    "node-fetch": "^3.3.2",
+
+    "path": "^0.12.7",
+
+    "pino": "^8.21.0",
+
+    "rss-parser": "^3.13.0",
+
+    "sequelize": "^6.37.3",
+
+    "sharp": "0.32.6",
+
+    "sql.js": "^1.12.0",
+
+    "sqlite3": "^5.1.7",
+
+    "uuid": "^9.0.1",
+
+    "wa-sticker-formatter": "*",
+
+    "yt-search": "^2.13.1"
+
+  },
+
+  "devDependencies": {
+
+    "nodemon": "^3.1.0"
+
+  },
+
+  "engines": {
+
+    "node": ">=18.x"
+
+  },
+
+  "author": "Wanga",
+
+  "license": "MIT"
+
+}
