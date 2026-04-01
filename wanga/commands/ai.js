@@ -1,486 +1,234 @@
-// MEGAN-MD AI Commands - Clean with typing effect
+let config=require("../../megan/config"),AIHandler=require("../../megan/lib/aiHandler"),downloadMediaMessage=require("gifted-baileys").downloadMediaMessage,uploader=require("../../megan/lib/upload"),commands=[],aiHandler=null,initializeAI=a=>(aiHandler||(aiHandler=new AIHandler(a),console.log("✅ AI Handler initialized")),aiHandler),getQuotedImage=async(a,e)=>{try{var i,t,n=a.message?.extendedTextMessage?.contextInfo?.quotedMessage;return n&&n.imageMessage?(i=await downloadMediaMessage({key:{id:a.message.extendedTextMessage.contextInfo.stanzaId},message:n},"buffer",{},{logger:console}),t=`gemini_img_${Date.now()}.jpg`,(await uploader.uploadAuto(i,t)).url):null}catch(a){return console.error("Error extracting quoted image:",a),null}},showTyping=async(a,e)=>{try{await a.sendPresenceUpdate("composing",e)}catch(a){}};commands.push({name:"megan",description:"Chat with Megan AI",aliases:["meganai"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("ℹ️"),o(`*🤖 MEGAN AI*
 
-const config = require('../../megan/config');
-const AIHandler = require('../../megan/lib/aiHandler');
-const { downloadMediaMessage } = require('gifted-baileys');
-const uploader = require('../../megan/lib/upload');
+*Usage:*
+${config.PREFIX}megan <message>
 
-const commands = [];
-let aiHandler = null;
+*Example:*
+${config.PREFIX}megan Hello, how are you?
 
-const initializeAI = (bot) => {
-    if (!aiHandler) {
-        aiHandler = new AIHandler(bot);
-        console.log('✅ AI Handler initialized');
-    }
-    return aiHandler;
-};
+> created by wanga`);e=e.join(" ");await n("🤔"),await showTyping(t,a);try{await o(`*🤖 Megan:*
+${await i.meganAI(e)}
 
-// Helper to extract image from quoted message
-const getQuotedImage = async (msg, sock) => {
-    try {
-        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-        if (!quoted) return null;
+> created by wanga`),await n("✅")}catch(a){console.error("Megan error:",a),await n("❌"),await o(`*🤖 Megan AI*
 
-        if (quoted.imageMessage) {
-            const buffer = await downloadMediaMessage(
-                { key: { id: msg.message.extendedTextMessage.contextInfo.stanzaId }, message: quoted },
-                'buffer',
-                {},
-                { logger: console }
-            );
-            
-            const filename = `gemini_img_${Date.now()}.jpg`;
-            const { url } = await uploader.uploadAuto(buffer, filename);
-            return url;
-        }
-        return null;
-    } catch (error) {
-        console.error('Error extracting quoted image:', error);
-        return null;
-    }
-};
+I'm having trouble connecting right now. Please try again in a moment.
 
-// Helper to show typing effect
-const showTyping = async (sock, jid) => {
-    try {
-        await sock.sendPresenceUpdate('composing', jid);
-    } catch (error) {
-        // Silent fail
-    }
-};
+> created by wanga`)}}}),commands.push({name:"duckai",description:"Chat with DuckAI (multiple models available)",aliases:["duck"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("🦆"),o(`*🦆 DUCKAI*
 
-// ==================== MEGAN AI ====================
-commands.push({
-    name: 'megan',
-    description: 'Chat with Megan AI',
-    aliases: ['meganai'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+*Usage:*
+${config.PREFIX}duckai <message>
 
-        if (!args.length) {
-            await react('ℹ️');
-            return reply(`*🤖 MEGAN AI*\n\n*Usage:*\n${config.PREFIX}megan <message>\n\n*Example:*\n${config.PREFIX}megan Hello, how are you?\n\n> created by wanga`);
-        }
+*Example:*
+${config.PREFIX}duckai Tell me a joke
 
-        const message = args.join(' ');
-        await react('🤔');
-        await showTyping(sock, from);
+> created by wanga`);e=e.join(" ");await n("🦆"),await showTyping(t,a);try{await o(`*🦆 DuckAI:*
+${await i.duckAI(e)}
 
-        try {
-            const response = await ai.meganAI(message);
-            await reply(`*🤖 Megan:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Megan error:', error);
-            await react('❌');
-            await reply(`*🤖 Megan AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+> created by wanga`),await n("✅")}catch(a){console.error("DuckAI error:",a),await n("❌"),await o(`*🦆 DuckAI*
 
-// ==================== DUCKAI ====================
-commands.push({
-    name: 'duckai',
-    description: 'Chat with DuckAI (multiple models available)',
-    aliases: ['duck'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+I'm having trouble connecting right now. Please try again in a moment.
 
-        if (!args.length) {
-            await react('🦆');
-            return reply(`*🦆 DUCKAI*\n\n*Usage:*\n${config.PREFIX}duckai <message>\n\n*Example:*\n${config.PREFIX}duckai Tell me a joke\n\n> created by wanga`);
-        }
+> created by wanga`)}}}),commands.push({name:"gemini",description:"Chat with Google Gemini AI (supports image analysis)",aliases:["gem"],async execute({msg:a,from:e,args:i,bot:t,sock:n,react:o,reply:r}){t=initializeAI(t),a=await getQuotedImage(a,n);if(!i.length&&!a)return await o("ℹ️"),r(`*✨ GOOGLE GEMINI*
 
-        const message = args.join(' ');
-        await react('🦆');
-        await showTyping(sock, from);
+*Usage:*
+• ${config.PREFIX}gemini <message>
+• Reply to an image with ${config.PREFIX}gemini <question>
 
-        try {
-            const response = await ai.duckAI(message);
-            await reply(`*🦆 DuckAI:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('DuckAI error:', error);
-            await react('❌');
-            await reply(`*🦆 DuckAI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+*Examples:*
+• ${config.PREFIX}gemini Explain quantum physics
+• Reply to image: ${config.PREFIX}gemini What's in this image?
 
-// ==================== GEMINI ====================
-commands.push({
-    name: 'gemini',
-    description: 'Chat with Google Gemini AI (supports image analysis)',
-    aliases: ['gem'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+> created by wanga`);i=i.length?i.join(" "):"What's in this image?";await o("✨"),await showTyping(n,e);try{await r(`*✨ Gemini:*
+${a?await t.geminiAI(i,"You are a helpful assistant.",a):await t.geminiAI(i)}
 
-        const imageUrl = await getQuotedImage(msg, sock);
-        
-        if (!args.length && !imageUrl) {
-            await react('ℹ️');
-            return reply(`*✨ GOOGLE GEMINI*\n\n*Usage:*\n• ${config.PREFIX}gemini <message>\n• Reply to an image with ${config.PREFIX}gemini <question>\n\n*Examples:*\n• ${config.PREFIX}gemini Explain quantum physics\n• Reply to image: ${config.PREFIX}gemini What's in this image?\n\n> created by wanga`);
-        }
+> created by wanga`),await o("✅")}catch(a){console.error("Gemini error:",a),await o("❌"),await r(`*✨ Google Gemini*
 
-        const message = args.length ? args.join(' ') : 'What\'s in this image?';
-        await react('✨');
-        await showTyping(sock, from);
+I'm having trouble connecting right now. Please try again in a moment.
 
-        try {
-            let response;
-            if (imageUrl) {
-                response = await ai.geminiAI(message, 'You are a helpful assistant.', imageUrl);
-            } else {
-                response = await ai.geminiAI(message);
-            }
+> created by wanga`)}}}),commands.push({name:"gemini-lite",description:"Fast Google Gemini responses",aliases:["gemlite","gfast"],async execute({msg:a,from:e,args:i,bot:t,sock:n,react:o,reply:r}){t=initializeAI(t),a=await getQuotedImage(a,n);if(!i.length&&!a)return await o("⚡"),r(`*⚡ GEMINI LITE*
 
-            await reply(`*✨ Gemini:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Gemini error:', error);
-            await react('❌');
-            await reply(`*✨ Google Gemini*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+*Usage:*
+• ${config.PREFIX}gemini-lite <message>
+• Reply to an image with ${config.PREFIX}gemini-lite <question>
 
-// ==================== GEMINI LITE ====================
-commands.push({
-    name: 'gemini-lite',
-    description: 'Fast Google Gemini responses',
-    aliases: ['gemlite', 'gfast'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+*Examples:*
+• ${config.PREFIX}gemini-lite Hello
+• Reply to image: ${config.PREFIX}gemini-lite What's in this photo?
 
-        const imageUrl = await getQuotedImage(msg, sock);
-        
-        if (!args.length && !imageUrl) {
-            await react('⚡');
-            return reply(`*⚡ GEMINI LITE*\n\n*Usage:*\n• ${config.PREFIX}gemini-lite <message>\n• Reply to an image with ${config.PREFIX}gemini-lite <question>\n\n*Examples:*\n• ${config.PREFIX}gemini-lite Hello\n• Reply to image: ${config.PREFIX}gemini-lite What's in this photo?\n\n> created by wanga`);
-        }
+> created by wanga`);i=i.length?i.join(" "):"What's in this image?";await o("⚡"),await showTyping(n,e);try{await r(`*⚡ Gemini Lite:*
+${a?await t.geminiLiteAI(i+` (Image: ${a})`):await t.geminiLiteAI(i)}
 
-        const message = args.length ? args.join(' ') : 'What\'s in this image?';
-        await react('⚡');
-        await showTyping(sock, from);
+> created by wanga`),await o("✅")}catch(a){console.error("Gemini Lite error:",a),await o("❌"),await r(`*⚡ Gemini Lite*
 
-        try {
-            let response;
-            if (imageUrl) {
-                response = await ai.geminiLiteAI(`${message} (Image: ${imageUrl})`);
-            } else {
-                response = await ai.geminiLiteAI(message);
-            }
+I'm having trouble connecting right now. Please try again in a moment.
 
-            await reply(`*⚡ Gemini Lite:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Gemini Lite error:', error);
-            await react('❌');
-            await reply(`*⚡ Gemini Lite*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+> created by wanga`)}}}),commands.push({name:"gpt",description:"Chat with GPT OSS 120B",aliases:["gptai"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("💬"),o(`*💬 GPT AI*
 
-// ==================== GPT ====================
-commands.push({
-    name: 'gpt',
-    description: 'Chat with GPT OSS 120B',
-    aliases: ['gptai'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+*Usage:*
+${config.PREFIX}gpt <message>
 
-        if (!args.length) {
-            await react('💬');
-            return reply(`*💬 GPT AI*\n\n*Usage:*\n${config.PREFIX}gpt <message>\n\n*Example:*\n${config.PREFIX}gpt Tell me a fact\n\n> created by wanga`);
-        }
+*Example:*
+${config.PREFIX}gpt Tell me a fact
 
-        const message = args.join(' ');
-        await react('💬');
-        await showTyping(sock, from);
+> created by wanga`);e=e.join(" ");await n("💬"),await showTyping(t,a);try{await o(`*💬 GPT:*
+${await i.gptAI(e)}
 
-        try {
-            const response = await ai.gptAI(message);
-            await reply(`*💬 GPT:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('GPT error:', error);
-            await react('❌');
-            await reply(`*💬 GPT AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+> created by wanga`),await n("✅")}catch(a){console.error("GPT error:",a),await n("❌"),await o(`*💬 GPT AI*
 
-// ==================== DEEPSEEK ====================
-commands.push({
-    name: 'deepseek',
-    description: 'Chat with DeepSeek R1 AI',
-    aliases: ['deep'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+I'm having trouble connecting right now. Please try again in a moment.
 
-        if (!args.length) {
-            await react('🔍');
-            return reply(`*🔍 DEEPSEEK AI*\n\n*Usage:*\n${config.PREFIX}deepseek <message>\n\n*Example:*\n${config.PREFIX}deepseek Explain reasoning\n\n> created by wanga`);
-        }
+> created by wanga`)}}}),commands.push({name:"deepseek",description:"Chat with DeepSeek R1 AI",aliases:["deep"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("🔍"),o(`*🔍 DEEPSEEK AI*
 
-        const message = args.join(' ');
-        await react('🔍');
-        await showTyping(sock, from);
+*Usage:*
+${config.PREFIX}deepseek <message>
 
-        try {
-            const response = await ai.deepseekAI(message);
-            await reply(`*🔍 DeepSeek:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('DeepSeek error:', error);
-            await react('❌');
-            await reply(`*🔍 DeepSeek AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+*Example:*
+${config.PREFIX}deepseek Explain reasoning
 
-// ==================== MISTRAL ====================
-commands.push({
-    name: 'mistral',
-    description: 'Chat with Mistral AI',
-    aliases: ['mistralai'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+> created by wanga`);e=e.join(" ");await n("🔍"),await showTyping(t,a);try{await o(`*🔍 DeepSeek:*
+${await i.deepseekAI(e)}
 
-        if (!args.length) {
-            await react('🌪️');
-            return reply(`*🌪️ MISTRAL AI*\n\n*Usage:*\n${config.PREFIX}mistral <message>\n\n*Example:*\n${config.PREFIX}mistral Hello\n\n> created by wanga`);
-        }
+> created by wanga`),await n("✅")}catch(a){console.error("DeepSeek error:",a),await n("❌"),await o(`*🔍 DeepSeek AI*
 
-        const message = args.join(' ');
-        await react('🌪️');
-        await showTyping(sock, from);
+I'm having trouble connecting right now. Please try again in a moment.
 
-        try {
-            const response = await ai.mistralAI(message);
-            await reply(`*🌪️ Mistral:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Mistral error:', error);
-            await react('❌');
-            await reply(`*🌪️ Mistral AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+> created by wanga`)}}}),commands.push({name:"mistral",description:"Chat with Mistral AI",aliases:["mistralai"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("🌪️"),o(`*🌪️ MISTRAL AI*
 
-// ==================== CODLLAMA ====================
-commands.push({
-    name: 'codellama',
-    description: 'Get coding help from CodeLlama',
-    aliases: ['code', 'coding'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+*Usage:*
+${config.PREFIX}mistral <message>
 
-        if (!args.length) {
-            await react('💻');
-            return reply(`*💻 CODELlAMA*\n\n*Usage:*\n${config.PREFIX}codellama <your coding question>\n\n*Examples:*\n• ${config.PREFIX}codellama Write a function to reverse a string in Python\n• ${config.PREFIX}codellama Explain async/await in JavaScript\n\n> created by wanga`);
-        }
+*Example:*
+${config.PREFIX}mistral Hello
 
-        const message = args.join(' ');
-        await react('💻');
-        await showTyping(sock, from);
+> created by wanga`);e=e.join(" ");await n("🌪️"),await showTyping(t,a);try{await o(`*🌪️ Mistral:*
+${await i.mistralAI(e)}
 
-        try {
-            const response = await ai.codeLlamaAI(message);
-            await reply(`*💻 CodeLlama:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('CodeLlama error:', error);
-            
-            try {
-                const fallback = await ai.mistralAI(message, "You are a coding expert.");
-                await reply(`*💻 Coding Assistant (Fallback):*\n${fallback}\n\n> created by wanga`);
-                await react('⚠️');
-            } catch {
-                await react('❌');
-                await reply(`❌ *CodeLlama Error*\n\nPlease try again later.\n\n> created by wanga`);
-            }
-        }
-    }
-});
+> created by wanga`),await n("✅")}catch(a){console.error("Mistral error:",a),await n("❌"),await o(`*🌪️ Mistral AI*
 
-// ==================== BIBLE AI ====================
-commands.push({
-    name: 'bibleai',
-    description: 'Ask questions about the Bible',
-    aliases: ['bible', 'bibleq'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+I'm having trouble connecting right now. Please try again in a moment.
 
-        if (!args.length) {
-            await react('📖');
-            const versions = ai.getBibleVersions();
-            return reply(`*📖 BIBLE AI*\n\n*Usage:*\n${config.PREFIX}bibleai <question>\n\n*Available translations:*\n${versions.join(', ')}\n\n*Set default:*\n${config.PREFIX}setbibleversion <code>\n\n*Examples:*\n• ${config.PREFIX}bibleai What is faith?\n• ${config.PREFIX}bibleai Who was Moses?\n\n> created by wanga`);
-        }
+> created by wanga`)}}}),commands.push({name:"codellama",description:"Get coding help from CodeLlama",aliases:["code","coding"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("💻"),o(`*💻 CODELlAMA*
 
-        const question = args.join(' ');
-        await react('📖');
-        await showTyping(sock, from);
+*Usage:*
+${config.PREFIX}codellama <your coding question>
 
-        try {
-            const result = await ai.bibleAI(question);
-            const answer = result?.answer || result || "I couldn't find an answer to that question.";
-            const version = result?.version || 'ESV';
+*Examples:*
+• ${config.PREFIX}codellama Write a function to reverse a string in Python
+• ${config.PREFIX}codellama Explain async/await in JavaScript
 
-            await reply(`*📖 BIBLE (${version})*\n\n${answer}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Bible AI error:', error);
-            await react('❌');
-            await reply(`*📖 Bible AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+> created by wanga`);e=e.join(" ");await n("💻"),await showTyping(t,a);try{await o(`*💻 CodeLlama:*
+${await i.codeLlamaAI(e)}
 
-// ==================== SET BIBLE VERSION ====================
-commands.push({
-    name: 'setbibleversion',
-    description: 'Set default Bible translation',
-    aliases: ['bibleversion'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner }) {
-        const ai = initializeAI(bot);
-        
-        if (!isOwner) {
-            await react('❌');
-            return reply(`❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`);
-        }
+> created by wanga`),await n("✅")}catch(a){console.error("CodeLlama error:",a);try{await o(`*💻 Coding Assistant (Fallback):*
+${await i.mistralAI(e,"You are a coding expert.")}
 
-        if (!args.length) {
-            const versions = ai.getBibleVersions();
-            const current = ai.defaultBibleVersion || 'ESV';
-            return reply(`*📖 BIBLE VERSIONS*\n\n*Current default:* ${current}\n\n*Available:*\n${versions.join(', ')}\n\n*Usage:*\n${config.PREFIX}setbibleversion <code>\n\n> created by wanga`);
-        }
+> created by wanga`),await n("⚠️")}catch{await n("❌"),await o(`❌ *CodeLlama Error*
 
-        const version = args[0].toUpperCase();
-        const success = ai.setBibleVersion(version);
+Please try again later.
 
-        if (!success) {
-            await react('❌');
-            const versions = ai.getBibleVersions();
-            return reply(`❌ *Invalid Version*\n\nAvailable: ${versions.join(', ')}\n\n> created by wanga`);
-        }
+> created by wanga`)}}}}),commands.push({name:"bibleai",description:"Ask questions about the Bible",aliases:["bible","bibleq"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("📖"),r=i.getBibleVersions(),o(`*📖 BIBLE AI*
 
-        await react('✅');
-        await reply(`✅ *BIBLE VERSION UPDATED*\n\nDefault Bible version set to: *${version}*\n\n> created by wanga`);
-    }
-});
+*Usage:*
+${config.PREFIX}bibleai <question>
 
-// ==================== TEACHER AI ====================
-commands.push({
-    name: 'teacher',
-    description: 'Ask the AI teacher for help',
-    aliases: ['teach', 'learn'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+*Available translations:*
+${r.join(", ")}
 
-        if (!args.length) {
-            await react('👨‍🏫');
-            return reply(`*👨‍🏫 TEACHER AI*\n\n*Usage:*\n${config.PREFIX}teacher <your question>\n\n*Examples:*\n• ${config.PREFIX}teacher Explain photosynthesis\n• ${config.PREFIX}teacher math What is calculus?\n\n> created by wanga`);
-        }
+*Set default:*
+${config.PREFIX}setbibleversion <code>
 
-        let subject = null;
-        let question = args.join(' ');
-        
-        const subjects = ['math', 'science', 'history', 'english', 'physics', 'chemistry', 'biology'];
-        const firstWord = args[0].toLowerCase();
-        
-        if (subjects.includes(firstWord)) {
-            subject = firstWord;
-            question = args.slice(1).join(' ');
-        }
+*Examples:*
+• ${config.PREFIX}bibleai What is faith?
+• ${config.PREFIX}bibleai Who was Moses?
 
-        await react('👨‍🏫');
-        await showTyping(sock, from);
+> created by wanga`);var r=e.join(" ");await n("📖"),await showTyping(t,a);try{var s=await i.bibleAI(r),c=s?.answer||s||"I couldn't find an answer to that question.";await o(`*📖 BIBLE (${s?.version||"ESV"})*
 
-        try {
-            const response = await ai.teacherAI(question, subject);
-            await reply(`*👨‍🏫 Teacher:*\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Teacher AI error:', error);
-            await react('❌');
-            await reply(`*👨‍🏫 Teacher AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+${c}
 
-// ==================== GITA AI ====================
-commands.push({
-    name: 'gita',
-    description: 'Ask questions about Bhagavad Gita',
-    aliases: ['gitaai'],
-    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
-        const ai = initializeAI(bot);
+> created by wanga`),await n("✅")}catch(a){console.error("Bible AI error:",a),await n("❌"),await o(`*📖 Bible AI*
 
-        if (!args.length) {
-            await react('🕉️');
-            return reply(`*🕉️ GITA AI*\n\n*Usage:*\n${config.PREFIX}gita <question>\n\n*Example:*\n${config.PREFIX}gita What is karma?\n\n> created by wanga`);
-        }
+I'm having trouble connecting right now. Please try again in a moment.
 
-        const question = args.join(' ');
-        await react('🕉️');
-        await showTyping(sock, from);
+> created by wanga`)}}}),commands.push({name:"setbibleversion",description:"Set default Bible translation",aliases:["bibleversion"],async execute({args:a,bot:e,react:i,reply:t,isOwner:n}){e=initializeAI(e);return n?a.length?(n=a[0].toUpperCase(),e.setBibleVersion(n)?(await i("✅"),void await t(`✅ *BIBLE VERSION UPDATED*
 
-        try {
-            const response = await ai.gitaAI(question);
-            await reply(`*🕉️ Gita:*\n\n${response}\n\n> created by wanga`);
-            await react('✅');
-        } catch (error) {
-            console.error('Gita AI error:', error);
-            await react('❌');
-            await reply(`*🕉️ Gita AI*\n\nI'm having trouble connecting right now. Please try again in a moment.\n\n> created by wanga`);
-        }
-    }
-});
+Default Bible version set to: *${n}*
 
-// ==================== AI MENU ====================
-commands.push({
-    name: 'aimenu',
-    description: 'Show all AI commands',
-    aliases: ['aihelp', 'ais'],
-    async execute({ msg, from, sender, bot, sock, react, reply }) {
-        const menu = `*🤖 AI COMMANDS*\n\n` +
-            
-            `*MEGAN AI*\n` +
-            `• ${config.PREFIX}megan - Cloudflare AI\n\n` +
-            
-            `*GOOGLE AI*\n` +
-            `• ${config.PREFIX}gemini - Full Gemini + images\n` +
-            `• ${config.PREFIX}gemini-lite - Fast version\n\n` +
-            
-            `*POPULAR MODELS*\n` +
-            `• ${config.PREFIX}gpt - GPT OSS 120B\n` +
-            `• ${config.PREFIX}deepseek - DeepSeek R1\n` +
-            `• ${config.PREFIX}mistral - Mistral AI\n` +
-            `• ${config.PREFIX}duckai - Multi-model AI\n\n` +
-            
-            `*SPECIALIZED AI*\n` +
-            `• ${config.PREFIX}codellama - Coding help\n` +
-            `• ${config.PREFIX}teacher - Educational AI\n\n` +
-            
-            `*RELIGIOUS AI*\n` +
-            `• ${config.PREFIX}bibleai - Bible Q&A\n` +
-            `• ${config.PREFIX}setbibleversion - Change translation\n` +
-            `• ${config.PREFIX}gita - Bhagavad Gita\n\n` +
-            
-            `*EXAMPLES*\n` +
-            `• ${config.PREFIX}megan Hello\n` +
-            `• ${config.PREFIX}teacher Explain gravity\n` +
-            `• ${config.PREFIX}codellama Write Python function\n` +
-            `• Reply to image: ${config.PREFIX}gemini What's this?\n` +
-            `• ${config.PREFIX}bibleai What is love?\n\n` +
-            
-            `> created by wanga`;
+> created by wanga`)):(await i("❌"),t(`❌ *Invalid Version*
 
-        await reply(menu);
-        await react('✅');
-    }
-});
+Available: ${e.getBibleVersions().join(", ")}
 
-module.exports = { commands };
+> created by wanga`))):(a=e.getBibleVersions(),t(`*📖 BIBLE VERSIONS*
+
+*Current default:* ${e.defaultBibleVersion||"ESV"}
+
+*Available:*
+${a.join(", ")}
+
+*Usage:*
+${config.PREFIX}setbibleversion <code>
+
+> created by wanga`)):(await i("❌"),t(`❌ *Owner Only Command*
+
+This command can only be used by the bot owner.
+
+> created by wanga`))}}),commands.push({name:"teacher",description:"Ask the AI teacher for help",aliases:["teach","learn"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("👨‍🏫"),o(`*👨‍🏫 TEACHER AI*
+
+*Usage:*
+${config.PREFIX}teacher <your question>
+
+*Examples:*
+• ${config.PREFIX}teacher Explain photosynthesis
+• ${config.PREFIX}teacher math What is calculus?
+
+> created by wanga`);let r=null,s=e.join(" "),c=e[0].toLowerCase();["math","science","history","english","physics","chemistry","biology"].includes(c)&&(r=c,s=e.slice(1).join(" ")),await n("👨‍🏫"),await showTyping(t,a);try{await o(`*👨‍🏫 Teacher:*
+${await i.teacherAI(s,r)}
+
+> created by wanga`),await n("✅")}catch(a){console.error("Teacher AI error:",a),await n("❌"),await o(`*👨‍🏫 Teacher AI*
+
+I'm having trouble connecting right now. Please try again in a moment.
+
+> created by wanga`)}}}),commands.push({name:"gita",description:"Ask questions about Bhagavad Gita",aliases:["gitaai"],async execute({from:a,args:e,bot:i,sock:t,react:n,reply:o}){i=initializeAI(i);if(!e.length)return await n("🕉️"),o(`*🕉️ GITA AI*
+
+*Usage:*
+${config.PREFIX}gita <question>
+
+*Example:*
+${config.PREFIX}gita What is karma?
+
+> created by wanga`);e=e.join(" ");await n("🕉️"),await showTyping(t,a);try{await o(`*🕉️ Gita:*
+
+${await i.gitaAI(e)}
+
+> created by wanga`),await n("✅")}catch(a){console.error("Gita AI error:",a),await n("❌"),await o(`*🕉️ Gita AI*
+
+I'm having trouble connecting right now. Please try again in a moment.
+
+> created by wanga`)}}}),commands.push({name:"aimenu",description:"Show all AI commands",aliases:["aihelp","ais"],async execute({react:a,reply:e}){await e("*🤖 AI COMMANDS*\n\n*MEGAN AI*\n"+`• ${config.PREFIX}megan - Cloudflare AI
+
+`+`*GOOGLE AI*
+`+`• ${config.PREFIX}gemini - Full Gemini + images
+`+`• ${config.PREFIX}gemini-lite - Fast version
+
+`+`*POPULAR MODELS*
+`+`• ${config.PREFIX}gpt - GPT OSS 120B
+`+`• ${config.PREFIX}deepseek - DeepSeek R1
+`+`• ${config.PREFIX}mistral - Mistral AI
+`+`• ${config.PREFIX}duckai - Multi-model AI
+
+`+`*SPECIALIZED AI*
+`+`• ${config.PREFIX}codellama - Coding help
+`+`• ${config.PREFIX}teacher - Educational AI
+
+`+`*RELIGIOUS AI*
+`+`• ${config.PREFIX}bibleai - Bible Q&A
+`+`• ${config.PREFIX}setbibleversion - Change translation
+`+`• ${config.PREFIX}gita - Bhagavad Gita
+
+`+`*EXAMPLES*
+`+`• ${config.PREFIX}megan Hello
+`+`• ${config.PREFIX}teacher Explain gravity
+`+`• ${config.PREFIX}codellama Write Python function
+`+`• Reply to image: ${config.PREFIX}gemini What's this?
+`+`• ${config.PREFIX}bibleai What is love?
+
+`+"> created by wanga"),await a("✅")}}),module.exports={commands:commands};

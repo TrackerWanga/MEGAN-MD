@@ -1,44 +1,14 @@
-// Info Command
+let config=require("../../megan/config"),os=require("os"),commands=[];commands.push({name:"info",description:"Show bot information",aliases:["bot","status"],async execute({msg:o,from:e,bot:t,sock:a,react:i}){var m=new Date,n=m.toLocaleTimeString(),m=m.toLocaleDateString(),s=process.uptime(),c=Math.floor(s/86400),r=Math.floor(s%86400/3600),s=Math.floor(s%3600/60),d=os.totalmem()/1073741824,f=(d-os.freemem()/1073741824).toFixed(2),t=`*📱 BOT INFO*
 
-const config = require('../../megan/config');
-const os = require('os');
+`+`👤 *Owner:* ${config.OWNER_NAME}
+`+`📞 *Phone:* ${config.OWNER_NUMBER}
+`+`🤖 *Bot:* ${config.BOT_NAME}
+`+`🔧 *Prefix:* ${config.PREFIX}
+`+`⚙️ *Mode:* ${config.MODE}
+`+`📚 *Commands:* ${t.commands.size}
+`+`⏱️ *Uptime:* ${c}d ${r}h ${s}m
+`+`🕒 *Time:* ${n}
+`+`📅 *Date:* ${m}
+`+`💾 *RAM:* ${f}GB/${d.toFixed(2)}GB
 
-const commands = [];
-
-commands.push({
-    name: 'info',
-    description: 'Show bot information',
-    aliases: ['bot', 'status'],
-    async execute({ msg, from, sender, bot, sock, react, reply }) {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString();
-        const dateStr = now.toLocaleDateString();
-        
-        const uptime = process.uptime();
-        const days = Math.floor(uptime / 86400);
-        const hours = Math.floor((uptime % 86400) / 3600);
-        const minutes = Math.floor((uptime % 3600) / 60);
-        
-        const totalMem = os.totalmem() / (1024 * 1024 * 1024);
-        const freeMem = os.freemem() / (1024 * 1024 * 1024);
-        const usedMem = (totalMem - freeMem).toFixed(2);
-        
-        const infoText = `*📱 BOT INFO*\n\n` +
-            `👤 *Owner:* ${config.OWNER_NAME}\n` +
-            `📞 *Phone:* ${config.OWNER_NUMBER}\n` +
-            `🤖 *Bot:* ${config.BOT_NAME}\n` +
-            `🔧 *Prefix:* ${config.PREFIX}\n` +
-            `⚙️ *Mode:* ${config.MODE}\n` +
-            `📚 *Commands:* ${bot.commands.size}\n` +
-            `⏱️ *Uptime:* ${days}d ${hours}h ${minutes}m\n` +
-            `🕒 *Time:* ${timeStr}\n` +
-            `📅 *Date:* ${dateStr}\n` +
-            `💾 *RAM:* ${usedMem}GB/${totalMem.toFixed(2)}GB\n\n` +
-            `> created by wanga`;
-        
-        await sock.sendMessage(from, { text: infoText }, { quoted: msg });
-        await react('✅');
-    }
-});
-
-module.exports = { commands };
+`+"> created by wanga";await a.sendMessage(e,{text:t},{quoted:o}),await i("✅")}}),module.exports={commands:commands};
