@@ -1,1 +1,688 @@
-const axios=require("axios"),fs=require("fs-extra"),path=require("path"),config=require("../../megan/config"),MediaProcessor=require("../../megan/lib/mediaProcessor"),Designs=require("../../megan/helpers/designs"),{createNewsletterContext:createNewsletterContext}=require("../../megan/helpers/newsletter"),commands=[],mediaProcessor=new MediaProcessor;async function downloadMedia(e){const{downloadMediaMessage:t}=require("gifted-baileys");return await t(e,"buffer",{},{logger:console})}commands.push({name:"sticker",description:"Create sticker from image/video",aliases:["s","stick"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const n=e.message?.extendedTextMessage?.contextInfo?.quotedMessage,s=e.message?.imageMessage||n?.imageMessage,r=e.message?.videoMessage||n?.videoMessage;if(!s&&!r){await i("❌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎨 *STICKER MAKER* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to image/video with ${config.PREFIX}sticker\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Sticker Maker",body:"Usage Instructions"})},{quoted:e})}await i("🎨");const c=e.message?.imageMessage||e.message?.videoMessage?e:{...e,message:n},g=await downloadMedia(c),d=await mediaProcessor.createSticker(g);await o.sendMessage(t,{sticker:d},{quoted:e}),await i("✅")}catch(e){s.logger.error("Sticker error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"toimage",description:"Convert sticker to image",aliases:["img","toimg"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const n=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.stickerMessage||n?.stickerMessage)){await i("❌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🖼️ *STICKER TO IMAGE* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to sticker with ${config.PREFIX}toimage\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Sticker to Image",body:"Usage Instructions"})},{quoted:e})}await i("🔄");const s=e.message?.stickerMessage?e:{...e,message:n},r=await downloadMedia(s),c=await mediaProcessor.stickerToImage(r),g="╭━━━━━━━━━━━━━━━━━━━╮\n┃   ✅ *CONVERTED*    ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✅ Sticker converted to image\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥";await o.sendMessage(t,{image:c,caption:g,...createNewsletterContext(a,{title:"Image Converted",body:"Sticker to Image"})},{quoted:e}),await i("✅")}catch(e){s.logger.error("ToImage error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"say",description:"Convert text to voice note",aliases:["tts"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{if(!n.length){await i("🗣️");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🗣️ *TEXT TO SPEECH* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}say <text>\nExample: ${config.PREFIX}say Hello world\nMax: 200 chars\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Text to Speech",body:"Usage Instructions"})},{quoted:e})}const s=n.join(" ").substring(0,200);await i("🗣️");const r=`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(s)}&tl=en&client=tw-ob`,c=await axios({method:"GET",url:r,responseType:"arraybuffer",headers:{"User-Agent":"Mozilla/5.0"},timeout:3e4}),g=Buffer.from(c.data),d=await mediaProcessor.toAudio(g);await o.sendMessage(t,{audio:d,mimetype:"audio/mpeg",ptt:!1},{quoted:e}),await i("✅")}catch(e){s.logger.error("TTS error:",e),await i("❌"),await r(`❌ TTS failed: ${e.message}`)}}}),commands.push({name:"voice",description:"Convert text to voice note (PTT)",aliases:["vn","voicenote"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{if(!n.length){await i("🎤");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎤 *VOICE NOTE*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}voice <text>\nExample: ${config.PREFIX}voice Hello world\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Voice Note",body:"Usage Instructions"})},{quoted:e})}const s=n.join(" ").substring(0,200);await i("🎤");const r=`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(s)}&tl=en&client=tw-ob`,c=await axios({method:"GET",url:r,responseType:"arraybuffer",headers:{"User-Agent":"Mozilla/5.0"},timeout:3e4}),g=Buffer.from(c.data),d=await mediaProcessor.toPTT(g);await o.sendMessage(t,{audio:d,mimetype:"audio/ogg; codecs=opus",ptt:!0},{quoted:e}),await i("✅")}catch(e){s.logger.error("Voice error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"toaudio",description:"Extract audio from video",aliases:["mp3","extract"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const n=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.videoMessage||n?.videoMessage)){await i("❌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎵 *AUDIO EXTRACTOR* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to video with ${config.PREFIX}toaudio\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Audio Extractor",body:"Usage Instructions"})},{quoted:e})}await i("🎵");const s=e.message?.videoMessage?e:{...e,message:n},r=await downloadMedia(s),c=await mediaProcessor.extractAudio(r);await o.sendMessage(t,{audio:c,mimetype:"audio/mpeg",ptt:!1},{quoted:e}),await i("✅")}catch(e){s.logger.error("ToAudio error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"speed",description:"Change audio speed (0.5x - 2.0x)",aliases:["audiospeed"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const s=parseFloat(n[0])||1;if(s<.5||s>2){await i("❌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   ⚡ *AUDIO SPEED*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to audio with ${config.PREFIX}speed <0.5-2.0>\nExample: ${config.PREFIX}speed 1.5\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Audio Speed",body:"Usage Instructions"})},{quoted:e})}const c=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.audioMessage||c?.audioMessage))return await i("❌"),r("❌ Reply to an audio message.");await i("⚡");const g=e.message?.audioMessage?e:{...e,message:c},d=await downloadMedia(g),m=await mediaProcessor.changeSpeed(d,s);await o.sendMessage(t,{audio:m,mimetype:"audio/mpeg",ptt:!1},{quoted:e}),await i("✅")}catch(e){s.logger.error("Speed error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"vol",description:"Change audio volume (0.5x - 2.0x)",aliases:["volume"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const s=parseFloat(n[0])||1;if(s<.5||s>2){await i("❌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔊 *AUDIO VOLUME* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to audio with ${config.PREFIX}vol <0.5-2.0>\nExample: ${config.PREFIX}vol 1.5\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Audio Volume",body:"Usage Instructions"})},{quoted:e})}const c=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.audioMessage||c?.audioMessage))return await i("❌"),r("❌ Reply to an audio message.");await i("🔊");const g=e.message?.audioMessage?e:{...e,message:c},d=await downloadMedia(g),m=await mediaProcessor.changeVolume(d,s);await o.sendMessage(t,{audio:m,mimetype:"audio/mpeg",ptt:!1},{quoted:e}),await i("✅")}catch(e){s.logger.error("Volume error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"filter",description:"Apply filter to image",aliases:["filt"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const s=n[0]?.toLowerCase()||"greyscale",c=["greyscale","grayscale","invert","sepia","brighten","darken","contrast","blur","sharpen"];if(!c.includes(s)){await i("🎨");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎨 *FILTERS*     ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nAvailable: ${c.join(", ")}\nUsage: ${config.PREFIX}filter <type>\nExample: ${config.PREFIX}filter sepia\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Image Filters",body:"Available Filters"})},{quoted:e})}const g=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.imageMessage||g?.imageMessage))return await i("❌"),r("❌ Reply to an image.");await i("🔄");const d=e.message?.imageMessage?e:{...e,message:g},m=await downloadMedia(d),l=await mediaProcessor.applyFilter(m,s),u=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   ✅ *FILTER APPLIED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nFilter: ${s}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{image:l,caption:u,...createNewsletterContext(a,{title:"Filter Applied",body:s})},{quoted:e}),await i("✅")}catch(e){s.logger.error("Filter error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"circle",description:"Make circular image",aliases:["round"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const n=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.imageMessage||n?.imageMessage)){await i("⭕");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   ⭕ *CIRCLE IMAGE* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to image with ${config.PREFIX}circle\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Circle Image",body:"Usage Instructions"})},{quoted:e})}await i("🔄");const s=e.message?.imageMessage?e:{...e,message:n},r=await downloadMedia(s),c=await mediaProcessor.createCircle(r),g="╭━━━━━━━━━━━━━━━━━━━╮\n┃   ✅ *CIRCLE IMAGE* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✅ Circular image created\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥";await o.sendMessage(t,{image:c,caption:g,...createNewsletterContext(a,{title:"Circle Image",body:"Created"})},{quoted:e}),await i("✅")}catch(e){s.logger.error("Circle error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"removebg",description:"Remove white/light background",aliases:["nobg"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{const n=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!(e.message?.imageMessage||n?.imageMessage)){await i("✨");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   ✨ *REMOVE BG*    ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to image with ${config.PREFIX}removebg\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Remove Background",body:"Usage Instructions"})},{quoted:e})}await i("✨");const s=e.message?.imageMessage?e:{...e,message:n},r=await downloadMedia(s),c=await mediaProcessor.removeBackground(r),g="╭━━━━━━━━━━━━━━━━━━━╮\n┃   ✅ *BG REMOVED*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✅ Background removed successfully\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥";await o.sendMessage(t,{image:c,caption:g,...createNewsletterContext(a,{title:"Background Removed",body:"Success"})},{quoted:e}),await i("✅")}catch(e){s.logger.error("RemoveBG error:",e),await i("❌"),await r(`❌ Failed: ${e.message}`)}}}),commands.push({name:"bible",description:"Get Bible verses and chapters",aliases:["bibleverse","holybible"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){const c=n.join(" ");try{if(!c){await i("📖");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📖 *BIBLE*       ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}bible <verse>\nExamples:\n• ${config.PREFIX}bible John 3:16\n• ${config.PREFIX}bible Genesis 1\n• ${config.PREFIX}bible Psalm 23:1-3\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Bible",body:"Usage Instructions"})},{quoted:e})}await i("📖");const n=c.trim().replace(/\s+/g,"+"),s=(await axios.get(`https://bible-api.com/${n}`,{timeout:1e4})).data;let r=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📖 *THE BIBLE*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✨ *${s.reference}*\n📚 *${s.translation_name}*\n\n━━━━━━━━━━━━━━━━━━━\n\n${s.text.replace(/\n+/g,"\n").trim()}\n\n━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"Bible Verse",body:s.reference})},{quoted:e}),await i("✅")}catch(e){s.logger.error("Bible error:",e),await i("❌"),await r(`❌ Could not fetch Bible verse.\n\nTry: ${config.PREFIX}bible John 3:16`)}}}),commands.push({name:"quran",description:"Get Quran surahs and verses",aliases:["surah","alquran"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){const c=n[0];try{if(!c){await i("🕌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🕌 *QURAN*       ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}quran <surah number>\nExamples:\n• ${config.PREFIX}quran 1 (Al-Fatihah)\n• ${config.PREFIX}quran 36 (Yasin)\n• Surah numbers: 1-114\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Quran",body:"Usage Instructions"})},{quoted:e})}const n=parseInt(c);if(isNaN(n)||n<1||n>114)return await i("❌"),r("❌ Invalid surah number. Use 1-114");await i("🕌");const s=(await axios.get(`https://api.alquran.cloud/v1/surah/${n}/editions/en.asad,ar.alafasy`,{timeout:1e4})).data.data,g=s.find(e=>e.edition.identifier.includes("ar.alafasy")),d=s.find(e=>e.edition.identifier.includes("en.asad"));if(!g||!d)throw new Error("Could not fetch surah");let m=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🕌 *THE QURAN*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✨ *Surah ${g.number}: ${g.englishName}*\n🌍 *Arabic:* ${g.name}\n📖 *Type:* ${g.revelationType}\n🔢 *Verses:* ${g.ayahs.length}\n\n━━━━━━━━━━━━━━━━━━━\n\n`;for(let e=0;e<Math.min(5,g.ayahs.length);e++)m+=`*${g.ayahs[e].numberInSurah}. *\n`,m+=`${g.ayahs[e].text}\n`,m+=`${d.ayahs[e].text}\n\n`;g.ayahs.length>5&&(m+=`... and ${g.ayahs.length-5} more verses\n\n`),m+="━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",await o.sendMessage(t,{text:m,...createNewsletterContext(a,{title:"Quran",body:`Surah ${g.number}`})},{quoted:e}),await i("✅")}catch(e){s.logger.error("Quran error:",e),await i("❌"),await r(`❌ Could not fetch surah.\n\nTry: ${config.PREFIX}quran 1`)}}}),commands.push({name:"dailyverse",description:"Get daily inspirational verse",aliases:["inspire","daily","verseoftheday"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){try{await i("📖");const n=["John 3:16","Psalm 23","Philippians 4:13","Jeremiah 29:11","Romans 8:28","Proverbs 3:5-6"],s=n[Math.floor(Math.random()*n.length)].replace(/\s+/g,"+"),r=(await axios.get(`https://bible-api.com/${s}`,{timeout:1e4})).data,c=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📖 *DAILY VERSE* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✨ *${r.reference}*\n\n${r.text.trim()}\n\n━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:c,...createNewsletterContext(a,{title:"Daily Verse",body:r.reference})},{quoted:e}),await i("✅")}catch(n){s.logger.error("Daily verse error:",n);const r="╭━━━━━━━━━━━━━━━━━━━╮\n┃   📖 *DAILY VERSE* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n✨ *John 3:16*\n\nFor God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.\n\n━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥";await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"Daily Verse",body:"John 3:16"})},{quoted:e}),await i("✅")}}}),commands.push({name:"movie",description:"Get movie information from IMDb",aliases:["imdb","film"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){const c=n.join(" ");try{if(!c){await i("🎬");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎬 *MOVIE INFO*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}movie <movie name>\nExamples:\n• ${config.PREFIX}movie Inception\n• ${config.PREFIX}movie Avengers\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Movie Info",body:"Usage Instructions"})},{quoted:e})}await i("🎬");let n=null,s=null;try{const e=await axios.get(`https://www.omdbapi.com/?apikey=9b5d7e52&t=${encodeURIComponent(c)}&plot=short`,{timeout:1e4});"True"===e.data.Response&&(n=e.data,s="N/A"!==n.Poster?n.Poster:null)}catch(e){console.log("OMDb failed, trying TMDB...")}if(!n)try{const e=await axios.get(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(c)}`,{timeout:1e4});if(e.data.results&&e.data.results.length>0){const t=e.data.results[0];n={Title:t.title,Year:t.release_date?t.release_date.substring(0,4):"N/A",Runtime:"N/A",Genre:t.genre_ids?"See details":"N/A",Director:"N/A",Actors:"N/A",Plot:t.overview||"No description available",imdbRating:t.vote_average?`${t.vote_average}/10`:"N/A",imdbVotes:t.vote_count?t.vote_count.toLocaleString():"N/A"},s=t.poster_path?`https://image.tmdb.org/t/p/w500${t.poster_path}`:null}}catch(e){console.log("TMDB failed")}if(!n)throw new Error("Movie not found");let r=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎬 *${n.Title.toUpperCase().substring(0,15)}* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n⭐ *Rating:* ${n.imdbRating||"N/A"}\n📅 *Year:* ${n.Year||"N/A"}`;if(n.Runtime&&"N/A"!==n.Runtime&&(r+=`\n⏱️ *Runtime:* ${n.Runtime}`),n.Genre&&"N/A"!==n.Genre&&(r+=`\n🎭 *Genre:* ${n.Genre}`),n.Director&&"N/A"!==n.Director&&(r+=`\n🎬 *Director:* ${n.Director}`),n.Actors&&"N/A"!==n.Actors&&(r+=`\n👥 *Cast:* ${n.Actors}`),r+=`\n\n📖 *Plot:*\n${n.Plot}`,r+="\n\n━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",s)try{await o.sendMessage(t,{image:{url:s},caption:r,...createNewsletterContext(a,{title:"Movie Info",body:n.Title})},{quoted:e})}catch(s){await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"Movie Info",body:n.Title})},{quoted:e})}else await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"Movie Info",body:n.Title})},{quoted:e});await i("✅")}catch(e){s.logger.error("Movie error:",e),await i("❌"),await r(`❌ Movie not found: "${c}"\n\nTry: ${config.PREFIX}movie The Matrix`)}}}),commands.push({name:"anime",description:"Get anime information",aliases:["animesearch","animeinfo"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){const c=n.join(" ");try{if(!c){await i("🎌");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎌 *ANIME INFO*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}anime <anime name>\nExamples:\n• ${config.PREFIX}anime Naruto\n• ${config.PREFIX}anime Attack on Titan\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Anime Info",body:"Usage Instructions"})},{quoted:e})}await i("🎌");const n=await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(c)}&limit=1`,{timeout:1e4}),s=n.data.data?.[0];if(!s)throw new Error("Anime not found");let r=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🎌 *${s.title.substring(0,15)}* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n⭐ *Score:* ${s.score||"N/A"}/10\n📺 *Episodes:* ${s.episodes||"Unknown"}\n📅 *Aired:* ${s.aired?.string||"Unknown"}\n🎭 *Type:* ${s.type||"Unknown"}\n📊 *Status:* ${s.status||"Unknown"}\n\n📖 *Synopsis:*\n${(s.synopsis||"No synopsis").substring(0,300)}...\n\n━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;if(s.images?.jpg?.large_image_url)try{await o.sendMessage(t,{image:{url:s.images.jpg.large_image_url},caption:r,...createNewsletterContext(a,{title:"Anime Info",body:s.title})},{quoted:e})}catch(n){await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"Anime Info",body:s.title})},{quoted:e})}else await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"Anime Info",body:s.title})},{quoted:e});await i("✅")}catch(e){s.logger.error("Anime error:",e),await i("❌"),await r(`❌ Anime not found: "${c}"\n\nTry: ${config.PREFIX}anime Naruto`)}}}),commands.push({name:"tv",description:"Get TV show information",aliases:["tvshow","tvprogram"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:o,react:i,reply:r}){const c=n.join(" ");try{if(!c){await i("📺");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📺 *TV SHOW INFO* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}tv <show name>\nExamples:\n• ${config.PREFIX}tv Breaking Bad\n• ${config.PREFIX}tv Stranger Things\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"TV Show Info",body:"Usage Instructions"})},{quoted:e})}await i("📺");const n=await axios.get(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(c)}`,{timeout:1e4}),s=n.data[0]?.show;if(!s)throw new Error("TV show not found");let r=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📺 *${s.name.substring(0,15)}* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n⭐ *Rating:* ${s.rating?.average||"N/A"}/10\n📅 *Status:* ${s.status||"Unknown"}\n🎭 *Genres:* ${s.genres?.join(", ")||"N/A"}\n📡 *Network:* ${s.network?.name||s.webChannel?.name||"N/A"}\n📅 *Premiered:* ${s.premiered||"Unknown"}\n\n📖 *Summary:*\n${(s.summary?.replace(/<[^>]*>/g,"")||"No summary").substring(0,300)}...\n\n━━━━━━━━━━━━━━━━━━━\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;if(s.image?.medium)try{await o.sendMessage(t,{image:{url:s.image.medium},caption:r,...createNewsletterContext(a,{title:"TV Show",body:s.name})},{quoted:e})}catch(n){await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"TV Show",body:s.name})},{quoted:e})}else await o.sendMessage(t,{text:r,...createNewsletterContext(a,{title:"TV Show",body:s.name})},{quoted:e});await i("✅")}catch(e){s.logger.error("TV error:",e),await i("❌"),await r(`❌ TV show not found: "${c}"\n\nTry: ${config.PREFIX}tv Friends`)}}}),module.exports={commands:commands};
+// MEGAN-MD Media Commands - Consistent styling with buttons
+
+const axios = require('axios');
+const fs = require('fs-extra');
+const path = require('path');
+const config = require('../../megan/config');
+const MediaProcessor = require('../../megan/lib/mediaProcessor');
+const { downloadMediaMessage } = require('gifted-baileys');
+
+const commands = [];
+const mediaProcessor = new MediaProcessor();
+const TEMP_DIR = path.join(__dirname, '../../temp');
+fs.ensureDirSync(TEMP_DIR);
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+// Static meme images
+const MEME_IMAGES = [
+    'https://files.catbox.moe/xnqfhk.jpg',
+    'https://files.catbox.moe/99jcbd.jpg',
+    'https://files.catbox.moe/a8yflv.jpg',
+    'https://files.catbox.moe/xn7fef.jpg',
+    'https://files.catbox.moe/fzo3sg.jpg',
+    'https://files.catbox.moe/ypi5fw.jpg',
+    'https://files.catbox.moe/f9eqxi.jpg',
+    'https://files.catbox.moe/eswum9.jpg',
+    'https://files.catbox.moe/1w2z1i.jpg',
+    'https://files.catbox.moe/5qkf90.jpg',
+    'https://files.catbox.moe/hp4nki.jpg',
+    'https://files.catbox.moe/hq6hhu.jpg',
+    'https://files.catbox.moe/ggwzc9.jpg',
+    'https://files.catbox.moe/evpzeb.jpg',
+    'https://files.catbox.moe/xdtch8.jpg',
+    'https://files.catbox.moe/u8itde.jpg',
+    'https://files.catbox.moe/qzmfuo.jpg',
+    'https://files.catbox.moe/lgqabr.jpg',
+    'https://files.catbox.moe/rxoajf.jpg',
+    'https://files.catbox.moe/k1qck3.jpg',
+    'https://files.catbox.moe/al7u80.jpg'
+];
+
+// Helper function using same pattern as basic.js
+async function sendButtonMenu(sock, from, options, quotedMsg) {
+    const { sendButtons } = require('gifted-btns');
+    
+    try {
+        return await sendButtons(sock, from, {
+            title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: options.text,
+            footer: options.footer || '> created by wanga',
+            image: options.image ? { url: options.image } : null,
+            buttons: options.buttons || []
+        }, { quoted: quotedMsg });
+    } catch (error) {
+        console.error('Button error:', error);
+        await sock.sendMessage(from, { text: options.text }, { quoted: quotedMsg });
+    }
+}
+
+async function downloadMedia(msg) {
+    return await downloadMediaMessage(msg, 'buffer', {}, { logger: console });
+}
+
+async function uploadToCatbox(buffer, filename) {
+    const FormData = require('form-data');
+    const formData = new FormData();
+    formData.append('reqtype', 'fileupload');
+    formData.append('fileToUpload', buffer, { filename });
+
+    const response = await axios.post('https://catbox.moe/user/api.php', formData, {
+        headers: formData.getHeaders()
+    });
+    return response.data.trim();
+}
+
+function formatFileSize(bytes) {
+    if (bytes >= 1024 * 1024 * 1024) return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+    if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    if (bytes >= 1024) return (bytes / 1024).toFixed(2) + ' KB';
+    return bytes + ' bytes';
+}
+
+// ==================== STICKER COMMANDS ====================
+
+// 1. STICKER MAKER
+commands.push({
+    name: 'sticker',
+    description: 'Create sticker from image/video',
+    aliases: ['s', 'stick'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const hasImage = msg.message?.imageMessage || quoted?.imageMessage;
+        const hasVideo = msg.message?.videoMessage || quoted?.videoMessage;
+
+        if (!hasImage && !hasVideo) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎨 *STICKER MAKER*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ Reply to image/video with ${config.PREFIX}sticker\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🎨');
+        const targetMsg = msg.message?.imageMessage || msg.message?.videoMessage ? msg : { ...msg, message: quoted };
+        const buffer = await downloadMedia(targetMsg);
+        const stickerBuffer = await mediaProcessor.createSticker(buffer);
+
+        await sock.sendMessage(from, { sticker: stickerBuffer }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Sticker Created*\n━━━━━━━━━━━━━━━━━━━\n_🎨 Sticker created successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 2. STICKER TO IMAGE
+commands.push({
+    name: 'toimage',
+    description: 'Convert sticker to image',
+    aliases: ['img', 'toimg'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const hasSticker = msg.message?.stickerMessage || quoted?.stickerMessage;
+
+        if (!hasSticker) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🖼️ *STICKER TO IMAGE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ Reply to sticker with ${config.PREFIX}toimage\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+        const targetMsg = msg.message?.stickerMessage ? msg : { ...msg, message: quoted };
+        const buffer = await downloadMedia(targetMsg);
+        const imageBuffer = await mediaProcessor.stickerToImage(buffer);
+
+        await sock.sendMessage(from, {
+            image: imageBuffer,
+            caption: `✅ *Converted to image*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Image Created*\n━━━━━━━━━━━━━━━━━━━\n_🖼️ Sticker converted to image successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== AUDIO COMMANDS ====================
+
+// 3. TEXT TO SPEECH (audio)
+commands.push({
+    name: 'say',
+    description: 'Convert text to audio',
+    aliases: ['tts'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🗣️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🗣️ *TEXT TO SPEECH*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}say <text>\n_Example:_ ${config.PREFIX}say Hello world\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const text = args.join(' ').substring(0, 200);
+        await react('🗣️');
+
+        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=en&client=tw-ob`;
+        const response = await axios({ method: 'GET', url: ttsUrl, responseType: 'arraybuffer', timeout: 30000 });
+        const audioBuffer = Buffer.from(response.data);
+        const formattedAudio = await mediaProcessor.toAudio(audioBuffer);
+
+        await sock.sendMessage(from, {
+            audio: formattedAudio,
+            mimetype: 'audio/mpeg',
+            ptt: false
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Audio Created*\n━━━━━━━━━━━━━━━━━━━\n_🗣️ Text converted to audio successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 4. VOICE NOTE (PTT)
+commands.push({
+    name: 'voice',
+    description: 'Convert text to voice note',
+    aliases: ['vn', 'voicenote'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🎤');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎤 *VOICE NOTE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}voice <text>\n_Example:_ ${config.PREFIX}voice Hello world\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const text = args.join(' ').substring(0, 200);
+        await react('🎤');
+
+        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=en&client=tw-ob`;
+        const response = await axios({ method: 'GET', url: ttsUrl, responseType: 'arraybuffer', timeout: 30000 });
+        const audioBuffer = Buffer.from(response.data);
+        const pttBuffer = await mediaProcessor.toPTT(audioBuffer);
+
+        await sock.sendMessage(from, {
+            audio: pttBuffer,
+            mimetype: 'audio/ogg; codecs=opus',
+            ptt: true
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Voice Note Created*\n━━━━━━━━━━━━━━━━━━━\n_🎤 Voice note created successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 5. EXTRACT AUDIO FROM VIDEO
+commands.push({
+    name: 'toaudio',
+    description: 'Extract audio from video',
+    aliases: ['mp3', 'extract'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const hasVideo = msg.message?.videoMessage || quoted?.videoMessage;
+
+        if (!hasVideo) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎵 *AUDIO EXTRACTOR*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ Reply to video with ${config.PREFIX}toaudio\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🎵');
+        const targetMsg = msg.message?.videoMessage ? msg : { ...msg, message: quoted };
+        const buffer = await downloadMedia(targetMsg);
+        const audioBuffer = await mediaProcessor.extractAudio(buffer);
+
+        await sock.sendMessage(from, {
+            audio: audioBuffer,
+            mimetype: 'audio/mpeg',
+            ptt: false
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Audio Extracted*\n━━━━━━━━━━━━━━━━━━━\n_🎵 Audio extracted from video successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== IMAGE COMMANDS ====================
+
+// 6. CIRCLE IMAGE
+commands.push({
+    name: 'circle',
+    description: 'Make circular image',
+    aliases: ['round'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const hasImage = msg.message?.imageMessage || quoted?.imageMessage;
+
+        if (!hasImage) {
+            await react('⭕');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `⭕ *CIRCLE IMAGE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ Reply to image with ${config.PREFIX}circle\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+        const targetMsg = msg.message?.imageMessage ? msg : { ...msg, message: quoted };
+        const buffer = await downloadMedia(targetMsg);
+        const circleBuffer = await mediaProcessor.createCircle(buffer);
+
+        await sock.sendMessage(from, {
+            image: circleBuffer,
+            caption: `✅ *Circular image created*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Circle Image Created*\n━━━━━━━━━━━━━━━━━━━\n_⭕ Image converted to circle successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 7. TEXT PRO EFFECT
+commands.push({
+    name: 'textpro',
+    description: 'Create text effects',
+    aliases: ['texteffect'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (args.length < 2) {
+            await react('🎨');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎨 *TEXTPRO EFFECTS*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}textpro <effect> <text>\n\n_Effects:_ 3d, neon, gold, fire, matrix\n\n_Example:_ ${config.PREFIX}textpro 3d MEGAN\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const effect = args[0].toLowerCase();
+        const text = args.slice(1).join(' ');
+
+        const effectUrls = {
+            '3d': 'https://textpro.me/create-3d-text-effects-1046.html',
+            'neon': 'https://textpro.me/neon-text-effect-1019.html',
+            'gold': 'https://textpro.me/gold-text-effect-1060.html',
+            'fire': 'https://textpro.me/fire-text-effect-1073.html',
+            'matrix': 'https://textpro.me/matrix-style-text-effect-1107.html'
+        };
+
+        const url = effectUrls[effect];
+        if (!url) {
+            await react('❌');
+            return reply(`❌ *Invalid effect!* Available: 3d, neon, gold, fire, matrix\n\n> created by wanga`);
+        }
+
+        await react('🎨');
+
+        const response = await axios.get(`https://api.siputzx.my.id/api/m/textpro`, {
+            params: { url: url, text1: text },
+            responseType: 'arraybuffer',
+            timeout: 30000
+        });
+
+        await sock.sendMessage(from, {
+            image: Buffer.from(response.data),
+            caption: `🎨 *TextPro Effect*\n\n_Effect:_ ${effect}\n_Text:_ ${text}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Text Effect Created*\n━━━━━━━━━━━━━━━━━━━\n_🎨 Text effect created successfully!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== UPLOAD COMMANDS ====================
+
+// 8. CATBOX UPLOAD
+commands.push({
+    name: 'catbox',
+    description: 'Upload media to Catbox.moe',
+    aliases: ['cat'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const hasMedia = msg.message?.imageMessage || msg.message?.videoMessage ||
+                       msg.message?.audioMessage || quoted?.imageMessage ||
+                       quoted?.videoMessage || quoted?.audioMessage;
+
+        if (!hasMedia && args.length === 0) {
+            await react('📤');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📤 *CATBOX UPLOAD*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ Reply to media with ${config.PREFIX}catbox\n_Or:_ ${config.PREFIX}catbox <image url>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('📤');
+
+        let buffer, filename;
+
+        if (args.length > 0 && args[0].startsWith('http')) {
+            const response = await axios.get(args[0], { responseType: 'arraybuffer', timeout: 30000 });
+            buffer = Buffer.from(response.data);
+            filename = `upload_${Date.now()}.jpg`;
+        } else {
+            const targetMsg = msg.message?.imageMessage || msg.message?.videoMessage || msg.message?.audioMessage
+                ? msg : { ...msg, message: quoted };
+            buffer = await downloadMedia(targetMsg);
+            filename = `upload_${Date.now()}.jpg`;
+        }
+
+        const url = await uploadToCatbox(buffer, filename);
+        const fileSize = formatFileSize(buffer.length);
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *Uploaded*\n━━━━━━━━━━━━━━━━━━━\n_📁 File:_ ${filename}\n_📦 Size:_ ${fileSize}\n_🔗 URL:_ ${url}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy URL', copy_code: url }) },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '🔗 Open Link', url: url }) },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== RANDOM IMAGE COMMANDS ====================
+
+// 9. RANDOM WAIFU
+commands.push({
+    name: 'waifu',
+    description: 'Get random waifu image',
+    aliases: ['waifuimg'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        await react('🌸');
+        const response = await axios.get('https://api.siputzx.my.id/api/r/waifu', {
+            responseType: 'arraybuffer',
+            timeout: 10000
+        });
+
+        await sock.sendMessage(from, {
+            image: Buffer.from(response.data),
+            caption: `🌸 *Random Waifu*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🌸 *Random Waifu*\n━━━━━━━━━━━━━━━━━━━\n_Enjoy your waifu image!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}waifu`, text: '🔄 Another' },
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 10. RANDOM NEKO
+commands.push({
+    name: 'neko',
+    description: 'Get random neko girl image',
+    aliases: ['nekogirl'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        await react('🐱');
+        const response = await axios.get('https://api.siputzx.my.id/api/r/neko', {
+            responseType: 'arraybuffer',
+            timeout: 10000
+        });
+
+        await sock.sendMessage(from, {
+            image: Buffer.from(response.data),
+            caption: `🐱 *Random Neko*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+        }, { quoted: msg });
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🐱 *Random Neko*\n━━━━━━━━━━━━━━━━━━━\n_Enjoy your neko image!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}neko`, text: '🔄 Another' },
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 11. RANDOM MEME
+commands.push({
+    name: 'meme',
+    description: 'Get random meme from collection',
+    aliases: ['randommeme', 'memes'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        await react('😂');
+
+        const randomUrl = MEME_IMAGES[Math.floor(Math.random() * MEME_IMAGES.length)];
+
+        try {
+            const response = await axios.get(randomUrl, {
+                responseType: 'arraybuffer',
+                timeout: 15000
+            });
+
+            const imageBuffer = Buffer.from(response.data);
+
+            await sock.sendMessage(from, {
+                image: imageBuffer,
+                caption: `😂 *Random Meme*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+            }, { quoted: msg });
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `😂 *Random Meme*\n━━━━━━━━━━━━━━━━━━━\n_Enjoy your meme!_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}meme`, text: '🔄 Another' },
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+
+        } catch (error) {
+            console.error('Meme error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Failed to get meme*\n━━━━━━━━━━━━━━━━━━━\n_Try again later._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ==================== CLEANUP ====================
+
+// 12. CLEAN TEMP FILES
+commands.push({
+    name: 'cleantemp',
+    description: 'Clean temporary files',
+    aliases: ['cleantemp'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        await react('🧹');
+        const result = await mediaProcessor.cleanup();
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🧹 *Cleanup Complete*\n━━━━━━━━━━━━━━━━━━━\n_🗑️ Deleted:_ ${result.deleted} temp files\n_💾 Freed:_ ${formatFileSize(result.freed || 0)}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}media`, text: '🎵 Media' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== MEDIA HELP ====================
+
+// 13. MEDIA HELP
+commands.push({
+    name: 'media',
+    description: 'Show all media commands',
+    aliases: ['mediahelp'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const prefix = config.PREFIX;
+
+        const helpText = `🛠️ *MEDIA COMMANDS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `*🎨 STICKERS*\n` +
+            `_${prefix}sticker_ - Make sticker\n` +
+            `_${prefix}toimage_ - Sticker to image\n\n` +
+
+            `*🎵 AUDIO*\n` +
+            `_${prefix}say_ - Text to speech\n` +
+            `_${prefix}voice_ - Voice note\n` +
+            `_${prefix}toaudio_ - Extract audio\n\n` +
+
+            `*🖼️ IMAGE*\n` +
+            `_${prefix}circle_ - Circular image\n` +
+            `_${prefix}textpro_ - Text effects\n` +
+            `_${prefix}waifu_ - Random waifu\n` +
+            `_${prefix}neko_ - Random neko\n` +
+            `_${prefix}meme_ - Random meme\n\n` +
+
+            `*📤 UPLOAD*\n` +
+            `_${prefix}catbox_ - Upload to Catbox\n` +
+            `_${prefix}cleantemp_ - Clean temp files\n\n` +
+
+            `> created by wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: helpText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+module.exports = { commands };

@@ -1,1 +1,287 @@
-const ffmpeg=require("fluent-ffmpeg"),ffmpegPath=require("ffmpeg-static"),sharp=require("sharp"),Jimp=require("jimp"),fs=require("fs-extra"),path=require("path"),{fromBuffer:fromBuffer}=require("file-type"),{Readable:Readable}=require("stream"),{Sticker:Sticker,StickerTypes:StickerTypes}=require("wa-sticker-formatter"),config=require("../config");ffmpeg.setFfmpegPath(ffmpegPath);class MediaProcessor{constructor(){this.tempDir=path.join(__dirname,"../../temp"),fs.ensureDirSync(this.tempDir)}async createSticker(e,t={}){try{const a=new Sticker(e,{pack:t.pack||config.BOT_NAME||"MEGAN-MD",author:t.author||config.OWNER_NAME||"Wanga",type:t.type||StickerTypes.DEFAULT,quality:t.quality||80,background:t.background||"transparent"});return await a.toBuffer()}catch(e){throw console.error("Sticker creation error:",e),e}}async stickerToImage(e){try{try{return await sharp(e).png().toBuffer()}catch(t){const a=await Jimp.read(e);return await a.getBufferAsync(Jimp.MIME_PNG)}}catch(e){throw console.error("Sticker to image error:",e),e}}async videoToGif(e,t={}){const a=path.join(this.tempDir,`input_${Date.now()}.mp4`),r=path.join(this.tempDir,`output_${Date.now()}.gif`);try{await fs.writeFile(a,e),await new Promise((e,t)=>{ffmpeg(a).outputOptions(["-vf","fps=10,scale=320:-1:flags=lanczos","-loop","0"]).toFormat("gif").on("end",e).on("error",t).save(r)});return await fs.readFile(r)}finally{await fs.remove(a).catch(()=>{}),await fs.remove(r).catch(()=>{})}}async toAudio(e){const t=path.join(this.tempDir,`input_${Date.now()}.audio`),a=path.join(this.tempDir,`output_${Date.now()}.mp3`);try{return await fs.writeFile(t,e),await new Promise((e,r)=>{ffmpeg(t).noVideo().audioCodec("libmp3lame").audioBitrate(128).audioChannels(2).audioFrequency(44100).toFormat("mp3").on("end",e).on("error",r).save(a)}),await fs.readFile(a)}finally{await fs.remove(t).catch(()=>{}),await fs.remove(a).catch(()=>{})}}async toPTT(e){const t=path.join(this.tempDir,`input_${Date.now()}.audio`),a=path.join(this.tempDir,`output_${Date.now()}.ogg`);try{return await fs.writeFile(t,e),await new Promise((e,r)=>{ffmpeg(t).noVideo().audioCodec("libopus").audioBitrate(24).audioChannels(1).audioFrequency(16e3).toFormat("ogg").on("end",e).on("error",r).save(a)}),await fs.readFile(a)}finally{await fs.remove(t).catch(()=>{}),await fs.remove(a).catch(()=>{})}}async changeSpeed(e,t=1){const a=path.join(this.tempDir,`input_${Date.now()}.audio`),r=path.join(this.tempDir,`output_${Date.now()}.mp3`);try{return await fs.writeFile(a,e),await new Promise((e,i)=>{ffmpeg(a).audioFilter(`atempo=${t}`).toFormat("mp3").on("end",e).on("error",i).save(r)}),await fs.readFile(r)}finally{await fs.remove(a).catch(()=>{}),await fs.remove(r).catch(()=>{})}}async changeVolume(e,t=1){const a=path.join(this.tempDir,`input_${Date.now()}.audio`),r=path.join(this.tempDir,`output_${Date.now()}.mp3`);try{return await fs.writeFile(a,e),await new Promise((e,i)=>{ffmpeg(a).audioFilter(`volume=${t}`).toFormat("mp3").on("end",e).on("error",i).save(r)}),await fs.readFile(r)}finally{await fs.remove(a).catch(()=>{}),await fs.remove(r).catch(()=>{})}}async toVideo(e){const t=path.join(this.tempDir,`input_${Date.now()}.video`),a=path.join(this.tempDir,`output_${Date.now()}.mp4`);try{return await fs.writeFile(t,e),await new Promise((e,r)=>{ffmpeg(t).videoCodec("libx264").audioCodec("aac").outputOptions(["-preset ultrafast","-movflags +faststart","-pix_fmt yuv420p","-crf 23","-r 30"]).toFormat("mp4").on("end",e).on("error",r).save(a)}),await fs.readFile(a)}finally{await fs.remove(t).catch(()=>{}),await fs.remove(a).catch(()=>{})}}async extractAudio(e){const t=path.join(this.tempDir,`input_${Date.now()}.video`),a=path.join(this.tempDir,`output_${Date.now()}.mp3`);try{return await fs.writeFile(t,e),await new Promise((e,r)=>{ffmpeg(t).noVideo().audioCodec("libmp3lame").toFormat("mp3").on("end",e).on("error",r).save(a)}),await fs.readFile(a)}finally{await fs.remove(t).catch(()=>{}),await fs.remove(a).catch(()=>{})}}async resizeImage(e,t,a){try{return await sharp(e).resize(t,a,{fit:"contain",background:{r:0,g:0,b:0,alpha:0}}).toBuffer()}catch(e){throw console.error("Resize error:",e),e}}async applyFilter(e,t){try{const a=await Jimp.read(e);switch(t.toLowerCase()){case"greyscale":case"grayscale":a.greyscale();break;case"invert":a.invert();break;case"sepia":a.sepia();break;case"brighten":a.brightness(.2);break;case"darken":a.brightness(-.2);break;case"contrast":a.contrast(.2);break;case"blur":a.blur(5);break;case"sharpen":a.convolution([[0,-1,0],[-1,5,-1],[0,-1,0]]);break;default:throw new Error("Unknown filter")}return await a.getBufferAsync(Jimp.MIME_PNG)}catch(e){throw console.error("Filter error:",e),e}}async createCircle(e){try{const t=await Jimp.read(e);return t.resize(512,512),t.circle(),await t.getBufferAsync(Jimp.MIME_PNG)}catch(e){throw console.error("Circle error:",e),e}}async removeBackground(e){try{const t=await Jimp.read(e);return t.scan(0,0,t.bitmap.width,t.bitmap.height,function(e,t,a){const r=this.bitmap.data[a+0],i=this.bitmap.data[a+1],o=this.bitmap.data[a+2];r>200&&i>200&&o>200&&(this.bitmap.data[a+3]=0)}),await t.getBufferAsync(Jimp.MIME_PNG)}catch(e){throw console.error("Remove background error:",e),e}}async getMediaInfo(e){try{const t=await fromBuffer(e);return{mime:t?.mime||"unknown",ext:t?.ext||"bin",size:e.length,sizeFormatted:this.formatBytes(e.length)}}catch(t){return{mime:"unknown",ext:"bin",size:e.length,sizeFormatted:this.formatBytes(e.length)}}}formatBytes(e){return e>=1073741824?(e/1073741824).toFixed(2)+" GB":e>=1048576?(e/1048576).toFixed(2)+" MB":e>=1024?(e/1024).toFixed(2)+" KB":e+" bytes"}async cleanup(){try{const e=await fs.readdir(this.tempDir);let t=0;for(const a of e)try{await fs.remove(path.join(this.tempDir,a)),t++}catch(e){}return{deleted:t}}catch(e){return{deleted:0}}}}module.exports=MediaProcessor;
+// MEGAN-MD Media Processor - Complete with all methods
+
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpegPath = require('ffmpeg-static');
+const sharp = require('sharp');
+const Jimp = require('jimp');
+const fs = require('fs-extra');
+const path = require('path');
+const { Sticker, StickerTypes } = require('wa-sticker-formatter');
+
+ffmpeg.setFfmpegPath(ffmpegPath);
+
+class MediaProcessor {
+    constructor() {
+        this.tempDir = path.join(__dirname, '../temp');
+        fs.ensureDirSync(this.tempDir);
+    }
+
+    // ==================== STICKER METHODS ====================
+    
+    async createSticker(buffer, options = {}) {
+        try {
+            const sticker = new Sticker(buffer, {
+                pack: options.pack || 'MEGAN-MD',
+                author: options.author || 'Wanga',
+                type: StickerTypes.DEFAULT,
+                quality: options.quality || 80
+            });
+            return await sticker.toBuffer();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async stickerToImage(buffer) {
+        try {
+            try {
+                return await sharp(buffer).png().toBuffer();
+            } catch {
+                const image = await Jimp.read(buffer);
+                return await image.getBufferAsync(Jimp.MIME_PNG);
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // ==================== AUDIO METHODS ====================
+    
+    async toAudio(buffer) {
+        const inputPath = path.join(this.tempDir, `input_${Date.now()}.audio`);
+        const outputPath = path.join(this.tempDir, `output_${Date.now()}.mp3`);
+        
+        try {
+            await fs.writeFile(inputPath, buffer);
+            await new Promise((resolve, reject) => {
+                ffmpeg(inputPath)
+                    .noVideo()
+                    .audioCodec('libmp3lame')
+                    .audioBitrate(128)
+                    .toFormat('mp3')
+                    .on('end', resolve)
+                    .on('error', reject)
+                    .save(outputPath);
+            });
+            return await fs.readFile(outputPath);
+        } finally {
+            await fs.remove(inputPath).catch(() => {});
+            await fs.remove(outputPath).catch(() => {});
+        }
+    }
+
+    async toPTT(buffer) {
+        const inputPath = path.join(this.tempDir, `input_${Date.now()}.audio`);
+        const outputPath = path.join(this.tempDir, `output_${Date.now()}.ogg`);
+        
+        try {
+            await fs.writeFile(inputPath, buffer);
+            await new Promise((resolve, reject) => {
+                ffmpeg(inputPath)
+                    .noVideo()
+                    .audioCodec('libopus')
+                    .audioBitrate(24)
+                    .audioChannels(1)
+                    .audioFrequency(16000)
+                    .toFormat('ogg')
+                    .on('end', resolve)
+                    .on('error', reject)
+                    .save(outputPath);
+            });
+            return await fs.readFile(outputPath);
+        } finally {
+            await fs.remove(inputPath).catch(() => {});
+            await fs.remove(outputPath).catch(() => {});
+        }
+    }
+
+    async extractAudio(buffer) {
+        return await this.toAudio(buffer);
+    }
+
+    async changeSpeed(buffer, speed) {
+        const inputPath = path.join(this.tempDir, `input_${Date.now()}.audio`);
+        const outputPath = path.join(this.tempDir, `output_${Date.now()}.mp3`);
+        
+        try {
+            await fs.writeFile(inputPath, buffer);
+            await new Promise((resolve, reject) => {
+                ffmpeg(inputPath)
+                    .audioFilters(`atempo=${speed}`)
+                    .audioCodec('libmp3lame')
+                    .toFormat('mp3')
+                    .on('end', resolve)
+                    .on('error', reject)
+                    .save(outputPath);
+            });
+            return await fs.readFile(outputPath);
+        } finally {
+            await fs.remove(inputPath).catch(() => {});
+            await fs.remove(outputPath).catch(() => {});
+        }
+    }
+
+    async changeVolume(buffer, volume) {
+        const inputPath = path.join(this.tempDir, `input_${Date.now()}.audio`);
+        const outputPath = path.join(this.tempDir, `output_${Date.now()}.mp3`);
+        
+        try {
+            await fs.writeFile(inputPath, buffer);
+            await new Promise((resolve, reject) => {
+                ffmpeg(inputPath)
+                    .audioFilters(`volume=${volume}`)
+                    .audioCodec('libmp3lame')
+                    .toFormat('mp3')
+                    .on('end', resolve)
+                    .on('error', reject)
+                    .save(outputPath);
+            });
+            return await fs.readFile(outputPath);
+        } finally {
+            await fs.remove(inputPath).catch(() => {});
+            await fs.remove(outputPath).catch(() => {});
+        }
+    }
+
+    // ==================== IMAGE METHODS ====================
+    
+    async createCircle(buffer) {
+        try {
+            const image = await Jimp.read(buffer);
+            const size = Math.min(image.bitmap.width, image.bitmap.height);
+            const x = (image.bitmap.width - size) / 2;
+            const y = (image.bitmap.height - size) / 2;
+            
+            image.crop(x, y, size, size);
+            image.circle();
+            
+            return await image.getBufferAsync(Jimp.MIME_PNG);
+        } catch (error) {
+            // Fallback using sharp
+            try {
+                return await sharp(buffer)
+                    .resize(512, 512, { fit: 'cover' })
+                    .png()
+                    .toBuffer();
+            } catch (e) {
+                throw error;
+            }
+        }
+    }
+
+    async applyFilter(buffer, filter) {
+        let image = await Jimp.read(buffer);
+        
+        switch (filter) {
+            case 'greyscale':
+            case 'grayscale':
+                image.greyscale();
+                break;
+            case 'invert':
+                image.invert();
+                break;
+            case 'sepia':
+                image.sepia();
+                break;
+            case 'brighten':
+                image.brightness(0.3);
+                break;
+            case 'darken':
+                image.brightness(-0.3);
+                break;
+            case 'contrast':
+                image.contrast(0.3);
+                break;
+            case 'blur':
+                image.blur(5);
+                break;
+            case 'sharpen':
+                image.convolute([
+                    [0, -1, 0],
+                    [-1, 5, -1],
+                    [0, -1, 0]
+                ]);
+                break;
+            default:
+                image.greyscale();
+        }
+        
+        return await image.getBufferAsync(Jimp.MIME_PNG);
+    }
+
+    async removeBackground(buffer) {
+        try {
+            // Simple white/light background removal
+            const image = await Jimp.read(buffer);
+            
+            // Get color at top-left corner (assumed background)
+            const bgColor = image.getPixelColor(0, 0);
+            const { r, g, b } = Jimp.intToRGBA(bgColor);
+            
+            // Make similar colors transparent
+            image.scan(0, 0, image.bitmap.width, image.bitmap.height, (x, y, idx) => {
+                const pixelR = image.bitmap.data[idx];
+                const pixelG = image.bitmap.data[idx + 1];
+                const pixelB = image.bitmap.data[idx + 2];
+                
+                // If pixel is similar to background, make transparent
+                if (Math.abs(pixelR - r) < 30 && 
+                    Math.abs(pixelG - g) < 30 && 
+                    Math.abs(pixelB - b) < 30) {
+                    image.bitmap.data[idx + 3] = 0; // Alpha to 0
+                }
+            });
+            
+            return await image.getBufferAsync(Jimp.MIME_PNG);
+        } catch (error) {
+            throw new Error('Background removal failed');
+        }
+    }
+
+    // ==================== MEME METHODS ====================
+    
+    async createMeme(topText, bottomText, baseImageBuffer) {
+        const image = await Jimp.read(baseImageBuffer);
+        const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+        
+        // Draw top text
+        if (topText) {
+            const textWidth = Jimp.measureText(font, topText);
+            const x = (image.bitmap.width - textWidth) / 2;
+            image.print(font, x, 10, topText);
+        }
+        
+        // Draw bottom text
+        if (bottomText) {
+            const textWidth = Jimp.measureText(font, bottomText);
+            const x = (image.bitmap.width - textWidth) / 2;
+            image.print(font, x, image.bitmap.height - 50, bottomText);
+        }
+        
+        return await image.getBufferAsync(Jimp.MIME_JPEG);
+    }
+
+    // ==================== CLEANUP ====================
+    
+    async cleanup() {
+        try {
+            const files = await fs.readdir(this.tempDir);
+            let deleted = 0;
+            let freed = 0;
+            
+            for (const file of files) {
+                const filePath = path.join(this.tempDir, file);
+                const stats = await fs.stat(filePath);
+                freed += stats.size;
+                await fs.remove(filePath);
+                deleted++;
+            }
+            
+            return { deleted, freed };
+        } catch (error) {
+            return { deleted: 0, freed: 0 };
+        }
+    }
+}
+
+module.exports = MediaProcessor;

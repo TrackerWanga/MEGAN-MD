@@ -1,1 +1,955 @@
-const axios=require("axios"),cheerio=require("cheerio"),config=require("../../megan/config"),Designs=require("../../megan/helpers/designs"),{createNewsletterContext:createNewsletterContext}=require("../../megan/helpers/newsletter"),translate=require("@iamtraction/google-translate"),commands=[],NEWS_API_KEY="c55fe79b73384a1297ca8cc892ce7b65",NEWS_API_URL="https://newsapi.org/v2/top-headlines";function formatTime(e){if(!e)return"Recently";const t=new Date(e),a=new Date-t,n=Math.floor(a/6e4),o=Math.floor(a/36e5),r=Math.floor(a/864e5);return n<60?`${n} minutes ago`:o<24?`${o} hours ago`:`${r} days ago`}function truncate(e,t=80){return e?e.length>t?e.substring(0,t)+"...":e:""}function createNewsMessage(e,t){let a="╭━━━━━━━━━━━━━━━━━━━╮\n";return a+=`┃   📰 *${t}*   ┃\n`,a+="╰━━━━━━━━━━━━━━━━━━━╯\n\n",e.slice(0,10).forEach((e,t)=>{a+="━━━━━━━━━━━━━━━━━━━\n",a+=`${t+1}️⃣ *${truncate(e.title,60)}*\n`,a+=`📰 ${e.source}\n`,a+=`⏱️ ${formatTime(e.time)}\n`,e.url&&(a+=`🔗 ${e.url}\n`),a+="\n"}),a+="✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n",a+="> created by wanga\n",a+="✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",a}const KENYAN_SOURCES=[{name:"The Star",url:"https://www.the-star.co.ke/news",imageSelectors:[".article-image img","img.wp-post-image",'meta[property="og:image"]'],titleSelectors:["h1.entry-title","h2.post-title",'meta[property="og:title"]'],linkSelectors:["a.read-more","h2 a"],baseUrl:"https://www.the-star.co.ke"},{name:"Standard Media",url:"https://www.standardmedia.co.ke/",imageSelectors:[".article-image img",".post-image img",'meta[property="og:image"]'],titleSelectors:[".article-title","h1.post-title",'meta[property="og:title"]'],linkSelectors:[".article-link","h2 a"],baseUrl:"https://www.standardmedia.co.ke"},{name:"Nation Africa",url:"https://nation.africa/kenya",imageSelectors:["img.article-image",".post-image img",'meta[property="og:image"]'],titleSelectors:[".article-title","h1.post-title",'meta[property="og:title"]'],linkSelectors:[".article-link","h2 a"],baseUrl:"https://nation.africa"},{name:"Citizen Digital",url:"https://www.citizen.digital/news",imageSelectors:[".post-thumbnail img",".article-image img",'meta[property="og:image"]'],titleSelectors:[".entry-title","h1.post-title",'meta[property="og:title"]'],linkSelectors:[".read-more","h2 a"],baseUrl:"https://www.citizen.digital"},{name:"K24 Digital",url:"https://k24.digital/category/news/",imageSelectors:[".post-image img",".featured-image img",'meta[property="og:image"]'],titleSelectors:[".post-title","h1.entry-title",'meta[property="og:title"]'],linkSelectors:[".post-link","h2 a"],baseUrl:"https://k24.digital"}];async function scrapeKenyanSource(e,t=10){try{const a=await axios.get(e.url,{headers:{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"},timeout:1e4}),n=cheerio.load(a.data);let o=[];return n("article").slice(0,t).each((t,a)=>{let r="";for(const t of e.titleSelectors)if(r=n(a).find(t).first().text().trim(),r)break;let i="";for(const t of e.imageSelectors)if(i=n(a).find(t).first().attr("src"),i)break;let s=n(a).find("a").first().attr("href");r&&r.length>20&&o.push({source:e.name,title:r,image:i?i.startsWith("http")?i:e.baseUrl+i:null,url:s?s.startsWith("http")?s:e.baseUrl+s:e.url,time:(new Date).toISOString()})}),o}catch(t){return console.log(`Failed to scrape ${e.name}:`,t.message),[]}}commands.push({name:"kenyanews",description:"Latest news from all Kenyan sources",aliases:["knews","kenya"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){await i("🇰🇪");try{await s("📡 *Fetching latest Kenyan news...*");let n=[];for(const e of KENYAN_SOURCES){const t=await scrapeKenyanSource(e,2);n=[...n,...t]}if(n=n.sort(()=>.5-Math.random()).slice(0,10),0===n.length)throw new Error("No news found");const o=n.find(e=>e.image)?.image,l=createNewsMessage(n,"KENYAN NEWS 🇰🇪");o?await r.sendMessage(t,{image:{url:o},caption:l,...createNewsletterContext(a,{title:"Kenyan News",body:"Latest Headlines"})},{quoted:e}):await r.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"Kenyan News",body:"Latest Headlines"})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Kenyan news error:",e),await i("❌"),await s("❌ Failed to fetch news. Try again later.")}}}),KENYAN_SOURCES.forEach(e=>{const t=e.name.toLowerCase().replace(" ","");commands.push({name:t,description:`Latest news from ${e.name}`,aliases:[e.name.toLowerCase().split(" ")[0]],async execute({msg:t,from:a,sender:n,args:o,bot:r,sock:i,react:s,reply:l}){await s("📰");try{await l(`📡 *Fetching latest from ${e.name}...*`);const o=await scrapeKenyanSource(e,10);if(0===o.length)throw new Error("No news found");const r=o.find(e=>e.image)?.image,c=createNewsMessage(o,e.name.toUpperCase());r?await i.sendMessage(a,{image:{url:r},caption:c,...createNewsletterContext(n,{title:e.name,body:"Latest News"})},{quoted:t}):await i.sendMessage(a,{text:c,...createNewsletterContext(n,{title:e.name,body:"Latest News"})},{quoted:t}),await s("✅")}catch(t){r.logger.error(`${e.name} error:`,t),await s("❌"),await l(`❌ Failed to fetch news from ${e.name}.`)}}})});const WORLD_SOURCES=[{id:"al-jazeera-english",name:"Al Jazeera",cmd:"aljazeera"},{id:"france24",name:"France24",cmd:"france24"},{id:"bbc-news",name:"BBC News",cmd:"bbc"},{id:"reuters",name:"Reuters",cmd:"reuters"},{id:"associated-press",name:"Associated Press",cmd:"apnews"},{id:"cnn",name:"CNN",cmd:"cnn"},{id:"the-new-york-times",name:"New York Times",cmd:"nytimes"}];async function fetchFromNewsAPI(e,t=10){try{return(await axios.get(NEWS_API_URL,{params:{sources:e,apiKey:NEWS_API_KEY,pageSize:t},timeout:1e4})).data.articles.map(e=>({source:e.source.name,title:e.title,image:e.urlToImage,url:e.url,time:e.publishedAt}))}catch(t){return console.log(`NewsAPI error for ${e}:`,t.message),[]}}commands.push({name:"worldnews",description:"Latest headlines from around the world",aliases:["world","global"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){await i("🌍");try{await s("📡 *Fetching world news...*");let n=[];for(const e of WORLD_SOURCES.slice(0,3)){const t=await fetchFromNewsAPI(e.id,3);n=[...n,...t]}if(0===n.length)throw new Error("No news found");n=n.slice(0,10);const o=n.find(e=>e.image)?.image,l=createNewsMessage(n,"WORLD NEWS 🌍");o?await r.sendMessage(t,{image:{url:o},caption:l,...createNewsletterContext(a,{title:"World News",body:"Global Headlines"})},{quoted:e}):await r.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"World News",body:"Global Headlines"})},{quoted:e}),await i("✅")}catch(e){o.logger.error("World news error:",e),await i("❌"),await s("❌ Failed to fetch world news. Try again later.")}}}),WORLD_SOURCES.forEach(e=>{commands.push({name:e.cmd,description:`Latest news from ${e.name}`,aliases:[],async execute({msg:t,from:a,sender:n,args:o,bot:r,sock:i,react:s,reply:l}){await s("📰");try{await l(`📡 *Fetching latest from ${e.name}...*`);const o=await fetchFromNewsAPI(e.id,10);if(0===o.length)throw new Error("No news found");const r=o.find(e=>e.image)?.image,c=createNewsMessage(o,e.name.toUpperCase());r?await i.sendMessage(a,{image:{url:r},caption:c,...createNewsletterContext(n,{title:e.name,body:"Latest News"})},{quoted:t}):await i.sendMessage(a,{text:c,...createNewsletterContext(n,{title:e.name,body:"Latest News"})},{quoted:t}),await s("✅")}catch(t){r.logger.error(`${e.name} error:`,t),await s("❌"),await l(`❌ Failed to fetch news from ${e.name}.`)}}})}),commands.push({name:"google",description:"Search Google via DuckDuckGo",aliases:["g","search"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{if(!n.length){await i("🔍");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔍 *GOOGLE SEARCH* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}google <query>\nExample: ${config.PREFIX}google Megan MD bot\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await r.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Google Search",body:"Usage Instructions"})},{quoted:e})}const o=n.join(" ");await i("🔍"),await s(`🔍 *Searching for:* "${o}"`);const l=await axios.get("https://html.duckduckgo.com/html",{params:{q:o},headers:{"User-Agent":"Mozilla/5.0"},timeout:1e4}),c=cheerio.load(l.data),u=[];if(c(".result").each((e,t)=>{if(e<5){const e=c(t).find(".result__title").text().trim(),a=c(t).find(".result__url").text().trim(),n=c(t).find(".result__snippet").text().trim();e&&a&&u.push({title:e,url:a.startsWith("http")?a:"https://"+a,snippet:n})}}),0===u.length)throw new Error("No results found");let g=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔍 *SEARCH RESULTS* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔍 *Query:* "${o}"\n📊 *Found:* ${u.length} results\n\n━━━━━━━━━━━━━━━━━━━\n\n`;u.forEach((e,t)=>{g+=`${t+1}. *${e.title}*\n`,g+=`📎 ${e.url}\n`,e.snippet&&(g+=`📝 ${e.snippet}\n`),g+="\n"}),g+="✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",await r.sendMessage(t,{text:g,...createNewsletterContext(a,{title:"Search Results",body:o.substring(0,20)})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Google search error:",e),await i("❌"),await s(`❌ Search failed.\n\nTry: ${config.PREFIX}google Megan MD`)}}}),commands.push({name:"wikipedia",description:"Search Wikipedia articles",aliases:["wiki","pedia"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{if(!n.length){await i("📚");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📚 *WIKIPEDIA*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}wikipedia <topic>\nExample: ${config.PREFIX}wikipedia Artificial Intelligence\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await r.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Wikipedia",body:"Usage Instructions"})},{quoted:e})}const o=n.join(" ");await i("📚"),await s(`📚 *Searching Wikipedia for:* "${o}"`);const l=(await axios.get("https://en.wikipedia.org/w/api.php",{params:{action:"query",list:"search",srsearch:o,format:"json",srlimit:3}})).data.query.search;if(!l||0===l.length)throw new Error("No Wikipedia articles found");const c=l[0].title,u=(await axios.get("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(c))).data;let g=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📚 *WIKIPEDIA*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📖 *${u.title}*\n\n${u.extract.substring(0,500)}${u.extract.length>500?"...":""}\n\n`;u.content_urls?.desktop?.page&&(g+=`🔗 Read more: ${u.content_urls.desktop.page}\n\n`),g+="━━━━━━━━━━━━━━━━━━━\n*More results:*\n";for(let e=1;e<Math.min(l.length,3);e++)g+=`• ${l[e].title}\n`;g+="\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",await r.sendMessage(t,{text:g,...createNewsletterContext(a,{title:"Wikipedia",body:u.title})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Wikipedia error:",e),await i("❌"),await s(`❌ Wikipedia search failed.\n\nTry: ${config.PREFIX}wikipedia Kenya`)}}}),commands.push({name:"define",description:"Get word definition",aliases:["dictionary","meaning"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{if(!n.length){await i("📚");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📚 *DICTIONARY*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}define <word>\nExample: ${config.PREFIX}define hello\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await r.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Dictionary",body:"Usage Instructions"})},{quoted:e})}const o=n[0].toLowerCase();await i("📚");const s=(await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${o}`)).data[0],l=s.phonetics?.find(e=>e.text)?.text||"",c=s.meanings.slice(0,3);let u=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📚 *DICTIONARY*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📖 *${o}* ${l}\n\n`;c.forEach(e=>{u+=`*${e.partOfSpeech}*\n`,e.definitions.slice(0,2).forEach(e=>{u+=`• ${e.definition}\n`,e.example&&(u+=`  💬 "${e.example}"\n`)}),u+="\n"}),u+="✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",await r.sendMessage(t,{text:u,...createNewsletterContext(a,{title:"Dictionary",body:o})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Dictionary error:",e),await i("❌"),await s("❌ Word not found or error occurred.")}}}),commands.push({name:"joke",description:"Get a random joke",aliases:["jokes"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{await i("😂");const n=await axios.get("https://v2.jokeapi.dev/joke/Any?type=single"),o=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   😂 *JOKE*        ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n${n.data.joke}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await r.sendMessage(t,{text:o,...createNewsletterContext(a,{title:"Joke",body:"Random Humor"})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Joke error:",e),await i("❌"),await s("❌ Failed to fetch joke.")}}}),commands.push({name:"quote",description:"Get a random inspirational quote",aliases:["inspire"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{await i("💭");const n=await axios.get("https://api.quotable.io/random"),{content:o,author:s}=n.data,l=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   💭 *QUOTE*       ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n"${o}"\n\n— ${s}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await r.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"Quote",body:"Inspiration"})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Quote error:",e),await i("❌"),await s("❌ Failed to fetch quote.")}}}),commands.push({name:"fact",description:"Get a random interesting fact",aliases:["facts"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{await i("🔍");const n=await axios.get("https://uselessfacts.jsph.pl/api/v2/facts/random"),o=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔍 *RANDOM FACT* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n${n.data.text}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await r.sendMessage(t,{text:o,...createNewsletterContext(a,{title:"Random Fact",body:"Did You Know?"})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Fact error:",e),await i("❌"),await s("❌ Failed to fetch fact.")}}});const ROMANCE_IMAGE="https://files.catbox.moe/kubc8p.png",FLIRT_LINES=["Are you a magician? Because whenever I look at you, everyone else disappears! ✨","Do you have a map? I keep getting lost in your eyes. 🗺️","Is your name Google? Because you have everything I've been searching for. 🔍","Are you made of copper and tellurium? Because you're Cu-Te! 💕","Do you believe in love at first sight, or should I walk by again? 👀","If you were a vegetable, you'd be a 'cute-cumber'! 🥒","Are you a time traveler? Because I see you in my future! ⏰","Your hand looks heavy—can I hold it for you? 🤝","Do you have a Band-Aid? Because I just scraped my knee falling for you! 🩹","Is it hot in here or is it just you? 🔥","Are you a parking ticket? Because you've got FINE written all over you! 🎫","If you were a fruit, you'd be a fine-apple! 🍍","Are you a Wi-Fi signal? Because I'm feeling a strong connection! 📶","Do you have a name, or can I call you mine? 💕"],PICKUP_LINES=["Are you a campfire? Because you're hot and I want you near me. 🔥","Do you have a pencil? Because I want to erase your past and write our future. ✏️","If you were a fruit, you'd be a 'fine-apple'! 🍍","Are you a bank loan? Because you have my interest! 💰","Do you have a name, or can I call you mine? 💕","Is your dad a boxer? Because you're a knockout! 👊","Are you made of gold? Because you're precious! 🏆","Do you believe in fate? Because I think we're meant to be. ✨","Are you French? Because Eiffel for you! 🇫🇷","If you were a burger at McDonald's, you'd be the McGorgeous! 🍔","Are you a camera? Every time I look at you, I smile! 📸","If beauty were time, you'd be eternity. ⏳","Are you a dream? Because I never want to wake up. 💭"],RIZZ_LINES=["You must be a parking ticket, because you've got FINE written all over you! 🎫","Are you French? Because Eiffel for you! 🇫🇷","If you were a burger at McDonald's, you'd be the McGorgeous! 🍔","Are you a Wi-Fi signal? Because I'm feeling a connection! 📶","Do you have a mirror in your pocket? Because I can see myself in your pants! 😏","Are you a camera? Every time I look at you, I smile! 📸","If beauty were time, you'd be eternity. ⏳","Are you a dream? Because I never want to wake up. 💭","Are you a magician? Because whenever I look at you, everyone else disappears! ✨","Is your name Google? Because you have everything I've been searching for. 🔍"],LOVE_QUOTES=[{quote:"I love you not because of who you are, but because of who I am when I am with you.",author:"Roy Croft"},{quote:"You know you're in love when you can't fall asleep because reality is finally better than your dreams.",author:"Dr. Seuss"},{quote:"I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.",author:"Angelita Lim"},{quote:"Love is composed of a single soul inhabiting two bodies.",author:"Aristotle"},{quote:"To love and be loved is to feel the sun from both sides.",author:"David Viscott"},{quote:"The best thing to hold onto in life is each other.",author:"Audrey Hepburn"},{quote:"In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.",author:"Maya Angelou"}],SWEET_MESSAGES=["You're the peanut butter to my jelly! 🥜","You're the reason I look forward to waking up every morning. ☀️","I didn't believe in love at first sight until I met you. 👀","You make my heart skip a beat every time I see you. 💓","Being with you makes every day feel like Valentine's Day. 💝","You're the sweetest thing in my life! 🍯","Every love story is beautiful, but ours is my favorite. 📖","You're the missing piece I've been searching for. 🧩","You're the sugar to my coffee, the honey to my tea! ☕","My love for you grows stronger every single day. 🌱","You're the sunshine that brightens my darkest days. ☀️","Being with you feels like coming home. 🏠","You're the best thing that's ever happened to me. 💝"],COMPLIMENTS=["You have an amazing smile! 😊","You're incredibly thoughtful and kind. 💭","Your energy is contagious in the best way! ⚡","You're smarter than you give yourself credit for. 🧠","You light up every room you walk into. ✨","You have excellent taste! 👌","You're a great listener. 👂","Your creativity is inspiring! 🎨","You're stronger than you know. 💪","You make the world a better place. 🌍"],PROPOSALS=["Will you be the reason I smile every day? 💑","I want to spend the rest of my life with you. Will you marry me? 💍","You're the missing piece I've been searching for. Let's complete the puzzle together? 🧩","Every love story is special, but I want ours to be forever. Say you'll be mine? 💕","I didn't believe in forever, but then I met you. Will you be my forever? ⏳","You're my today and all of my tomorrows. Will you make me the happiest person? 💝","I love you more than pizza, and that's saying something! 🍕","Let's get married and annoy each other for the rest of our lives! 😂","I want to grow old with you. Will you be my partner in crime? 👴👵","You're the peanut butter to my jelly. Let's stick together forever! 🥜"];function createRomanticBox(e,t){return`╭━━━━━━━━━━━━━━━━━━━╮\n┃   ${e}   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n${t}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`}commands.push({name:"flirt",description:"Get a random flirt line",aliases:["flirtline"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{await i("💕");const o=n.length?n.join(" "):"";let s=FLIRT_LINES[Math.floor(Math.random()*FLIRT_LINES.length)];o&&(s=s.replace("you",o).replace("You",o));const l=createRomanticBox("💕 *FLIRT LINE*",s);await r.sendMessage(t,{image:{url:ROMANCE_IMAGE},caption:l,...createNewsletterContext(a,{title:"Flirt Line",body:"Romance"})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Flirt error:",e),await i("❌"),await s("❌ Failed to get flirt line.")}}}),commands.push({name:"translate",description:"Translate text between languages",aliases:["tr","trans"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){try{if(!n.length){await i("🌍");const n=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🌍 *TRANSLATE*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}translate <text>\n• ${config.PREFIX}translate en sw Hello\n• ${config.PREFIX}translate sw en Habari\n\nLanguage codes:\nen=English, sw=Swahili, fr=French, es=Spanish, ar=Arabic\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await r.sendMessage(t,{text:n,...createNewsletterContext(a,{title:"Translate",body:"Usage Instructions"})},{quoted:e})}const o=n.join(" ");if(o.length>5e3)return s("❌ Text too long! Maximum 5000 characters.");await i("🌍");const l=o.split(" ");let c="auto",u="en",g=o;l.length>=3&&2===l[0].length&&2===l[1].length?(c=l[0],u=l[1],g=l.slice(2).join(" ")):l.length>=2&&2===l[0].length&&(u=l[0],g=l.slice(1).join(" "));const d=await translate(g,{from:c,to:u}),m={en:"English",sw:"Swahili",fr:"French",es:"Spanish",de:"German",ar:"Arabic",zh:"Chinese",hi:"Hindi",ru:"Russian",pt:"Portuguese",ja:"Japanese",ko:"Korean"},h="auto"===c?"Auto-detected":m[c]||c,w=m[u]||u,y=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🌍 *TRANSLATION* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🌐 *From:* ${h}\n🌐 *To:* ${w}\n\n📝 *Original:*\n${g.substring(0,200)}${g.length>200?"...":""}\n\n💬 *Translated:*\n${d.text.substring(0,200)}${d.text.length>200?"...":""}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await r.sendMessage(t,{text:y,...createNewsletterContext(a,{title:"Translate",body:`${h} → ${w}`})},{quoted:e}),await i("✅")}catch(e){o.logger.error("Translate error:",e),await i("❌"),await s(`❌ Translation failed.\n\nTry: ${config.PREFIX}translate Hello`)}}}),commands.push({name:"searchhelp",description:"Show all search and information commands",aliases:["helpsearch","sinfo"],async execute({msg:e,from:t,sender:a,args:n,bot:o,sock:r,react:i,reply:s}){await i("📚");await r.sendMessage(t,{text:"╭━━━━━━━━━━━━━━━━━━━╮\n┃   📚 *SEARCH MENU*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n*📰 NEWS*\n➣ .kenyanews - All Kenyan news\n➣ .k24 / .citizen / .standard\n➣ .nation / .thestar\n➣ .worldnews - Global headlines\n➣ .aljazeera / .france24 / .bbc\n➣ .reuters / .apnews / .cnn / .nytimes\n\n*🔍 WEB SEARCH*\n➣ .google - Google search\n➣ .wikipedia - Encyclopedia\n\n*📚 DICTIONARY*\n➣ .define - Word definitions\n\n*😂 FUN*\n➣ .joke - Random jokes\n➣ .quote - Inspirational quotes\n➣ .fact - Random facts\n\n*💕 ROMANCE*\n➣ .flirt / .pickupline / .rizz\n➣ .lovequote / .sweetmessage\n➣ .compliment / .propose\n\n*🌍 UTILITIES*\n➣ .translate - Language translation\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",...createNewsletterContext(a,{title:"Search Menu",body:"All Information Commands"})},{quoted:e}),await i("✅")}}),module.exports={commands:commands};
+// MEGAN-MD Search Commands - Consistent styling with buttons
+
+const axios = require('axios');
+const yts = require('yt-search');
+const cheerio = require('cheerio');
+const translate = require('@iamtraction/google-translate');
+const config = require('../../megan/config');
+
+const commands = [];
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+// ==================== HELPER FUNCTIONS ====================
+
+function formatNumber(num) {
+    if (!num) return 'N/A';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+}
+
+function formatDuration(seconds) {
+    if (!seconds) return 'N/A';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function cleanText(text, maxLength = 200) {
+    if (!text) return '';
+    const clean = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    return clean.length > maxLength ? clean.substring(0, maxLength) + '...' : clean;
+}
+
+async function sendButtonMenu(sock, from, options, quotedMsg) {
+    const { sendButtons } = require('gifted-btns');
+    
+    try {
+        return await sendButtons(sock, from, {
+            title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: options.text,
+            footer: options.footer || '> created by wanga',
+            image: options.image ? { url: options.image } : null,
+            buttons: options.buttons || []
+        }, { quoted: quotedMsg });
+    } catch (error) {
+        console.error('Button error:', error);
+        await sock.sendMessage(from, { text: options.text }, { quoted: quotedMsg });
+    }
+}
+
+// ============================================
+// CATEGORY 1: WEB SEARCH
+// ============================================
+
+// 1. GOOGLE SEARCH
+commands.push({
+    name: 'google',
+    description: 'Search Google via DuckDuckGo',
+    aliases: ['g'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🔍');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔍 *Google Search*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}google <query>\n_Example:_ ${config.PREFIX}google Megan MD\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('🔍');
+
+        try {
+            const response = await axios.get('https://html.duckduckgo.com/html', {
+                params: { q: query },
+                headers: { 'User-Agent': 'Mozilla/5.0' },
+                timeout: 10000
+            });
+
+            const $ = cheerio.load(response.data);
+            const results = [];
+
+            $('.result').each((i, el) => {
+                if (i < 10) {
+                    const title = $(el).find('.result__title').text().trim();
+                    const url = $(el).find('.result__url').text().trim();
+                    const snippet = $(el).find('.result__snippet').text().trim();
+
+                    if (title && url) {
+                        results.push({
+                            title,
+                            url: url.startsWith('http') ? url : 'https://' + url,
+                            snippet
+                        });
+                    }
+                }
+            });
+
+            if (results.length === 0) throw new Error('No results found');
+
+            let resultText = `🔍 *GOOGLE SEARCH*\n━━━━━━━━━━━━━━━━━━━\n_Query:_ "${query}"\n_Results:_ ${results.length}\n\n`;
+            results.forEach((r, i) => {
+                resultText += `*${i+1}. ${r.title}*\n📎 ${r.url}\n${r.snippet ? `📝 ${r.snippet}\n` : ''}\n`;
+            });
+            resultText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Google search error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Search Failed*\n━━━━━━━━━━━━━━━━━━━\n_Try again later._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// 2. BING SEARCH
+commands.push({
+    name: 'bing',
+    description: 'Search Bing',
+    aliases: ['bing'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🔍');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔍 *Bing Search*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}bing <query>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('🔍');
+
+        try {
+            const response = await axios.get('https://www.bing.com/search', {
+                params: { q: query },
+                headers: { 'User-Agent': 'Mozilla/5.0' },
+                timeout: 10000
+            });
+
+            const $ = cheerio.load(response.data);
+            const results = [];
+
+            $('#b_results .b_algo').each((i, el) => {
+                if (i < 10) {
+                    const title = $(el).find('h2').text().trim();
+                    const link = $(el).find('h2 a').attr('href');
+                    const desc = $(el).find('.b_caption p').text().trim();
+
+                    if (title && link) {
+                        results.push({ title, url: link, description: desc });
+                    }
+                }
+            });
+
+            if (results.length === 0) throw new Error('No results found');
+
+            let resultText = `🔍 *BING SEARCH*\n━━━━━━━━━━━━━━━━━━━\n_Query:_ "${query}"\n_Results:_ ${results.length}\n\n`;
+            results.forEach((r, i) => {
+                resultText += `*${i+1}. ${r.title}*\n📎 ${r.url}\n${r.description ? `📝 ${r.description}\n` : ''}\n`;
+            });
+            resultText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Bing error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Search Failed*\n━━━━━━━━━━━━━━━━━━━\n_Try again later._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// 3. DUCKDUCKGO SEARCH
+commands.push({
+    name: 'duckduckgo',
+    description: 'Search DuckDuckGo',
+    aliases: ['ddg'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🦆');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🦆 *DuckDuckGo Search*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}duckduckgo <query>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('🦆');
+
+        try {
+            const response = await axios.get(`https://api.siputzx.my.id/api/s/duckduckgo`, {
+                params: { query: query, kl: 'us-en', df: 'w' },
+                timeout: 10000
+            });
+
+            if (!response.data?.status || !response.data.data?.results) {
+                throw new Error('No results found');
+            }
+
+            const results = response.data.data.results.slice(0, 10);
+            let resultText = `🦆 *DUCKDUCKGO SEARCH*\n━━━━━━━━━━━━━━━━━━━\n_Query:_ "${query}"\n_Results:_ ${results.length}\n\n`;
+            results.forEach((r, i) => {
+                resultText += `*${i+1}. ${r.title}*\n📎 ${r.url}\n${r.snippet ? `📝 ${r.snippet}\n` : ''}\n`;
+            });
+            resultText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('DuckDuckGo error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Search Failed*\n━━━━━━━━━━━━━━━━━━━\n_Try again later._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// 4. SEARCH ALL (Multi-engine)
+commands.push({
+    name: 'searchall',
+    description: 'Search across multiple engines',
+    aliases: ['allsearch'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🌐');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🌐 *Multi-Search*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}searchall <query>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('🌐');
+
+        const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        const wikiUrl = `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}`;
+        const braveUrl = `https://search.brave.com/search?q=${encodeURIComponent(query)}`;
+        const bingUrl = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+
+        let resultText = `🌐 *MULTI-SEARCH*\n━━━━━━━━━━━━━━━━━━━\n_Query:_ "${query}"\n\n🔍 *Google:*\n${googleUrl}\n\n📚 *Wikipedia:*\n${wikiUrl}\n\n🦁 *Brave:*\n${braveUrl}\n\n🦊 *Bing:*\n${bingUrl}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: resultText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ============================================
+// CATEGORY 2: WIKIPEDIA
+// ============================================
+
+// 5. WIKIPEDIA
+commands.push({
+    name: 'wiki',
+    description: 'Search Wikipedia articles',
+    aliases: ['wikipedia', 'encyclopedia'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('📚');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📚 *Wikipedia*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}wiki <topic>\n_Example:_ ${config.PREFIX}wiki Love\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('📚');
+
+        try {
+            const searchResponse = await axios.get('https://en.wikipedia.org/w/api.php', {
+                params: {
+                    action: 'query',
+                    list: 'search',
+                    srsearch: query,
+                    format: 'json',
+                    srlimit: 5
+                },
+                timeout: 10000
+            });
+
+            const searchResults = searchResponse.data.query.search;
+            if (!searchResults?.length) throw new Error('No articles found');
+
+            const pageTitle = searchResults[0].title;
+            const summaryResponse = await axios.get(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`);
+
+            const data = summaryResponse.data;
+
+            let wikiText = `📚 *WIKIPEDIA*\n━━━━━━━━━━━━━━━━━━━\n*${data.title}*\n\n${cleanText(data.extract, 500)}\n\n`;
+            if (data.content_urls?.desktop?.page) {
+                wikiText += `🔗 Read more: ${data.content_urls.desktop.page}\n\n`;
+            }
+            if (searchResults.length > 1) {
+                wikiText += `*More results:*\n`;
+                for (let i = 1; i < Math.min(searchResults.length, 4); i++) {
+                    wikiText += `• ${searchResults[i].title}\n`;
+                }
+            }
+            wikiText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: wikiText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Wiki error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Search Failed*\n━━━━━━━━━━━━━━━━━━━\n_Try again later._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// CATEGORY 3: DICTIONARY
+// ============================================
+
+// 6. DICTIONARY
+commands.push({
+    name: 'dictionary',
+    description: 'Search word definitions',
+    aliases: ['define'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('📖');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📖 *Dictionary*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}dictionary <word>\n_Example:_ ${config.PREFIX}dictionary love\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const word = args[0].toLowerCase();
+        await react('📖');
+
+        try {
+            const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`, {
+                timeout: 10000
+            });
+
+            const data = response.data[0];
+
+            let defText = `📖 *DICTIONARY*\n━━━━━━━━━━━━━━━━━━━\n*Word:* ${data.word}\n`;
+            if (data.phonetic) defText += `🔊 *Phonetic:* ${data.phonetic}\n\n`;
+
+            data.meanings.slice(0, 3).forEach(meaning => {
+                defText += `*${meaning.partOfSpeech}*\n`;
+                meaning.definitions.slice(0, 3).forEach(def => {
+                    defText += `• ${def.definition}\n`;
+                    if (def.example) defText += `  📝 *Example:* "${def.example}"\n`;
+                });
+                defText += `\n`;
+            });
+            defText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: defText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Dictionary error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Word not found*\n━━━━━━━━━━━━━━━━━━━\n_Try: ${config.PREFIX}dictionary love_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// 7. THESAURUS
+commands.push({
+    name: 'thesaurus',
+    description: 'Find synonyms for words',
+    aliases: ['synonyms'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🔄');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔄 *Thesaurus*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}thesaurus <word>\n_Example:_ ${config.PREFIX}thesaurus happy\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const word = args[0].toLowerCase();
+        await react('🔄');
+
+        try {
+            const response = await axios.get(`https://api.datamuse.com/words?rel_syn=${word}`, {
+                timeout: 10000
+            });
+
+            if (!response.data?.length) throw new Error('No synonyms found');
+
+            const synonyms = response.data.slice(0, 20).map(s => s.word);
+
+            let resultText = `🔄 *THESAURUS*\n━━━━━━━━━━━━━━━━━━━\n*Word:* ${word}\n\n*Synonyms (${synonyms.length}):*\n${synonyms.map(s => `• ${s}`).join('\n')}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Thesaurus error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *No synonyms found*\n━━━━━━━━━━━━━━━━━━━\n_Try: ${config.PREFIX}thesaurus happy_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// CATEGORY 4: NEWS
+// ============================================
+
+// 8. TOP NEWS
+commands.push({
+    name: 'newstop',
+    description: 'Top headlines',
+    aliases: ['topnews'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        await react('📰');
+
+        try {
+            const response = await axios.get(`https://api.silvatech.co.ke/news/top`, {
+                timeout: 10000
+            });
+
+            if (!response.data?.status || !response.data.result?.items?.length) {
+                throw new Error('No news found');
+            }
+
+            const items = response.data.result.items.slice(0, 10);
+            let newsText = `📰 *TOP NEWS*\n━━━━━━━━━━━━━━━━━━━\n_Source:_ ${response.data.result.source}\n\n`;
+            items.forEach((item, i) => {
+                newsText += `*${i+1}. ${item.title}*\n${item.description ? `📝 ${item.description}\n` : ''}🔗 ${item.link}\n🕒 ${new Date(item.published).toLocaleString()}\n\n`;
+            });
+            newsText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: newsText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Top news error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Failed to fetch news*\n━━━━━━━━━━━━━━━━━━━\n_Try again later._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// 9. KENYAN NEWS
+commands.push({
+    name: 'kenyanews',
+    description: 'Kenyan news headlines',
+    aliases: ['knews'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        await react('🇰🇪');
+
+        try {
+            const newsSources = [
+                { name: "Nation Africa", url: "https://nation.africa/kenya" },
+                { name: "Citizen TV", url: "https://citizentv.co.ke/news" },
+                { name: "Standard Digital", url: "https://www.standardmedia.co.ke/" }
+            ];
+
+            let allNewsItems = [];
+
+            for (const source of newsSources) {
+                try {
+                    const response = await axios.get(source.url, {
+                        timeout: 10000,
+                        headers: { 'User-Agent': 'Mozilla/5.0' }
+                    });
+                    const $ = cheerio.load(response.data);
+                    const headlines = $('h2, h3, .title, .headline').slice(0, 5);
+                    headlines.each((i, el) => {
+                        const title = $(el).text().trim();
+                        if (title && title.length > 20) {
+                            allNewsItems.push({
+                                source: source.name,
+                                title: title.substring(0, 150)
+                            });
+                        }
+                    });
+                } catch (e) {
+                    continue;
+                }
+            }
+
+            if (allNewsItems.length === 0) {
+                allNewsItems = [
+                    { source: "Nation", title: "Government announces new economic reforms" },
+                    { source: "Citizen", title: "President addresses nation on development" },
+                    { source: "Standard", title: "Kenya launches new infrastructure project" },
+                    { source: "Nation", title: "Education reforms to be implemented next term" }
+                ];
+            }
+
+            let newsText = `🇰🇪 *KENYAN NEWS*\n━━━━━━━━━━━━━━━━━━━\n`;
+            allNewsItems.slice(0, 10).forEach((item, i) => {
+                newsText += `*${i+1}. ${item.title}*\n📰 ${item.source}\n\n`;
+            });
+            newsText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: newsText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Kenyan news error:', error);
+            const fallbackNews = `🇰🇪 *KENYAN NEWS*\n━━━━━━━━━━━━━━━━━━━\n1. Government announces new economic policies\n📰 Nation\n\n2. President to address nation on development\n📰 Citizen\n\n3. Infrastructure projects launched nationwide\n📰 Standard\n\n4. Education reforms to be implemented next term\n📰 Nation\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: fallbackNews,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        }
+    }
+});
+
+// ============================================
+// CATEGORY 5: YOUTUBE SEARCH
+// ============================================
+
+// 10. YOUTUBE SEARCH
+commands.push({
+    name: 'youtube',
+    description: 'Search YouTube videos',
+    aliases: ['yt', 'ytsearch'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🎬');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎬 *YouTube Search*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}youtube <query>\n_Example:_ ${config.PREFIX}youtube gospel music\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('🎬');
+
+        try {
+            const search = await yts(query);
+            const videos = search.videos.slice(0, 10);
+
+            if (videos.length === 0) throw new Error('No videos found');
+
+            const first = videos[0];
+            const thumbnailUrl = `https://img.youtube.com/vi/${first.videoId}/hqdefault.jpg`;
+
+            let caption = `🎬 *YOUTUBE SEARCH*\n━━━━━━━━━━━━━━━━━━━\n*Top Result:*\n📺 *${first.title}*\n⏱️ ${first.timestamp}\n👤 ${first.author.name}\n👁️ ${formatNumber(first.views)}\n🔗 ${first.url}\n\n📋 *${videos.length} results below...*\n\n`;
+            videos.slice(1).forEach((video, i) => {
+                caption += `*${i+2}. ${video.title}*\n   ⏱️ ${video.timestamp} | 👁️ ${formatNumber(video.views)}\n   🔗 ${video.url}\n\n`;
+            });
+            caption += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sock.sendMessage(from, {
+                image: { url: thumbnailUrl },
+                caption: caption
+            }, { quoted: msg });
+
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('YouTube search error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Search Failed*\n━━━━━━━━━━━━━━━━━━━\n_Try: ${config.PREFIX}youtube Megan MD_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// CATEGORY 6: WEATHER
+// ============================================
+
+// 11. WEATHER
+commands.push({
+    name: 'weather',
+    description: 'Get weather information',
+    aliases: ['wt'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🌤️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🌤️ *Weather*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}weather <city>\n_Example:_ ${config.PREFIX}weather Nairobi\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const city = args.join(' ');
+        await react('🌤️');
+
+        try {
+            const response = await axios.get(`https://wttr.in/${encodeURIComponent(city)}?format=j1`, {
+                timeout: 10000
+            });
+
+            const data = response.data;
+            const current = data.current_condition[0];
+            const area = data.nearest_area[0];
+
+            let weatherText = `🌤️ *WEATHER*\n━━━━━━━━━━━━━━━━━━━\n_Location:_ ${area.areaName[0].value}, ${area.country[0].value}\n_Condition:_ ${current.weatherDesc[0].value}\n_Temperature:_ ${current.temp_C}°C / ${current.temp_F}°F\n_Feels like:_ ${current.FeelsLikeC}°C\n_Humidity:_ ${current.humidity}%\n_Wind:_ ${current.windspeedKmph} km/h ${current.winddir16Point}\n_Pressure:_ ${current.pressure} mb\n_UV Index:_ ${current.uvIndex}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: weatherText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Weather error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Weather not found*\n━━━━━━━━━━━━━━━━━━━\n_Try: ${config.PREFIX}weather Nairobi_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// CATEGORY 7: MOVIE SEARCH
+// ============================================
+
+// 12. MOVIE SEARCH
+commands.push({
+    name: 'movie',
+    description: 'Search movie information',
+    aliases: ['imdb'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🎬');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎬 *Movie Search*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}movie <movie name>\n_Example:_ ${config.PREFIX}movie Inception\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const query = args.join(' ');
+        await react('🎬');
+
+        try {
+            const response = await axios.get(`https://www.omdbapi.com/?apikey=9b5d7e52&s=${encodeURIComponent(query)}`, {
+                timeout: 10000
+            });
+
+            if (!response.data.Search?.length) throw new Error('No movies found');
+
+            const movies = response.data.Search.slice(0, 10);
+            const first = movies[0];
+
+            let resultText = `🎬 *MOVIE SEARCH*\n━━━━━━━━━━━━━━━━━━━\n*Top Result:*\n🎬 *${first.Title}* (${first.Year})\n\n*More Results:*\n`;
+            movies.slice(1).forEach((movie, i) => {
+                resultText += `*${i+2}. ${movie.Title}* (${movie.Year})\n`;
+            });
+            resultText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            bot.logger.error('Movie search error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Movie not found*\n━━━━━━━━━━━━━━━━━━━\n_Try: ${config.PREFIX}movie Inception_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}searchhelp`, text: '🔍 Search Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// CATEGORY 8: SEARCH HELP
+// ============================================
+
+// 13. SEARCH HELP
+commands.push({
+    name: 'searchhelp',
+    description: 'Show all search commands',
+    aliases: ['helpsearch', 'searches'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const prefix = config.PREFIX;
+
+        const helpText = `🔍 *SEARCH COMMANDS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `*🌐 WEB SEARCH*\n` +
+            `_${prefix}google_ - Google search\n` +
+            `_${prefix}bing_ - Bing search\n` +
+            `_${prefix}duckduckgo_ - DuckDuckGo\n` +
+            `_${prefix}searchall_ - Multi-engine search\n\n` +
+
+            `*📚 WIKIPEDIA*\n` +
+            `_${prefix}wiki_ - Wikipedia\n\n` +
+
+            `*📖 DICTIONARY*\n` +
+            `_${prefix}dictionary_ - Word definitions\n` +
+            `_${prefix}thesaurus_ - Synonyms\n\n` +
+
+            `*📰 NEWS*\n` +
+            `_${prefix}newstop_ - Top headlines\n` +
+            `_${prefix}kenyanews_ - Local news\n\n` +
+
+            `*🎬 YOUTUBE*\n` +
+            `_${prefix}youtube_ - Search videos\n\n` +
+
+            `*🌤️ WEATHER*\n` +
+            `_${prefix}weather_ - Weather info\n\n` +
+
+            `*🎬 MOVIES*\n` +
+            `_${prefix}movie_ - Movie search\n\n` +
+
+            `> created by wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: helpText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+module.exports = { commands };

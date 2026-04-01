@@ -1,1 +1,1291 @@
-const axios=require("axios"),CryptoJS=require("crypto-js"),morse=require("morse"),{v4:uuidv4}=require("uuid"),translate=require("@iamtraction/google-translate"),cheerio=require("cheerio"),{faker:faker}=require("@faker-js/faker"),math=require("mathjs"),fs=require("fs-extra"),path=require("path"),config=require("../../megan/config"),Designs=require("../../megan/helpers/designs"),{createNewsletterContext:createNewsletterContext}=require("../../megan/helpers/newsletter"),TEMP_DIR=path.join(__dirname,"../../temp");fs.ensureDirSync(TEMP_DIR);const commands=[],checkLength=(e,t=5e3)=>e.length>t?{valid:!1,message:`❌ Text too long! Maximum ${t} characters allowed.`}:{valid:!0};commands.push({name:"binary",description:"Convert text to binary code",aliases:["bin","texttobinary"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("🔢");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔢 *BINARY ENCODER* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}binary <text>\nExamples:\n• ${config.PREFIX}binary Hello\n• ${config.PREFIX}binary MEGAN MD\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Binary Encoder",body:"Usage Instructions"})},{quoted:e})}const a=checkLength(c);if(!a.valid)return await r("⚠️"),i(a.message);await r("🔄"),c.length>1e3&&await i("⏳ Processing long text, please wait...");const d=c.split("").map(e=>e.charCodeAt(0).toString(2).padStart(8,"0")).join(" "),l=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔢 *BINARY ENCODING* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📝 *Original:* ${c.substring(0,100)}${c.length>100?"...":""}\n\n🔢 *Binary:*\n\`\`\`${d.substring(0,200)}${d.length>200?"...":""}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:l,...createNewsletterContext(n,{title:"Binary Encoder",body:"Encoding Complete"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Binary Result*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy Binary",copy_code:d})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Binary error:",e),await r("❌"),await i(`❌ Encoding failed. Try: ${config.PREFIX}binary Hello World`)}}}),commands.push({name:"debinary",description:"Convert binary code to text",aliases:["unbinary","binarytotext"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("🔢");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔢 *BINARY DECODER* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}debinary <binary code>\nExample: ${config.PREFIX}debinary 01001000 01100101 01101100\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Binary Decoder",body:"Usage Instructions"})},{quoted:e})}const a=checkLength(c,1e4);if(!a.valid)return await r("⚠️"),i(a.message);await r("🔄"),c.length>1e3&&await i("⏳ Processing long binary, please wait...");const d=c.replace(/\s+/g,"");if(!/^[01]+$/.test(d))throw new Error("Invalid binary code (only 0 and 1 allowed)");let l="";for(let e=0;e<d.length;e+=8){const t=d.substr(e,8);8===t.length&&(l+=String.fromCharCode(parseInt(t,2)))}const g=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔢 *BINARY DECODING* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔢 *Binary:*\n${c.substring(0,100)}${c.length>100?"...":""}\n\n📝 *Decoded Text:*\n\`\`\`${l.substring(0,200)}${l.length>200?"...":""}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:g,...createNewsletterContext(n,{title:"Binary Decoder",body:"Decoding Complete"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Decoded Text*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy Text",copy_code:l})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Debinary error:",e),await r("❌"),await i(`❌ Decoding failed: ${e.message}\n\nTry: ${config.PREFIX}debinary 01001000 01100101 01101100 01101100 01101111`)}}}),commands.push({name:"base64",description:"Encode/decode Base64",aliases:["b64"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("📄");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📄 *BASE64 TOOLS* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage:\n• ${config.PREFIX}base64 <text> (encode)\n• ${config.PREFIX}base64 decode <base64> (decode)\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Base64 Tools",body:"Usage Instructions"})},{quoted:e})}const a=checkLength(c,1e4);if(!a.valid)return await r("⚠️"),i(a.message);await r("🔄");const d=c.toLowerCase();let l="",g="";if(d.startsWith("decode ")){const e=c.substring(7),t=Buffer.from(e,"base64").toString("utf8");g=t,l=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📄 *BASE64 DECODED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📄 *Decoded:*\n\`\`\`${t.substring(0,200)}${t.length>200?"...":""}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`}else{const e=d.startsWith("encode ")?c.substring(7):c,t=Buffer.from(e,"utf8").toString("base64");g=t,l=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📄 *BASE64 ENCODED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📄 *Encoded:*\n\`\`\`${t.substring(0,200)}${t.length>200?"...":""}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`}await o.sendMessage(t,{text:l,...createNewsletterContext(n,{title:"Base64",body:d.startsWith("decode ")?"Decoded":"Encoded"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Result*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:g})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Base64 error:",e),await r("❌"),await i(`❌ Base64 operation failed.\n\nFor encoding: ${config.PREFIX}base64 text\nFor decoding: ${config.PREFIX}base64 decode base64_string`)}}}),commands.push({name:"hash",description:"Generate hash values (MD5, SHA1, SHA256, SHA512)",aliases:["hashgen","checksum"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("🔒");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔒 *HASH GENERATOR* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}hash <text>\nExamples:\n• ${config.PREFIX}hash password123\n• ${config.PREFIX}hash "secret message"\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Hash Generator",body:"Usage Instructions"})},{quoted:e})}const a=checkLength(c,5e3);if(!a.valid)return await r("⚠️"),i(a.message);await r("🔄");const d=CryptoJS.MD5(c).toString(),l=CryptoJS.SHA1(c).toString(),g=CryptoJS.SHA256(c).toString(),p=CryptoJS.SHA512(c).toString(),u=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔒 *HASH VALUES*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📝 *Original:* ${c.substring(0,50)}${c.length>50?"...":""}\n\n🔐 *MD5:*\n\`${d}\`\n\n🔐 *SHA1:*\n\`${l}\`\n\n🔐 *SHA256:*\n\`${g}\`\n\n🔐 *SHA512:*\n\`${p}\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:u,...createNewsletterContext(n,{title:"Hash Generator",body:"Hashes Generated"})},{quoted:e}),await s.buttons.send(t,{text:"📢 *Join our channel for more tools*",buttons:[{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Hash error:",e),await r("❌"),await i(`❌ Hash generation failed. Try: ${config.PREFIX}hash hello`)}}}),commands.push({name:"morse",description:"Convert text to Morse code and vice versa",aliases:["morsecode","cw"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("📡");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📡 *MORSE CODE*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage:\n• ${config.PREFIX}morse <text> (encode)\n• ${config.PREFIX}morse .... . .-.. .-.. --- (decode)\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Morse Code",body:"Usage Instructions"})},{quoted:e})}const a=checkLength(c,5e3);if(!a.valid)return await r("⚠️"),i(a.message);await r("🔄");let d="",l="",g=!1;if(/^[\.\-\s]+$/.test(c)){const e=morse.decode(c);d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📡 *MORSE DECODED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📡 *Morse:* ${c.substring(0,100)}${c.length>100?"...":""}\n\n📝 *Text:*\n\`\`\`${e.substring(0,200)}${e.length>200?"...":""}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`,l=e,g=!0}else{const e=morse.encode(c);d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📡 *MORSE ENCODED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📝 *Text:* ${c.substring(0,100)}${c.length>100?"...":""}\n\n📡 *Morse Code:*\n\`\`\`${e.substring(0,200)}${e.length>200?"...":""}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`,l=e}await o.sendMessage(t,{text:d,...createNewsletterContext(n,{title:"Morse Code",body:g?"Decoded":"Encoded"})},{quoted:e}),await s.buttons.send(t,{text:`📋 *Copy ${g?"Decoded Text":"Morse Code"}*`,buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:l})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Morse error:",e),await r("❌"),await i(`❌ Morse code error.\n\nTry: ${config.PREFIX}morse SOS\nOr: ${config.PREFIX}morse ... --- ...`)}}}),commands.push({name:"encrypt",description:"Encrypt text with password",aliases:["encode","crypt"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("🔐");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔐 *ENCRYPTION*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}encrypt <password> <text>\nExample: ${config.PREFIX}encrypt mysecret Hello World\n\n⚠️ *Remember your password!*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Encryption",body:"Usage Instructions"})},{quoted:e})}const[a,...d]=c.split(" "),l=d.join(" ");if(!a||!l)throw new Error("Need both password and message");const g=checkLength(l,5e3);if(!g.valid)return await r("⚠️"),i(g.message);await r("🔄");const p=CryptoJS.AES.encrypt(l,a).toString(),u=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔐 *ENCRYPTED*    ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔑 *Password:* ||${a.substring(0,3)}...${a.substring(a.length-3)}||\n\n📝 *Encrypted:*\n\`\`\`${p.substring(0,200)}${p.length>200?"...":""}\`\`\`\n\n🔓 *To decrypt:* ${config.PREFIX}decrypt ${a} [encrypted]\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:u,...createNewsletterContext(n,{title:"Encryption",body:"Message Encrypted"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Encrypted Message*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:p})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Encrypt error:",e),await r("❌"),await i(`❌ Encryption failed: ${e.message}\n\nFormat: ${config.PREFIX}encrypt <password> <message>`)}}}),commands.push({name:"decrypt",description:"Decrypt text with password",aliases:["decode","uncrypt"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("🔐");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔐 *DECRYPTION*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}decrypt <password> <encrypted text>\nExample: ${config.PREFIX}decrypt mysecret U2FsdGVkX1/...\n\n⚠️ *Use the same password used for encryption*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Decryption",body:"Usage Instructions"})},{quoted:e})}const[a,...d]=c.split(" "),l=d.join(" ");if(!a||!l)throw new Error("Need both password and encrypted text");const g=checkLength(l,1e4);if(!g.valid)return await r("⚠️"),i(g.message);await r("🔄");const p=CryptoJS.AES.decrypt(l,a).toString(CryptoJS.enc.Utf8);if(!p)throw new Error("Wrong password or invalid encrypted text");const u=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔐 *DECRYPTED*    ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔑 *Password:* ||${a.substring(0,3)}...${a.substring(a.length-3)}||\n\n📝 *Decrypted:*\n\`\`\`${p.substring(0,200)}${p.length>200?"...":""}\`\`\`\n\n✅ *Successfully decrypted!*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:u,...createNewsletterContext(n,{title:"Decryption",body:"Message Decrypted"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Decrypted Message*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:p})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Decrypt error:",e),await r("❌"),await i(`❌ Decryption failed: ${e.message}\n\nCheck your password and encrypted text.`)}}}),commands.push({name:"password",description:"Generate strong passwords",aliases:["pass","genpass"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=Math.min(Math.max(parseInt(a[0])||16,8),64);try{await r("🔐");let a=[];for(let e=1;e<=3;e++){const e="abcdefghijklmnopqrstuvwxyz",t="ABCDEFGHIJKLMNOPQRSTUVWXYZ",n="0123456789",s="!@#$%^&*()_+-=[]{}|;:,.<>?";let o="";const r=e+t+n+s;o+=e[Math.floor(Math.random()*e.length)],o+=t[Math.floor(Math.random()*t.length)],o+=n[Math.floor(Math.random()*n.length)],o+=s[Math.floor(Math.random()*s.length)];for(let e=4;e<c;e++)o+=r[Math.floor(Math.random()*r.length)];o=o.split("").sort(()=>Math.random()-.5).join(""),a.push(o)}let i=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔐 *PASSWORDS*    ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📏 *Length:* ${c} characters\n\n🔑 *Password 1:*\n\`\`\`${a[0]}\`\`\`\n\n🔑 *Password 2:*\n\`\`\`${a[1]}\`\`\`\n\n🔑 *Password 3:*\n\`\`\`${a[2]}\`\`\`\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:i,...createNewsletterContext(n,{title:"Password Generator",body:"Strong Passwords"})},{quoted:e}),await s.buttons.send(t,{text:"📢 *Join our channel for more tools*",buttons:[{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Password error:",e),await r("❌"),await i(`❌ Password generation failed. Usage: ${config.PREFIX}password [length]`)}}}),commands.push({name:"email",description:"Generate random email addresses",aliases:["genemail","fakeemail"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=Math.min(parseInt(a[0])||1,10);try{await r("📧");let a=[];for(let e=1;e<=c;e++){const e=faker.internet.email();a.push(e)}let i="";a.forEach((e,t)=>{i+=`${t+1}. \`${e}\`\n`});let d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📧 *EMAILS*       ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📊 *Count:* ${c}\n\n${i}\n⚠️ *FOR TESTING PURPOSES ONLY!*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:d,...createNewsletterContext(n,{title:"Email Generator",body:"Random Emails"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy All Emails*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:a.join("\n")})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Email error:",e),await r("❌"),await i(`❌ Email generation failed. Usage: ${config.PREFIX}email [count]`)}}}),commands.push({name:"uuid",description:"Generate UUIDs (Universally Unique Identifiers)",aliases:["guid","uniqueid"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=Math.min(parseInt(a[0])||5,10);try{await r("🔑");let a=[];for(let e=1;e<=c;e++)a.push(uuidv4());let i="";a.forEach((e,t)=>{i+=`${t+1}. \`${e}\`\n`});let d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔑 *UUIDS*       ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📊 *Count:* ${c}\n\n${i}\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:d,...createNewsletterContext(n,{title:"UUID Generator",body:"Unique IDs"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy All UUIDs*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:a.join("\n")})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("UUID error:",e),await r("❌"),await i(`❌ UUID generation failed. Usage: ${config.PREFIX}uuid [count]`)}}}),commands.push({name:"translate",description:"Translate text between languages",aliases:["tr","trans"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=a.join(" ");try{if(!c){await r("🌍");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🌍 *TRANSLATE*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}translate <text>\n• ${config.PREFIX}translate en sw Hello\n• ${config.PREFIX}translate sw en Habari\n\nLanguage codes:\nen=English, sw=Swahili, fr=French, es=Spanish, ar=Arabic\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Translate",body:"Usage Instructions"})},{quoted:e})}const a=checkLength(c,5e3);if(!a.valid)return await r("⚠️"),i(a.message);await r("🌍");const d=c.split(" ");let l="auto",g="en",p=c;d.length>=3&&2===d[0].length&&2===d[1].length?(l=d[0],g=d[1],p=d.slice(2).join(" ")):d.length>=2&&2===d[0].length&&(g=d[0],p=d.slice(1).join(" "));const u=await translate(p,{from:l,to:g}),m={en:"English",sw:"Swahili",fr:"French",es:"Spanish",de:"German",ar:"Arabic",zh:"Chinese",hi:"Hindi",ru:"Russian",pt:"Portuguese",ja:"Japanese",ko:"Korean"},y="auto"===l?"Auto-detected":m[l]||l,w=m[g]||g,h=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🌍 *TRANSLATION* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🌐 *From:* ${y}\n🌐 *To:* ${w}\n\n📝 *Original:*\n${p.substring(0,200)}${p.length>200?"...":""}\n\n💬 *Translated:*\n${u.text.substring(0,200)}${u.text.length>200?"...":""}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:h,...createNewsletterContext(n,{title:"Translate",body:`${y} → ${w}`})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Translation*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:u.text})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Translate error:",e),await r("❌"),await i(`❌ Translation failed.\n\nTry: ${config.PREFIX}translate Hello\nOr: ${config.PREFIX}translate sw en Habari yako?`)}}}),commands.push({name:"browse",description:"Fetch and display webpage content",aliases:["fetch","geturl"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){if(!a.length){await r("🌐");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🌐 *BROWSE WEB*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}browse <url>\nExample: ${config.PREFIX}browse https://example.com\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Browse Web",body:"Usage Instructions"})},{quoted:e})}const c=a[0];if(!c.startsWith("http"))return i("❌ Please include http:// or https://");await r("🌐");try{const a=await axios.get(c,{timeout:1e4,headers:{"User-Agent":"Mozilla/5.0"}}),s=a.headers["content-type"]||"";let i="";i=s.includes("application/json")?JSON.stringify(a.data,null,2):"string"==typeof a.data?a.data:JSON.stringify(a.data);const d=i.length>4e3?i.substring(0,4e3)+"...\n\n(Content truncated)":i,l=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🌐 *WEB CONTENT* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔗 *URL:* ${c}\n📄 *Type:* ${s.split("/")[1]||"Unknown"}\n\n${d}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:l,...createNewsletterContext(n,{title:"Browse Web",body:c.substring(0,30)})},{quoted:e}),await r("✅")}catch(e){s.logger.error("Browse error:",e),await r("❌"),await i(`❌ Error fetching URL: ${e.message}`)}}}),commands.push({name:"tinyurl",description:"Shorten URLs",aliases:["short","shortlink"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){if(!a.length){await r("🔗");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔗 *URL SHORTENER* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}tinyurl <url>\nExample: ${config.PREFIX}tinyurl https://example.com\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"URL Shortener",body:"Usage Instructions"})},{quoted:e})}const c=a[0];if(!c.startsWith("http"))return i("❌ Please include http:// or https://");await r("🔗");try{const a=(await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(c)}`,{timeout:1e4})).data,i=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔗 *URL SHORTENED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔗 *Original:* ${c}\n🔗 *Short:* ${a}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:i,...createNewsletterContext(n,{title:"URL Shortener",body:"Link Shortened"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Short URL*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:a})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("TinyURL error:",e),await r("❌"),await i("❌ Failed to shorten URL.")}}}),commands.push({name:"calculate",description:"Solve math equations",aliases:["calc","math","solve"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){if(!a.length){await r("🧮");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🧮 *CALCULATOR*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}calc <equation>\nExamples:\n• ${config.PREFIX}calc 2 + 2\n• ${config.PREFIX}calc sqrt(16)\n• ${config.PREFIX}calc sin(30deg)\n• ${config.PREFIX}calc 5^3\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Calculator",body:"Usage Instructions"})},{quoted:e})}const c=a.join(" ").replace(/×/g,"*").replace(/÷/g,"/");await r("🧮");try{const a=math.evaluate(c),i=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🧮 *CALCULATION* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📝 *Equation:* ${c}\n✅ *Result:* ${a}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:i,...createNewsletterContext(n,{title:"Calculator",body:"Result"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Result*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:a.toString()})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){await r("❌"),await i(`❌ Invalid equation: ${e.message}`)}}}),commands.push({name:"fliptext",description:"Flip text upside down",aliases:["flip","upsidedown"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){if(!a.length){await r("🔄");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔄 *FLIP TEXT*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}fliptext <text>\nExample: ${config.PREFIX}fliptext Hello World\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Flip Text",body:"Usage Instructions"})},{quoted:e})}const c=a.join(" "),d=checkLength(c,5e3);if(!d.valid)return await r("⚠️"),i(d.message);await r("🔄");const l={a:"ɐ",b:"q",c:"ɔ",d:"p",e:"ǝ",f:"ɟ",g:"ƃ",h:"ɥ",i:"ᴉ",j:"ɾ",k:"ʞ",l:"l",m:"ɯ",n:"u",o:"o",p:"d",q:"b",r:"ɹ",s:"s",t:"ʇ",u:"n",v:"ʌ",w:"ʍ",x:"x",y:"ʎ",z:"z",A:"∀",B:"𐐒",C:"Ɔ",D:"ᗡ",E:"Ǝ",F:"Ⅎ",G:"⅁",H:"H",I:"I",J:"ſ",K:"ʞ",L:"⅂",M:"W",N:"N",O:"O",P:"Ԁ",Q:"Q",R:"ᴚ",S:"S",T:"⊥",U:"∩",V:"Λ",W:"M",X:"X",Y:"⅄",Z:"Z",0:"0",1:"Ɩ",2:"ᄅ",3:"Ɛ",4:"ㄣ",5:"ϛ",6:"9",7:"ㄥ",8:"8",9:"6","!":"¡","?":"¿",".":"˙",",":"'",'"':"„","'":",","(":")",")":"(","[":"]","]":"[","{":"}","}":"{","<":">",">":"<","&":"⅋",_:"‾"},g=c.split("").map(e=>l[e]||e).reverse().join(""),p=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔄 *FLIPPED TEXT* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📝 *Original:*\n${c.substring(0,200)}${c.length>200?"...":""}\n\n🔄 *Flipped:*\n${g.substring(0,200)}${g.length>200?"...":""}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:p,...createNewsletterContext(n,{title:"Flip Text",body:"Text Flipped"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy Flipped Text*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:g})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}}),commands.push({name:"emojimix",description:"Mix two emojis together",aliases:["emix","emojimix"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){if(a.length<1||!a[0].includes("+")){await r("😊");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   😊 *EMOJI MIX*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}emojimix 😅+🤔\nExample: ${config.PREFIX}emojimix 🐱+🐶\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Emoji Mix",body:"Usage Instructions"})},{quoted:e})}const[c,d]=a[0].split("+").map(e=>e.trim());if(!c||!d)return i("❌ Please provide two emojis separated by +");await r("🎨");try{const a=await axios.get(`https://tenor.googleapis.com/v2/featured?key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(c)}_${encodeURIComponent(d)}`,{timeout:1e4});if(!a.data.results||!a.data.results.length)return i("❌ Could not mix these emojis. Try different ones.");const s=a.data.results[0];await o.sendMessage(t,{image:{url:s.url},caption:`🎨 *Emoji Mix*\n${c} + ${d}`,...createNewsletterContext(n,{title:"Emoji Mix",body:"Mixed"})},{quoted:e}),await r("✅")}catch(e){s.logger.error("Emoji mix error:",e),await r("❌"),await i("❌ Failed to mix emojis. Try again later.")}}}),commands.push({name:"getpp",description:"Get user profile picture",aliases:["profilepic","pp"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){let c=n;if(e.message?.extendedTextMessage?.contextInfo?.participant)c=e.message.extendedTextMessage.contextInfo.participant;else if(a[0])if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)c=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else{let e=a[0].replace(/\D/g,"");e&&(c=e+"@s.whatsapp.net")}await r("🖼️");try{const a=await o.profilePictureUrl(c,"image");await o.sendMessage(t,{image:{url:a},caption:`🖼️ *Profile Picture*\n👤 @${c.split("@")[0]}`,mentions:[c],...createNewsletterContext(n,{title:"Profile Picture",body:`@${c.split("@")[0]}`})},{quoted:e}),await r("✅")}catch(a){await o.sendMessage(t,{image:{url:config.BOT_PIC||"https://files.catbox.moe/kubc8p.png"},caption:`⚠️ No profile picture found for @${c.split("@")[0]}`,mentions:[c],...createNewsletterContext(n,{title:"Profile Picture",body:"Not Found"})},{quoted:e}),await r("✅")}}}),commands.push({name:"getabout",description:"Get user about/bio",aliases:["bio","about"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){let c=n;if(e.message?.extendedTextMessage?.contextInfo?.participant)c=e.message.extendedTextMessage.contextInfo.participant;else if(a[0])if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)c=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else{let e=a[0].replace(/\D/g,"");e&&(c=e+"@s.whatsapp.net")}await r("📝");try{const{status:a,setAt:s}=await o.fetchStatus(c),i=new Date(s).toLocaleString("en-KE",{dateStyle:"full",timeStyle:"short"}),d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📝 *ABOUT INFO*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n👤 *User:* @${c.split("@")[0]}\n💬 *About:* ${a}\n🕒 *Set at:* ${i}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:d,mentions:[c],...createNewsletterContext(n,{title:"About Info",body:`@${c.split("@")[0]}`})},{quoted:e}),await r("✅")}catch(a){await r("❌");const s="╭━━━━━━━━━━━━━━━━━━━╮\n┃   ❌ *ERROR*       ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n❌ Could not fetch about info.\nUser may have privacy settings enabled.\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥";await o.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"About Info",body:"Error"})},{quoted:e})}}}),commands.push({name:"gsmarena",description:"Search smartphone specs",aliases:["gsm","phonespec"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){if(!a.length){await r("📱");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📱 *GSM ARENA*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: ${config.PREFIX}gsmarena <phone name>\nExample: ${config.PREFIX}gsmarena Samsung S23\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"GSM Arena",body:"Usage Instructions"})},{quoted:e})}const c=a.join(" ");await r("📱");try{const a=await axios.get(`https://api.siputzx.my.id/api/s/gsmarena?query=${encodeURIComponent(c)}`,{timeout:15e3});if(!a.data?.status||!a.data.data||!a.data.data.length)return i("❌ No phones found. Try another model.");const s=a.data.data.slice(0,5);let d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📱 *GSM ARENA*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔍 *Search:* ${c}\n📊 *Found:* ${a.data.data.length} phones\n\n━━━━━━━━━━━━━━━━━━━\n\n`;s.forEach((e,t)=>{d+=`*${t+1}. ${e.name}*\n`,d+=`📝 ${e.description}\n`,e.thumbnail&&(d+=`🖼️ ${e.thumbnail}\n`),d+="\n"}),d+="✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",await o.sendMessage(t,{text:d,...createNewsletterContext(n,{title:"GSM Arena",body:`${s.length} results`})},{quoted:e}),await r("✅")}catch(e){s.logger.error("GSM Arena error:",e),await r("❌"),await i("❌ Failed to search phones. Try again later.")}}}),commands.push({name:"device",description:"Detect device of a message",aliases:["getdevice"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=e.message?.extendedTextMessage?.contextInfo?.quotedMessage;if(!c){await r("📱");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📱 *DETECT DEVICE* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to any message with ${config.PREFIX}device\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Device Detection",body:"Usage Instructions"})},{quoted:e})}await r("📱");try{const a=e.message.extendedTextMessage.contextInfo.stanzaId,s=[{pattern:"3A0",name:"WhatsApp Web"},{pattern:"3A1",name:"iPhone"},{pattern:"3A2",name:"iPad"},{pattern:"3A3",name:"Android"},{pattern:"3A4",name:"Windows Phone"},{pattern:"3A5",name:"BlackBerry"},{pattern:"3A6",name:"Nokia"},{pattern:"3A7",name:"Windows 10"},{pattern:"3A8",name:"macOS"},{pattern:"3A9",name:"Linux"},{pattern:"3AA",name:"Samsung"},{pattern:"3AB",name:"Huawei"},{pattern:"3AC",name:"Xiaomi"},{pattern:"3AD",name:"Oppo"},{pattern:"3AE",name:"Vivo"},{pattern:"3AF",name:"Google Pixel"}];let i="Unknown";const c=a.substring(0,3);for(const e of s)if(c===e.pattern){i=e.name;break}const d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📱 *DEVICE DETECTED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🆔 *Message ID:* ${a}\n📱 *Device:* ${i}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:d,...createNewsletterContext(n,{title:"Device Detection",body:i})},{quoted:e}),await r("✅")}catch(e){s.logger.error("Device detection error:",e),await r("❌"),await i("❌ Could not detect device.")}}}),commands.push({name:"tourl",description:"Upload media to Catbox",aliases:["upload","url"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){const c=e.message?.extendedTextMessage?.contextInfo?.quotedMessage,d=e.message?.imageMessage||c?.imageMessage,l=e.message?.videoMessage||c?.videoMessage,g=e.message?.audioMessage||c?.audioMessage,p=e.message?.documentMessage||c?.documentMessage;if(!(d||l||g||p)){await r("📤");const a=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📤 *UPLOAD MEDIA* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nUsage: Reply to any media with ${config.PREFIX}upload\n\nUploads to Catbox.moe and returns URL.\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;return await o.sendMessage(t,{text:a,...createNewsletterContext(n,{title:"Upload Media",body:"Usage Instructions"})},{quoted:e})}await r("📤");try{const a=e.message?.imageMessage||e.message?.videoMessage||e.message?.audioMessage||e.message?.documentMessage?e:{...e,message:c},{downloadMediaMessage:i}=require("gifted-baileys"),d=await i(a,"buffer",{},{logger:console}),l=new(require("form-data"));l.append("reqtype","fileupload"),l.append("fileToUpload",d,{filename:"media.jpg"});const g=(await axios.post("https://catbox.moe/user/api.php",l,{headers:l.getHeaders()})).data.trim(),p=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📤 *MEDIA UPLOADED* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n🔗 *URL:* ${g}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:p,...createNewsletterContext(n,{title:"Upload Media",body:"Upload Complete"})},{quoted:e}),await s.buttons.send(t,{text:"📋 *Copy URL*",buttons:[{name:"cta_copy",buttonParamsJson:JSON.stringify({display_text:"📋 Copy",copy_code:g})},{name:"cta_url",buttonParamsJson:JSON.stringify({display_text:"📢 Join Channel",url:"https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b"})}]},e),await r("✅")}catch(e){s.logger.error("Upload error:",e),await r("❌"),await i(`❌ Upload failed: ${e.message}`)}}}),commands.push({name:"tools",description:"Show all available tools",aliases:["tool","toolshelp"],async execute({msg:e,from:t,sender:n,args:a,bot:s,sock:o,react:r,reply:i}){await r("🛠️");const c=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🛠️ *TOOLS MENU*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n*Encoding Tools:*\n➣ ${config.PREFIX}binary - Text to binary\n➣ ${config.PREFIX}debinary - Binary to text\n➣ ${config.PREFIX}base64 - Base64 encode/decode\n➣ ${config.PREFIX}hash - Generate hashes\n➣ ${config.PREFIX}morse - Morse code\n\n*Security Tools:*\n➣ ${config.PREFIX}encrypt - Encrypt text\n➣ ${config.PREFIX}decrypt - Decrypt text\n➣ ${config.PREFIX}password - Generate passwords\n\n*Generator Tools:*\n➣ ${config.PREFIX}email - Generate emails\n➣ ${config.PREFIX}uuid - Generate UUIDs\n\n*Language Tools:*\n➣ ${config.PREFIX}translate - Translate text\n\n*Web Tools:*\n➣ ${config.PREFIX}browse - Fetch webpage\n➣ ${config.PREFIX}tinyurl - Shorten URLs\n\n*Math Tools:*\n➣ ${config.PREFIX}calculate - Solve equations\n\n*Text Tools:*\n➣ ${config.PREFIX}fliptext - Flip text\n\n*Fun Tools:*\n➣ ${config.PREFIX}emojimix - Mix two emojis\n\n*Info Tools:*\n➣ ${config.PREFIX}getpp - Get profile picture\n➣ ${config.PREFIX}getabout - Get user bio\n\n*Tech Tools:*\n➣ ${config.PREFIX}gsmarena - Search phone specs\n➣ ${config.PREFIX}device - Detect device\n\n*Media Tools:*\n➣ ${config.PREFIX}upload - Upload to Catbox\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await o.sendMessage(t,{text:c,...createNewsletterContext(n,{title:"Tools Menu",body:"All Available Tools"})},{quoted:e}),await r("✅")}}),module.exports={commands:commands};
+// MEGAN-MD Tools Commands - Consistent styling with buttons
+
+const axios = require('axios');
+const CryptoJS = require('crypto-js');
+const morse = require('morse');
+const { v4: uuidv4 } = require('uuid');
+const translate = require('@iamtraction/google-translate');
+const { faker } = require('@faker-js/faker');
+const math = require('mathjs');
+const fs = require('fs-extra');
+const path = require('path');
+const config = require('../../megan/config');
+
+const TEMP_DIR = path.join(__dirname, '../../temp');
+fs.ensureDirSync(TEMP_DIR);
+
+const commands = [];
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+// Helper function using same pattern as basic.js
+async function sendButtonMenu(sock, from, options, quotedMsg) {
+    const { sendButtons } = require('gifted-btns');
+    
+    try {
+        return await sendButtons(sock, from, {
+            title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: options.text,
+            footer: options.footer || '> created by wanga',
+            image: options.image ? { url: options.image } : null,
+            buttons: options.buttons || []
+        }, { quoted: quotedMsg });
+    } catch (error) {
+        console.error('Button error:', error);
+        await sock.sendMessage(from, { text: options.text }, { quoted: quotedMsg });
+    }
+}
+
+// ==================== HELPER FUNCTIONS ====================
+
+async function translateToEnglish(text) {
+    if (!text || text.length < 10) return text;
+    try {
+        const result = await translate(text, { to: 'en' });
+        return result.text;
+    } catch (e) {
+        return text;
+    }
+}
+
+// ==================== SECTION 1: ENCODING TOOLS ====================
+
+// 1. BINARY ENCODER
+commands.push({
+    name: 'binary',
+    description: 'Convert text to binary code',
+    aliases: ['bin', 'texttobinary'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('🔢');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔢 *BINARY ENCODER*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}binary <text>\n_Example:_ ${config.PREFIX}binary Hello\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+        const binaryResult = text.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔢 *Binary Encoder*\n━━━━━━━━━━━━━━━━━━━\n_Original:_ ${text}\n\n_Binary:_\n${binaryResult}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy Binary', copy_code: binaryResult }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 2. BINARY DECODER
+commands.push({
+    name: 'debinary',
+    description: 'Convert binary code to text',
+    aliases: ['unbinary'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('🔢');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔢 *BINARY DECODER*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}debinary <binary>\n_Example:_ ${config.PREFIX}debinary 01001000 01100101\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+        const cleanBinary = text.replace(/\s+/g, '');
+        if (!/^[01]+$/.test(cleanBinary)) return reply('❌ Invalid binary code');
+
+        let result = '';
+        for (let i = 0; i < cleanBinary.length; i += 8) {
+            const byte = cleanBinary.substr(i, 8);
+            if (byte.length === 8) result += String.fromCharCode(parseInt(byte, 2));
+        }
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔢 *Binary Decoder*\n━━━━━━━━━━━━━━━━━━━\n_Binary:_ ${text}\n\n_Text:_ ${result}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy Text', copy_code: result }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 3. BASE64
+commands.push({
+    name: 'base64',
+    description: 'Encode/decode Base64',
+    aliases: ['b64'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('📄');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📄 *BASE64*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n• ${config.PREFIX}base64 <text> (encode)\n• ${config.PREFIX}base64 decode <base64> (decode)\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+
+        if (text.toLowerCase().startsWith('decode ')) {
+            const base64Text = text.substring(7);
+            const decoded = Buffer.from(base64Text, 'base64').toString('utf8');
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📄 *Base64 Decoder*\n━━━━━━━━━━━━━━━━━━━\n_Decoded:_\n${decoded}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: decoded }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        } else {
+            const encodeText = text.toLowerCase().startsWith('encode ') ? text.substring(7) : text;
+            const encoded = Buffer.from(encodeText, 'utf8').toString('base64');
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📄 *Base64 Encoder*\n━━━━━━━━━━━━━━━━━━━\n_Encoded:_\n${encoded}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: encoded }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+        await react('✅');
+    }
+});
+
+// 4. HASH GENERATOR
+commands.push({
+    name: 'hash',
+    description: 'Generate hash values',
+    aliases: ['hashgen'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('🔒');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔒 *HASH GENERATOR*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}hash <text>\n_Example:_ ${config.PREFIX}hash password123\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+
+        const md5 = CryptoJS.MD5(text).toString();
+        const sha1 = CryptoJS.SHA1(text).toString();
+        const sha256 = CryptoJS.SHA256(text).toString();
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔒 *Hash Generator*\n━━━━━━━━━━━━━━━━━━━\n_MD5:_ \`${md5}\`\n\n_SHA1:_ \`${sha1}\`\n\n_SHA256:_ \`${sha256}\`\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy MD5', copy_code: md5 }) },
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy SHA256', copy_code: sha256 }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 5. MORSE CODE
+commands.push({
+    name: 'morse',
+    description: 'Convert text to Morse code',
+    aliases: ['morsecode'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('📡');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📡 *MORSE CODE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n• ${config.PREFIX}morse <text> (encode)\n• ${config.PREFIX}morse .... . .-.. .-.. --- (decode)\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        await react('🔄');
+
+        if (/^[\.\-\s]+$/.test(text)) {
+            const decoded = morse.decode(text);
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📡 *Morse Decoder*\n━━━━━━━━━━━━━━━━━━━\n_Morse:_ ${text}\n\n_Text:_ ${decoded}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy Text', copy_code: decoded }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        } else {
+            const encoded = morse.encode(text);
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📡 *Morse Encoder*\n━━━━━━━━━━━━━━━━━━━\n_Text:_ ${text}\n\n_Morse:_ ${encoded}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy Morse', copy_code: encoded }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+        await react('✅');
+    }
+});
+
+// ==================== SECTION 2: SECURITY TOOLS ====================
+
+// 6. ENCRYPT
+commands.push({
+    name: 'encrypt',
+    description: 'Encrypt text with password',
+    aliases: ['encode'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('🔐');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔐 *ENCRYPT*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}encrypt <password> <text>\n_Example:_ ${config.PREFIX}encrypt mysecret Hello World\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const [password, ...messageParts] = text.split(' ');
+        const message = messageParts.join(' ');
+        if (!password || !message) return reply('❌ Need both password and message');
+
+        await react('🔄');
+        const encrypted = CryptoJS.AES.encrypt(message, password).toString();
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔐 *Encrypted*\n━━━━━━━━━━━━━━━━━━━\n_Password:_ ||${password}||\n\n_Encrypted:_\n${encrypted}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: encrypted }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 7. DECRYPT
+commands.push({
+    name: 'decrypt',
+    description: 'Decrypt text with password',
+    aliases: ['decode'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const text = args.join(' ');
+        if (!text) {
+            await react('🔐');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔐 *DECRYPT*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}decrypt <password> <encrypted>\n_Example:_ ${config.PREFIX}decrypt mysecret U2FsdGVkX1...\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const [password, ...encryptedParts] = text.split(' ');
+        const encrypted = encryptedParts.join(' ');
+        if (!password || !encrypted) return reply('❌ Need both password and encrypted text');
+
+        await react('🔄');
+        const bytes = CryptoJS.AES.decrypt(encrypted, password);
+        const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+        if (!decrypted) return reply('❌ Wrong password or corrupted data');
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔐 *Decrypted*\n━━━━━━━━━━━━━━━━━━━\n_Password:_ ||${password}||\n\n_Decrypted:_\n${decrypted}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: decrypted }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 8. PASSWORD GENERATOR
+commands.push({
+    name: 'password',
+    description: 'Generate strong passwords',
+    aliases: ['pass', 'genpass'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const length = Math.min(Math.max(parseInt(args[0]) || 16, 8), 64);
+        await react('🔐');
+
+        const passwords = [];
+        for (let i = 0; i < 3; i++) {
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const allChars = lowercase + uppercase + numbers + symbols;
+
+            let password = '';
+            password += lowercase[Math.floor(Math.random() * lowercase.length)];
+            password += uppercase[Math.floor(Math.random() * uppercase.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += symbols[Math.floor(Math.random() * symbols.length)];
+
+            for (let j = 4; j < length; j++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+            password = password.split('').sort(() => Math.random() - 0.5).join('');
+            passwords.push(password);
+        }
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔐 *Strong Passwords*\n━━━━━━━━━━━━━━━━━━━\n_Length:_ ${length} characters\n\n_Password 1:_ \`${passwords[0]}\`\n\n_Password 2:_ \`${passwords[1]}\`\n\n_Password 3:_ \`${passwords[2]}\`\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy 1', copy_code: passwords[0] }) },
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy 2', copy_code: passwords[1] }) },
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy 3', copy_code: passwords[2] }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 9. VCC GENERATOR
+commands.push({
+    name: 'vcc',
+    description: 'Generate fake credit cards',
+    aliases: ['vccgen'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const type = args[0]?.toUpperCase() || 'Visa';
+        const count = Math.min(parseInt(args[1]) || 1, 5);
+
+        const validTypes = ['Visa', 'MasterCard', 'Amex', 'JCB', 'Diners'];
+        if (!validTypes.includes(type)) {
+            return reply(`❌ Invalid type. Use: ${validTypes.join(', ')}`);
+        }
+
+        await react('💳');
+
+        try {
+            const response = await axios.get(`https://api.siputzx.my.id/api/tools/vcc-generator`, {
+                params: { type, count },
+                timeout: 20000
+            });
+
+            if (response.data?.data?.length) {
+                const cards = response.data.data;
+                let resultText = `💳 *${type} Cards (${cards.length})*\n━━━━━━━━━━━━━━━━━━━\n\n`;
+                cards.forEach((card, i) => {
+                    resultText += `*${i+1}.* \`${card.cardNumber}\`\n   Exp: ${card.expirationDate} | CVV: ${card.cvv}\n   Name: ${card.cardholderName}\n\n`;
+                });
+                resultText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+                await sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: resultText,
+                    image: BOT_LOGO,
+                    buttons: cards.slice(0, 3).map((card, i) => ({
+                        name: 'cta_copy',
+                        buttonParamsJson: JSON.stringify({ display_text: `📋 Copy Card ${i+1}`, copy_code: `${card.cardNumber}|${card.expirationDate}|${card.cvv}` })
+                    }))
+                }, msg);
+                await react('✅');
+                return;
+            }
+        } catch (apiError) {}
+
+        // Fallback: Generate fake data locally
+        const cards = [];
+        for (let i = 0; i < count; i++) {
+            const cardNumber = Math.floor(Math.random() * 10000000000000000).toString().padStart(16, '0');
+            const expMonth = Math.floor(Math.random() * 12) + 1;
+            const expYear = 25 + Math.floor(Math.random() * 5);
+            const cvv = Math.floor(Math.random() * 900) + 100;
+            const names = ['John Doe', 'Jane Smith', 'Robert Johnson', 'Maria Garcia', 'David Brown'];
+            const cardholderName = names[Math.floor(Math.random() * names.length)];
+
+            cards.push({
+                cardNumber,
+                expirationDate: `${expMonth.toString().padStart(2, '0')}/${expYear}`,
+                cardholderName,
+                cvv: cvv.toString()
+            });
+        }
+
+        let resultText = `💳 *${type} Cards (${cards.length})* [Fallback]\n━━━━━━━━━━━━━━━━━━━\n\n`;
+        cards.forEach((card, i) => {
+            resultText += `*${i+1}.* \`${card.cardNumber}\`\n   Exp: ${card.expirationDate} | CVV: ${card.cvv}\n   Name: ${card.cardholderName}\n\n`;
+        });
+        resultText += `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: resultText,
+            image: BOT_LOGO,
+            buttons: cards.slice(0, 3).map((card, i) => ({
+                name: 'cta_copy',
+                buttonParamsJson: JSON.stringify({ display_text: `📋 Copy Card ${i+1}`, copy_code: `${card.cardNumber}|${card.expirationDate}|${card.cvv}` })
+            }))
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== SECTION 3: GENERATOR TOOLS ====================
+
+// 10. EMAIL GENERATOR
+commands.push({
+    name: 'email',
+    description: 'Generate random email addresses',
+    aliases: ['genemail'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const count = Math.min(parseInt(args[0]) || 1, 20);
+        await react('📧');
+
+        const emails = [];
+        for (let i = 0; i < count; i++) {
+            emails.push(faker.internet.email());
+        }
+
+        let resultText = `📧 *Random Emails*\n━━━━━━━━━━━━━━━━━━━\n_${count} Email(s)_\n\n`;
+        emails.forEach((e, i) => {
+            resultText += `${i+1}. \`${e}\`\n`;
+        });
+        resultText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: resultText,
+            image: BOT_LOGO,
+            buttons: emails.slice(0, 3).map((email, i) => ({
+                name: 'cta_copy',
+                buttonParamsJson: JSON.stringify({ display_text: `📋 Copy ${i+1}`, copy_code: email })
+            }))
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 11. UUID GENERATOR
+commands.push({
+    name: 'uuid',
+    description: 'Generate UUIDs',
+    aliases: ['guid'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const count = Math.min(parseInt(args[0]) || 5, 20);
+        await react('🔑');
+
+        const uuids = [];
+        for (let i = 0; i < count; i++) {
+            uuids.push(uuidv4());
+        }
+
+        let resultText = `🔑 *UUID Generator*\n━━━━━━━━━━━━━━━━━━━\n_${count} UUID(s)_\n\n`;
+        uuids.forEach((u, i) => {
+            resultText += `${i+1}. \`${u}\`\n`;
+        });
+        resultText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: resultText,
+            image: BOT_LOGO,
+            buttons: uuids.slice(0, 3).map((uuid, i) => ({
+                name: 'cta_copy',
+                buttonParamsJson: JSON.stringify({ display_text: `📋 Copy ${i+1}`, copy_code: uuid })
+            }))
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ==================== SECTION 4: WEB TOOLS ====================
+
+// 12. BROWSE WEB
+commands.push({
+    name: 'browse',
+    description: 'Fetch webpage content',
+    aliases: ['fetch'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🌐');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🌐 *BROWSE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}browse <url>\n_Example:_ ${config.PREFIX}browse https://example.com\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const url = args[0];
+        if (!url.startsWith('http')) return reply('❌ Please include http:// or https://');
+
+        await react('🌐');
+
+        try {
+            const response = await axios.get(url, { timeout: 15000 });
+            const textData = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+            const truncated = textData.length > 4000 ? textData.substring(0, 4000) + '...' : textData;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🌐 *Web Content*\n━━━━━━━━━━━━━━━━━━━\n${truncated}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: truncated }) },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '🔗 Open URL', url: url }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Error fetching URL: ${error.message}`);
+        }
+    }
+});
+
+// 13. TINYURL SHORTENER
+commands.push({
+    name: 'tinyurl',
+    description: 'Shorten URLs',
+    aliases: ['short'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🔗');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔗 *SHORTEN URL*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}tinyurl <url>\n_Example:_ ${config.PREFIX}tinyurl https://example.com\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const url = args[0];
+        if (!url.startsWith('http')) return reply('❌ Please include http:// or https://');
+
+        await react('🔗');
+
+        try {
+            const response = await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`, {
+                timeout: 15000
+            });
+            const shortUrl = response.data;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔗 *Short URL*\n━━━━━━━━━━━━━━━━━━━\n_Original:_ ${url}\n\n_Short:_ ${shortUrl}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: shortUrl }) },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '🔗 Open', url: shortUrl }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply('❌ Failed to shorten URL.');
+        }
+    }
+});
+
+// 14. SCREENSHOT
+commands.push({
+    name: 'screenshot',
+    description: 'Take screenshot of a website',
+    aliases: ['ss', 'ssweb'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('📸');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📸 *SCREENSHOT*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}screenshot <url>\n_Example:_ ${config.PREFIX}screenshot https://google.com\n\n_Options:_\n• Desktop (default)\n• Add 'mobile' for mobile view\n• Add 'full' for full page\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let url = args[0];
+        let device = 'desktop';
+        let fullPage = false;
+
+        if (args[1]) {
+            if (args[1].toLowerCase() === 'mobile') device = 'mobile';
+            if (args[1].toLowerCase() === 'full') fullPage = true;
+            if (args[2] && args[2].toLowerCase() === 'full') fullPage = true;
+        }
+
+        if (!url.startsWith('http')) url = 'https://' + url;
+
+        await react('📸');
+
+        try {
+            const response = await axios.get(`https://api.siputzx.my.id/api/tools/ssweb`, {
+                params: { url, device, theme: 'light', fullPage },
+                responseType: 'arraybuffer',
+                timeout: 30000,
+                headers: { 'User-Agent': 'Mozilla/5.0' }
+            });
+
+            const imageBuffer = Buffer.from(response.data);
+            const caption = `📸 *Screenshot*\n━━━━━━━━━━━━━━━━━━━\n_🌐 URL:_ ${url}\n_📱 Device:_ ${device}\n_📄 Full Page:_ ${fullPage ? 'Yes' : 'No'}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sock.sendMessage(from, { image: imageBuffer, caption: caption }, { quoted: msg });
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Screenshot failed.\n\nTry: ${config.PREFIX}screenshot https://google.com`);
+        }
+    }
+});
+
+// 15. SUBDOMAINS FINDER
+commands.push({
+    name: 'subdomains',
+    description: 'Find subdomains for a domain',
+    aliases: ['subdomain'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🔍');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔍 *SUBDOMAINS*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}subdomains <domain>\n_Example:_ ${config.PREFIX}subdomains github.com\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const domain = args[0];
+        await react('🔍');
+
+        try {
+            const response = await axios.get(`https://api.siputzx.my.id/api/tools/subdomains`, {
+                params: { domain },
+                timeout: 20000
+            });
+
+            if (!response.data?.data?.length) throw new Error('No subdomains found');
+
+            const subdomains = response.data.data.slice(0, 20);
+            let resultText = `🔍 *Subdomains for ${domain}*\n━━━━━━━━━━━━━━━━━━━\n\n`;
+            subdomains.forEach((s, i) => {
+                resultText += `${i+1}. ${s}\n`;
+            });
+            resultText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy List', copy_code: subdomains.join('\n') }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Failed to find subdomains.`);
+        }
+    }
+});
+
+// ==================== SECTION 5: INFO TOOLS ====================
+
+// 16. COUNTRY INFO
+commands.push({
+    name: 'countryinfo',
+    description: 'Get information about a country',
+    aliases: ['country'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🌍');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🌍 *COUNTRY INFO*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}countryinfo <country>\n_Example:_ ${config.PREFIX}countryinfo Kenya\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const country = args.join(' ');
+        await react('🌍');
+
+        try {
+            const response = await axios.get(`https://api.siputzx.my.id/api/tools/countryInfo`, {
+                params: { name: country },
+                timeout: 15000
+            });
+
+            if (!response.data?.data) throw new Error('Country not found');
+
+            const data = response.data.data;
+
+            let languages = 'N/A';
+            if (data.languages) {
+                if (Array.isArray(data.languages)) {
+                    languages = data.languages.join(', ');
+                } else if (typeof data.languages === 'object') {
+                    languages = Object.values(data.languages).join(', ');
+                } else {
+                    languages = data.languages.toString();
+                }
+            }
+
+            let resultText = `🌍 *${data.name}*\n━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_🏛️ Capital:_ ${data.capital || 'N/A'}\n` +
+                `_👥 Population:_ ${data.population?.toLocaleString() || 'N/A'}\n` +
+                `_🗺️ Area:_ ${data.area?.toLocaleString() || 'N/A'} km²\n` +
+                `_💰 Currency:_ ${data.currency || 'N/A'}\n` +
+                `_🗣️ Languages:_ ${languages}\n` +
+                `_⏰ Timezones:_ ${data.timezones?.join(', ') || 'N/A'}\n\n` +
+                `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: resultText.replace(/\*/g, '') }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Country not found.`);
+        }
+    }
+});
+
+// ==================== SECTION 6: SOCIAL STALKING ====================
+
+// 17. GITHUB STALK
+commands.push({
+    name: 'githubstalk',
+    description: 'Get GitHub user info',
+    aliases: ['ghstalk'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🐙');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🐙 *GITHUB STALK*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}githubstalk <username>\n_Example:_ ${config.PREFIX}githubstalk torvalds\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const username = args[0];
+        await react('🐙');
+
+        try {
+            let user = null;
+            let htmlUrl = `https://github.com/${username}`;
+
+            try {
+                const response = await axios.get(`https://api.github.com/users/${username}`, {
+                    timeout: 10000,
+                    headers: { 'User-Agent': 'Mozilla/5.0' }
+                });
+                user = response.data;
+            } catch (githubError) {
+                try {
+                    const response = await axios.get(`https://api.siputzx.my.id/api/stalk/github`, {
+                        params: { user: username },
+                        timeout: 10000
+                    });
+                    if (response.data?.data) user = response.data.data;
+                } catch (siputzxError) {
+                    user = {
+                        login: username,
+                        name: username,
+                        bio: 'GitHub user',
+                        public_repos: 0,
+                        followers: 0,
+                        following: 0,
+                        created_at: new Date().toISOString(),
+                        html_url: htmlUrl
+                    };
+                }
+            }
+
+            let resultText = `🐙 *${user.login || username}*\n━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_📛 Name:_ ${user.name || 'N/A'}\n` +
+                `_📝 Bio:_ ${user.bio || 'N/A'}\n` +
+                `_📦 Public Repos:_ ${user.public_repos || 0}\n` +
+                `_👥 Followers:_ ${user.followers || 0}\n` +
+                `_👤 Following:_ ${user.following || 0}\n` +
+                `_📅 Created:_ ${new Date(user.created_at).toLocaleDateString()}\n\n` +
+                `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '🔗 View Profile', url: user.html_url || htmlUrl }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ User not found.`);
+        }
+    }
+});
+
+// 18. YOUTUBE STALK
+commands.push({
+    name: 'youtubestalk',
+    description: 'Get YouTube channel info',
+    aliases: ['ytstalk'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('📺');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📺 *YOUTUBE STALK*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}youtubestalk <channel>\n_Example:_ ${config.PREFIX}youtubestalk MrBeast\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const channel = args[0];
+        await react('📺');
+
+        try {
+            let channelData = null;
+            let channelUrl = `https://youtube.com/@${channel}`;
+
+            try {
+                const response = await axios.get(`https://api.siputzx.my.id/api/stalk/youtube`, {
+                    params: { username: channel },
+                    timeout: 15000
+                });
+                if (response.data?.data) channelData = response.data.data;
+            } catch (apiError) {
+                channelData = {
+                    channelName: channel,
+                    subscribers: 'N/A',
+                    totalViews: 'N/A',
+                    totalVideos: 'N/A',
+                    joinedDate: 'N/A',
+                    channelUrl: channelUrl
+                };
+            }
+
+            let resultText = `📺 *${channelData.channelName || channel}*\n━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_👥 Subscribers:_ ${channelData.subscribers || 'N/A'}\n` +
+                `_👁️ Total Views:_ ${channelData.totalViews || 'N/A'}\n` +
+                `_🎬 Total Videos:_ ${channelData.totalVideos || 'N/A'}\n` +
+                `_📅 Joined:_ ${channelData.joinedDate || 'N/A'}\n\n` +
+                `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '🔗 View Channel', url: channelData.channelUrl || channelUrl }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Channel not found.`);
+        }
+    }
+});
+
+// ==================== SECTION 7: MATH & TEXT TOOLS ====================
+
+// 19. CALCULATE
+commands.push({
+    name: 'calculate',
+    description: 'Solve math equations',
+    aliases: ['calc', 'math'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🧮');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🧮 *CALCULATOR*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}calc <equation>\n_Example:_ ${config.PREFIX}calc 2+2\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const equation = args.join(' ').replace(/×/g, '*').replace(/÷/g, '/');
+        await react('🧮');
+
+        try {
+            const result = math.evaluate(equation);
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🧮 *Calculator*\n━━━━━━━━━━━━━━━━━━━\n_Equation:_ ${equation}\n\n_Result:_ ${result}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: result.toString() }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Invalid equation: ${error.message}`);
+        }
+    }
+});
+
+// 20. FLIP TEXT
+commands.push({
+    name: 'fliptext',
+    description: 'Flip text upside down',
+    aliases: ['flip'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('🔄');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔄 *FLIP TEXT*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}fliptext <text>\n_Example:_ ${config.PREFIX}fliptext Hello\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const text = args.join(' ');
+
+        const flipMap = {
+            'a': 'ɐ', 'b': 'q', 'c': 'ɔ', 'd': 'p', 'e': 'ǝ', 'f': 'ɟ', 'g': 'ƃ',
+            'h': 'ɥ', 'i': 'ᴉ', 'j': 'ɾ', 'k': 'ʞ', 'l': 'l', 'm': 'ɯ', 'n': 'u',
+            'o': 'o', 'p': 'd', 'q': 'b', 'r': 'ɹ', 's': 's', 't': 'ʇ', 'u': 'n',
+            'v': 'ʌ', 'w': 'ʍ', 'x': 'x', 'y': 'ʎ', 'z': 'z', 'A': '∀', 'B': '𐐒',
+            'C': 'Ɔ', 'D': 'ᗡ', 'E': 'Ǝ', 'F': 'Ⅎ', 'G': '⅁', 'H': 'H', 'I': 'I',
+            'J': 'ſ', 'K': 'ʞ', 'L': '⅂', 'M': 'W', 'N': 'N', 'O': 'O', 'P': 'Ԁ',
+            'Q': 'Q', 'R': 'ᴚ', 'S': 'S', 'T': '⊥', 'U': '∩', 'V': 'Λ', 'W': 'M',
+            'X': 'X', 'Y': '⅄', 'Z': 'Z', '0': '0', '1': 'Ɩ', '2': 'ᄅ', '3': 'Ɛ',
+            '4': 'ㄣ', '5': 'ϛ', '6': '9', '7': 'ㄥ', '8': '8', '9': '6', '!': '¡',
+            '?': '¿', '.': '˙', ',': "'", '"': '„', "'": ',', '(': ')', ')': '(',
+            '[': ']', ']': '[', '{': '}', '}': '{', '<': '>', '>': '<', '&': '⅋', '_': '‾'
+        };
+
+        const flipped = text.split('').map(char => flipMap[char] || char).reverse().join('');
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔄 *Flipped Text*\n━━━━━━━━━━━━━━━━━━━\n_Original:_ ${text}\n\n_Flipped:_ ${flipped}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: flipped }) },
+                { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// 21. EMOJI MIX
+commands.push({
+    name: 'emojimix',
+    description: 'Mix two emojis together',
+    aliases: ['emix'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (args.length < 1 || !args[0].includes('+')) {
+            await react('😊');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `😊 *EMOJI MIX*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}emojimix 😅+🤔\n_Example:_ ${config.PREFIX}emojimix 🐱+🐶\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const [emoji1, emoji2] = args[0].split('+').map(e => e.trim());
+        if (!emoji1 || !emoji2) return reply('❌ Please provide two emojis separated by +');
+
+        await react('🎨');
+
+        try {
+            const response = await axios.get(
+                `https://tenor.googleapis.com/v2/featured?key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(emoji1)}_${encodeURIComponent(emoji2)}`,
+                { timeout: 15000 }
+            );
+
+            if (!response.data.results?.length) return reply('❌ Could not mix these emojis.');
+
+            const result = response.data.results[0];
+
+            await sock.sendMessage(from, {
+                image: { url: result.url },
+                caption: `🎨 *Emoji Mix*\n\n${emoji1} + ${emoji2}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`
+            }, { quoted: msg });
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply('❌ Failed to mix emojis.');
+        }
+    }
+});
+
+// 22. ZODIAK
+commands.push({
+    name: 'zodiak',
+    description: 'Get zodiac information',
+    aliases: ['zodiac'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        if (!args.length) {
+            await react('⭐');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `⭐ *ZODIAK*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}zodiak <sign>\n_Example:_ ${config.PREFIX}zodiak gemini\n\n_Signs:_ aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const sign = args[0].toLowerCase();
+        await react('⭐');
+
+        try {
+            const response = await axios.get(`https://api.siputzx.my.id/api/primbon/zodiak`, {
+                params: { zodiak: sign },
+                timeout: 15000
+            });
+
+            if (!response.data?.data) throw new Error('Zodiac not found');
+
+            const data = response.data.data;
+            const translatedDesc = await translateToEnglish(data.zodiak);
+
+            let resultText = `⭐ *${sign.toUpperCase()}*\n━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_📝 Description:_ ${translatedDesc}\n\n` +
+                `_🔢 Lucky Numbers:_ ${data.nomor_keberuntungan || 'N/A'}\n` +
+                `_🌸 Lucky Flowers:_ ${data.bunga_keberuntungan || 'N/A'}\n` +
+                `_🎨 Lucky Color:_ ${data.warna_keberuntungan || 'N/A'}\n` +
+                `_💧 Element:_ ${data.elemen_keberuntungan || 'N/A'}\n` +
+                `_🪐 Planet:_ ${data.planet_yang_mengitari || 'N/A'}\n\n` +
+                `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: resultText,
+                image: BOT_LOGO,
+                buttons: [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy', copy_code: resultText.replace(/\*/g, '') }) },
+                    { id: `${config.PREFIX}tools`, text: '🛠️ Tools' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+        } catch (error) {
+            await react('❌');
+            await reply(`❌ Zodiac not found.\n\nTry: ${config.PREFIX}zodiak gemini`);
+        }
+    }
+});
+
+// ==================== SECTION 8: HELP ====================
+
+// 23. TOOLS HELP
+commands.push({
+    name: 'tools',
+    description: 'Show all tool commands',
+    aliases: ['toolhelp'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const prefix = config.PREFIX;
+
+        const helpText = `🛠️ *MEGAN TOOLS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `*🔢 ENCODING*\n` +
+            `_${prefix}binary_ - Text to binary\n` +
+            `_${prefix}debinary_ - Binary to text\n` +
+            `_${prefix}base64_ - Encode/decode\n` +
+            `_${prefix}hash_ - MD5, SHA1, SHA256\n` +
+            `_${prefix}morse_ - Morse code\n\n` +
+
+            `*🔐 SECURITY*\n` +
+            `_${prefix}encrypt_ - AES encrypt\n` +
+            `_${prefix}decrypt_ - AES decrypt\n` +
+            `_${prefix}password_ - Strong passwords\n` +
+            `_${prefix}vcc_ - Credit cards\n\n` +
+
+            `*🎲 GENERATORS*\n` +
+            `_${prefix}email_ - Random emails\n` +
+            `_${prefix}uuid_ - UUIDs\n\n` +
+
+            `*🌐 WEB*\n` +
+            `_${prefix}browse_ - Fetch webpage\n` +
+            `_${prefix}tinyurl_ - Shorten URL\n` +
+            `_${prefix}screenshot_ - Website screenshot\n` +
+            `_${prefix}subdomains_ - Find subdomains\n\n` +
+
+            `*🌍 INFO*\n` +
+            `_${prefix}countryinfo_ - Country details\n` +
+            `_${prefix}githubstalk_ - GitHub profile\n` +
+            `_${prefix}youtubestalk_ - Channel info\n\n` +
+
+            `*🧮 MATH & TEXT*\n` +
+            `_${prefix}calc_ - Calculate\n` +
+            `_${prefix}fliptext_ - Flip text\n` +
+            `_${prefix}emojimix_ - Mix emojis\n` +
+            `_${prefix}zodiak_ - Zodiac info\n\n` +
+
+            `> created by wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: helpText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+module.exports = { commands };

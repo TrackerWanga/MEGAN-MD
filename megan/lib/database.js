@@ -1,549 +1,287 @@
-// megan/lib/database.js
+// MEGAN-MD Database Manager - Original Working Version
 
-const { sequelize, User, Group, Setting, DeletedMessage, Warning, CommandStat } = require('../models');
+const { Sequelize, DataTypes, Op } = require('sequelize');
+const path = require('path');
+const config = require('../config');
 
 class DatabaseManager {
-
     constructor() {
-
+        this.sequelize = null;
+        this.models = {};
+        this.cache = new Map();
+        this.cacheTTL = 5 * 60 * 1000;
         this.initialized = false;
-
-        this.models = { User, Group, Setting, DeletedMessage, Warning, CommandStat };
-
     }
 
     async initialize() {
+        if (this.initialized) return this;
 
         try {
+            const dbPath = path.join(process.cwd(), config.DATABASE.STORAGE);
 
-            await sequelize.authenticate();
+            console.log('🗄️  Connecting to SQLite database...');
+            this.sequelize = new Sequelize({
+                dialect: 'sqlite',
+                storage: dbPath,
+                logging: false,
+                define: { timestamps: true, underscored: true }
+            });
 
-            await sequelize.sync({ alter: true });
+            await this.sequelize.authenticate();
+            console.log('✅ Database connected');
+
+            // Define only essential models
+            this.models.Setting = this.sequelize.define('Setting', {
+                key: { type: DataTypes.STRING, unique: true, allowNull: false },
+                value: { type: DataTypes.TEXT }
+            });
+
+            this.models.Message = this.sequelize.define('Message', {
+                messageId: { type: DataTypes.STRING, unique: true, allowNull: false },
+                chatJid: { type: DataTypes.STRING, allowNull: false },
+                senderJid: { type: DataTypes.STRING, allowNull: false },
+                messageData: { type: DataTypes.TEXT('long'), allowNull: false },
+                textContent: { type: DataTypes.TEXT },
+                mediaUrl: { type: DataTypes.STRING },
+                messageType: { type: DataTypes.STRING },
+                isViewOnce: { type: DataTypes.BOOLEAN, defaultValue: false },
+                isStatus: { type: DataTypes.BOOLEAN, defaultValue: false },
+                timestamp: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+            });
+
+            this.models.OriginalMessage = this.sequelize.define('OriginalMessage', {
+                messageId: { type: DataTypes.STRING, unique: true, allowNull: false },
+                chatJid: { type: DataTypes.STRING, allowNull: false },
+                messageData: { type: DataTypes.TEXT('long'), allowNull: false },
+                timestamp: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+            });
+
+            this.models.DeletedMessage = this.sequelize.define('DeletedMessage', {
+                messageId: { type: DataTypes.STRING },
+                chatJid: { type: DataTypes.STRING },
+                senderJid: { type: DataTypes.STRING },
+                deleterJid: { type: DataTypes.STRING },
+                messageData: { type: DataTypes.TEXT('long') },
+                messageType: { type: DataTypes.STRING },
+                content: { type: DataTypes.TEXT },
+                mediaUrl: { type: DataTypes.STRING },
+                isStatus: { type: DataTypes.BOOLEAN, defaultValue: false },
+                deletedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+            });
+
+            this.models.LidMapping = this.sequelize.define('LidMapping', {
+                lid: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
+                jid: { type: DataTypes.STRING, allowNull: false },
+                source: { type: DataTypes.STRING, defaultValue: 'group' },
+                lastSeen: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+            }, { tableName: 'lid_mappings', timestamps: true });
+
+            // Simple anti-link table (working)
+            this.models.GroupAntiLink = this.sequelize.define('GroupAntiLink', {
+                groupJid: { type: DataTypes.STRING, allowNull: false, unique: true },
+                enabled: { type: DataTypes.BOOLEAN, defaultValue: false }
+            });
+
+            await this.sequelize.sync({ alter: true });
+
+            await this.initDefaultSettings();
 
             this.initialized = true;
-
-            console.log('✅ SQLite database connected');
+            console.log('✅ All tables ready');
 
         } catch (error) {
-
-            console.error('❌ Database error:', error.message);
-
+            console.error('Database error:', error.message);
             throw error;
-
         }
-
+        return this;
     }
 
-    // ===== SETTINGS =====
+    async initDefaultSettings() {
+        const defaults = {
+            timezone: 'Africa/Nairobi',
+            bot_name: config.BOT_NAME,
+            owner_name: config.OWNER_NAME,
+            prefix: config.PREFIX,
+            mode: config.MODE || 'public',
+            footer: config.FOOTER,
+            autotyping_dm: 'off',
+            autotyping_group: 'off',
+            autorecording_dm: 'off',
+            autorecording_group: 'off',
+            presence_dm: 'typing',
+            presence_group: 'typing',
+            chatbot: 'off',
+            autoread: 'off',
+            autoreact: 'off',
+            antidelete: 'on',
+            antiedit: 'on',
+            anticall: 'off',
+            autoviewonce: 'on',
+            status_auto_view: 'on',
+            status_auto_react: 'off',
+            status_auto_download: 'off',
+            status_react_emojis: '💛,❤️,💜,💙,👍,🔥',
+            status_anti_delete: 'off',
+            welcome: 'off',
+            goodbye: 'off',
+            welcomemessage: 'Hey @user welcome to our group! Hope you enjoy and connect with everyone.',
+            goodbyemessage: 'Goodbye @user! 👋',
+            first_welcome: 'on',
+            anticall_msg: '📞 Calls are not allowed!',
+            ai_mode: 'normal'
+        };
+
+        for (const [key, value] of Object.entries(defaults)) {
+            const exists = await this.getSetting(key);
+            if (exists === null) {
+                await this.setSetting(key, value);
+            }
+        }
+    }
 
     async getSetting(key, defaultValue = null) {
-
         try {
-
-            const setting = await Setting.findOne({ where: { key } });
-
-            if (!setting) return defaultValue;
-
-            
-
-            // Try to parse JSON, fallback to string
-
-            try {
-
-                return JSON.parse(setting.value);
-
-            } catch {
-
-                return setting.value;
-
+            if (this.cache.has(key)) {
+                const cached = this.cache.get(key);
+                if (Date.now() - cached.timestamp < this.cacheTTL) {
+                    return cached.value;
+                }
+                this.cache.delete(key);
             }
 
+            const setting = await this.models.Setting.findOne({ where: { key } });
+            let value = defaultValue;
+
+            if (setting) {
+                try {
+                    value = JSON.parse(setting.value);
+                } catch {
+                    value = setting.value;
+                }
+            }
+
+            this.cache.set(key, { value, timestamp: Date.now() });
+            return value;
         } catch (error) {
-
-            console.error(`Error getting setting ${key}:`, error.message);
-
             return defaultValue;
-
         }
-
     }
 
     async setSetting(key, value) {
-
         try {
-
             const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
-
-            await Setting.upsert({ key, value: stringValue });
-
+            await this.models.Setting.upsert({ key, value: stringValue });
+            this.cache.set(key, { value, timestamp: Date.now() });
             return true;
-
         } catch (error) {
-
-            console.error(`Error setting ${key}:`, error.message);
-
             return false;
-
         }
-
     }
 
-    async getAllSettings() {
-
+    async enableGroupAntiLink(groupJid) {
         try {
+            await this.models.GroupAntiLink.upsert({ groupJid, enabled: true });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
-            const settings = await Setting.findAll();
+    async disableGroupAntiLink(groupJid) {
+        try {
+            await this.models.GroupAntiLink.destroy({ where: { groupJid } });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
-            const result = {};
+    async isGroupAntiLinkEnabled(groupJid) {
+        try {
+            const record = await this.models.GroupAntiLink.findOne({ where: { groupJid } });
+            return record ? record.enabled : false;
+        } catch (error) {
+            return false;
+        }
+    }
 
-            settings.forEach(s => {
+    async saveMessage(messageData) {
+        try {
+            return await this.models.Message.create(messageData);
+        } catch (error) {
+            return null;
+        }
+    }
 
-                try {
-
-                    result[s.key] = JSON.parse(s.value);
-
-                } catch {
-
-                    result[s.key] = s.value;
-
-                }
-
+    async getMessage(chatJid, messageId) {
+        try {
+            return await this.models.Message.findOne({
+                where: { chatJid, messageId }
             });
-
-            return result;
-
         } catch (error) {
-
-            console.error('Error getting all settings:', error.message);
-
-            return {};
-
-        }
-
-    }
-
-    // ===== USERS =====
-
-    async getUser(jid) {
-
-        try {
-
-            return await User.findOne({ where: { jid } });
-
-        } catch (error) {
-
-            console.error('Error getting user:', error.message);
-
             return null;
-
         }
-
     }
 
-    async updateUser(jid, data) {
-
+    async storeOriginalMessage(messageId, chatJid, messageData) {
         try {
-
-            const [user, created] = await User.upsert({
-
-                jid,
-
-                ...data,
-
-                lastSeen: new Date()
-
+            return await this.models.OriginalMessage.upsert({
+                messageId,
+                chatJid,
+                messageData: JSON.stringify(messageData)
             });
-
-            return user;
-
         } catch (error) {
-
-            console.error('Error updating user:', error.message);
-
             return null;
-
         }
-
     }
 
-    async getAllUsers() {
-
+    async getOriginalMessage(chatJid, messageId) {
         try {
-
-            return await User.findAll();
-
-        } catch (error) {
-
-            console.error('Error getting all users:', error.message);
-
-            return [];
-
-        }
-
-    }
-
-    // ===== GROUPS =====
-
-    async getGroup(jid) {
-
-        try {
-
-            return await Group.findOne({ where: { jid } });
-
-        } catch (error) {
-
-            console.error('Error getting group:', error.message);
-
-            return null;
-
-        }
-
-    }
-
-    async updateGroup(jid, data) {
-
-        try {
-
-            const [group, created] = await Group.upsert({
-
-                jid,
-
-                ...data
-
+            const record = await this.models.OriginalMessage.findOne({
+                where: { chatJid, messageId }
             });
-
-            return group;
-
-        } catch (error) {
-
-            console.error('Error updating group:', error.message);
-
+            if (record && record.messageData) {
+                return JSON.parse(record.messageData);
+            }
             return null;
-
-        }
-
-    }
-
-    async getAllGroups() {
-
-        try {
-
-            return await Group.findAll();
-
         } catch (error) {
-
-            console.error('Error getting all groups:', error.message);
-
-            return [];
-
+            return null;
         }
-
     }
-
-    // ===== DELETED MESSAGES =====
 
     async logDeletedMessage(data) {
-
         try {
-
-            return await DeletedMessage.create(data);
-
+            return await this.models.DeletedMessage.create(data);
         } catch (error) {
-
-            console.error('Error logging deleted message:', error.message);
-
             return null;
-
         }
-
     }
 
-    async getDeletedMessages(chatJid, limit = 50) {
-
+    async persistLidMapping(lid, jid, source = 'group') {
         try {
-
-            return await DeletedMessage.findAll({
-
-                where: { chatJid },
-
-                order: [['deletedAt', 'DESC']],
-
-                limit
-
-            });
-
+            if (!lid || !jid) return false;
+            if (!lid.endsWith('@lid')) return false;
+            if (!jid.endsWith('@s.whatsapp.net')) return false;
+            await this.models.LidMapping.upsert({ lid, jid, source, lastSeen: new Date() });
+            return true;
         } catch (error) {
-
-            console.error('Error getting deleted messages:', error.message);
-
-            return [];
-
+            return false;
         }
-
     }
 
-    // ===== WARNINGS =====
-
-    async addWarning(userJid, groupJid, reason, issuedBy) {
-
+    async getLidMappingFromDb(lid) {
         try {
-
-            return await Warning.create({
-
-                userJid,
-
-                groupJid,
-
-                reason,
-
-                issuedBy
-
-            });
-
+            if (!lid || !lid.endsWith('@lid')) return null;
+            const row = await this.models.LidMapping.findOne({ where: { lid } });
+            return row ? row.jid : null;
         } catch (error) {
-
-            console.error('Error adding warning:', error.message);
-
             return null;
-
         }
-
-    }
-
-    async getUserWarnings(userJid, groupJid = null) {
-
-        try {
-
-            const where = { userJid };
-
-            if (groupJid) where.groupJid = groupJid;
-
-            
-
-            return await Warning.findAll({
-
-                where,
-
-                order: [['issuedAt', 'DESC']]
-
-            });
-
-        } catch (error) {
-
-            console.error('Error getting warnings:', error.message);
-
-            return [];
-
-        }
-
-    }
-
-    async getWarningCount(userJid, groupJid = null) {
-
-        try {
-
-            const where = { userJid };
-
-            if (groupJid) where.groupJid = groupJid;
-
-            
-
-            return await Warning.count({ where });
-
-        } catch (error) {
-
-            console.error('Error counting warnings:', error.message);
-
-            return 0;
-
-        }
-
-    }
-
-    async clearWarnings(userJid, groupJid = null) {
-
-        try {
-
-            const where = { userJid };
-
-            if (groupJid) where.groupJid = groupJid;
-
-            
-
-            await Warning.destroy({ where });
-
-            return true;
-
-        } catch (error) {
-
-            console.error('Error clearing warnings:', error.message);
-
-            return false;
-
-        }
-
-    }
-
-    // ===== COMMAND STATS =====
-
-    async logCommand(command, userJid, groupJid = null) {
-
-        try {
-
-            await CommandStat.create({
-
-                command,
-
-                userJid,
-
-                groupJid
-
-            });
-
-            
-
-            // Update user command count
-
-            const user = await this.getUser(userJid);
-
-            if (user) {
-
-                await user.increment('commandCount');
-
-            } else {
-
-                await this.updateUser(userJid, { commandCount: 1 });
-
-            }
-
-            
-
-            return true;
-
-        } catch (error) {
-
-            console.error('Error logging command:', error.message);
-
-            return false;
-
-        }
-
-    }
-
-    async getCommandStats(limit = 50) {
-
-        try {
-
-            return await CommandStat.findAll({
-
-                order: [['executedAt', 'DESC']],
-
-                limit
-
-            });
-
-        } catch (error) {
-
-            console.error('Error getting command stats:', error.message);
-
-            return [];
-
-        }
-
-    }
-
-    async getTopCommands(limit = 10) {
-
-        try {
-
-            const [results] = await sequelize.query(`
-
-                SELECT command, COUNT(*) as count
-
-                FROM CommandStats
-
-                GROUP BY command
-
-                ORDER BY count DESC
-
-                LIMIT ${limit}
-
-            `);
-
-            return results;
-
-        } catch (error) {
-
-            console.error('Error getting top commands:', error.message);
-
-            return [];
-
-        }
-
-    }
-
-    // ===== STATS =====
-
-    async getStats() {
-
-        try {
-
-            const userCount = await User.count();
-
-            const groupCount = await Group.count();
-
-            const warningCount = await Warning.count();
-
-            const deletedCount = await DeletedMessage.count();
-
-            const commandCount = await CommandStat.count();
-
-            
-
-            return {
-
-                users: userCount,
-
-                groups: groupCount,
-
-                warnings: warningCount,
-
-                deletedMessages: deletedCount,
-
-                totalCommands: commandCount
-
-            };
-
-        } catch (error) {
-
-            console.error('Error getting stats:', error.message);
-
-            return {
-
-                users: 0,
-
-                groups: 0,
-
-                warnings: 0,
-
-                deletedMessages: 0,
-
-                totalCommands: 0
-
-            };
-
-        }
-
     }
 
     async save() {
-
-        // SQLite auto-saves, nothing needed
-
         return true;
-
     }
-
 }
 
 module.exports = DatabaseManager;

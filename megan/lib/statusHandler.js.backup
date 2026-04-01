@@ -1,4 +1,4 @@
-// MEGAN-MD Status Handler - WITH LID RESOLUTION (Minimal Logging Version)
+// MEGAN-MD Status Handler - WITH LID RESOLUTION
 
 const { downloadMediaMessage } = require('gifted-baileys');
 const config = require('../config');
@@ -16,14 +16,13 @@ class StatusHandler {
         this.lidResolver = null;
         this.tempDir = path.join(__dirname, '../../temp');
         this.recentReactions = new Set();
-
+        
         fs.ensureDirSync(this.tempDir);
         this.ownerJid = config.getOwnerJid();
-
-        // Only log initialization once
-        // this.logger.status('✅ Status Handler initialized'); // Commented out
+        
+        this.logger.status('✅ Status Handler initialized');
     }
-
+    
     extractText(message) {
         if (!message) return '';
         if (message.conversation) return message.conversation;
@@ -32,7 +31,7 @@ class StatusHandler {
         if (message.videoMessage?.caption) return message.videoMessage.caption;
         return '';
     }
-
+    
     getMediaType(message) {
         if (!message) return null;
         if (message.imageMessage) return 'IMAGE';
@@ -42,7 +41,7 @@ class StatusHandler {
         if (message.documentMessage) return 'DOCUMENT';
         return null;
     }
-
+    
     getExtension(mediaType) {
         const extensions = {
             'IMAGE': 'jpg',
@@ -53,91 +52,103 @@ class StatusHandler {
         };
         return extensions[mediaType] || 'bin';
     }
-
+    
     async handleStatus(message) {
         try {
-            // REMOVED: Separator lines and verbose logs
+            this.logger.status('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            this.logger.status('📱 STATUS MESSAGE RECEIVED');
             
             if (!message?.key || message.key.remoteJid !== 'status@broadcast') {
+                this.logger.status('❌ Not a status message, skipping');
                 return;
             }
             
             const rawParticipant = message.key.participant || message.key.remoteJid;
             const isFromMe = message.key.fromMe;
             
+            this.logger.status(`📱 Raw participant: ${rawParticipant}`);
+            this.logger.status(`📱 Is from me: ${isFromMe}`);
+            
             if (isFromMe) {
+                this.logger.status('⏭️ Status is from bot itself, skipping');
                 return;
             }
             
-            // Resolve LID to real JID
+            // ========== CRITICAL: RESOLVE LID TO REAL JID ==========
             const participantJid = await resolveRealJid(this.sock, rawParticipant);
             const senderShort = participantJid.split('@')[0];
+            this.logger.status(`👤 Resolved sender: @${senderShort} (${participantJid})`);
             
             const mediaType = this.getMediaType(message.message);
             const text = this.extractText(message.message);
+            this.logger.status(`📎 Type: ${mediaType || 'TEXT'}`);
+            if (text) this.logger.status(`📝 Caption: ${text.substring(0, 100)}`);
             
             const autoView = await this.db.getSetting('status_auto_view', 'on');
             const autoReact = await this.db.getSetting('status_auto_react', 'off');
             const autoDownload = await this.db.getSetting('status_auto_download', 'off');
             
-            // REMOVED: Settings log
+            this.logger.status(`⚙️ Settings: View=${autoView}, React=${autoReact}, Download=${autoDownload}`);
             
-            // ========== AUTO VIEW STATUS ==========
+            // ========== AUTO VIEW STATUS - WITH RESOLVED JID ==========
             if (autoView === 'on') {
-                // REMOVED: "Attempting to view" log
+                this.logger.view(`👁️ Attempting to view status from @${senderShort}...`);
                 const viewed = await this.markStatusAsViewed(message.key, participantJid);
                 if (viewed) {
-                    // Only log success with minimal info
-                    await this.logger.success(`👁️ Viewed status from @${senderShort}`);
+                    this.logger.view(`✅ STATUS VIEWED from @${senderShort}`);
                 } else {
-                    await this.logger.error(`❌ Failed to view status from @${senderShort}`);
+                    this.logger.error(`❌ Failed to view status from @${senderShort}`);
                 }
+            } else {
+                this.logger.status(`⏭️ Auto-view is OFF, skipping view`);
             }
             
-            // ========== AUTO REACT STATUS ==========
+            // ========== AUTO REACT STATUS - WITH RESOLVED JID ==========
             if (autoReact === 'on') {
-                // REMOVED: "Attempting to react" log
+                this.logger.react(`❤️ Attempting to react to status from @${senderShort}...`);
                 const reacted = await this.autoReactToStatus(message, participantJid);
                 if (reacted) {
-                    // Only log success with minimal info
-                    await this.logger.success(`❤️ Reacted to status from @${senderShort}`);
+                    this.logger.react(`✅ STATUS REACTED from @${senderShort}`);
                 } else {
-                    // Only log failures
-                    await this.logger.warn(`⚠️ Failed to react to status from @${senderShort}`);
+                    this.logger.warn(`⚠️ Failed to react to status from @${senderShort}`);
                 }
+            } else {
+                this.logger.status(`⏭️ Auto-react is OFF, skipping reaction`);
             }
             
             // ========== AUTO DOWNLOAD STATUS ==========
             if (autoDownload === 'on' && mediaType) {
-                // REMOVED: Download attempt log
+                this.logger.download(`📥 Downloading status from @${senderShort}...`);
                 await this.downloadAndForwardStatus(message, participantJid, text, mediaType);
             }
             
-            // REMOVED: Closing separator line
+            this.logger.status('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             
         } catch (error) {
-            // Keep error logs for debugging
-            await this.logger.error(`Status handler error: ${error.message}`);
+            this.logger.error(`Status handler error: ${error.message}`);
             console.error(error.stack);
         }
     }
     
     async markStatusAsViewed(key, participantJid) {
         try {
+            // Create read key with the RESOLVED participant JID
             const readKey = {
                 remoteJid: key.remoteJid,
                 id: key.id,
-                participant: participantJid,
+                participant: participantJid,  // ← Now using REAL JID!
                 fromMe: key.fromMe
             };
             
-            // REMOVED: Read key log
+            this.logger.view(`📨 Read key: ${JSON.stringify(readKey)}`);
+            
+            // Send read receipt
             const result = await this.sock.readMessages([readKey]);
-            // REMOVED: Result log
+            this.logger.view(`📨 readMessages result: ${JSON.stringify(result)}`);
             
             return true;
         } catch (error) {
-            await this.logger.error(`markStatusAsViewed error: ${error.message}`);
+            this.logger.error(`markStatusAsViewed error: ${error.message}`);
             return false;
         }
     }
@@ -147,34 +158,38 @@ class StatusHandler {
             // Skip if already reacted recently
             const reactionKey = `${message.key.id}_${participantJid}`;
             if (this.recentReactions.has(reactionKey)) {
+                this.logger.react(`⏭️ Already reacted to this status recently`);
                 return false;
             }
             
             // Skip own status
             if (participantJid === this.ownerJid) {
+                this.logger.react(`⏭️ Skipping own status reaction`);
                 return false;
             }
             
-            const emojisString = await this.db.getSetting('status_react_emojis', config.STATUS?.REACT_EMOJIS || '💛,❤️,💜,💙,👍,🔥');
+            const emojisString = await this.db.getSetting('status_react_emojis', config.STATUS?.REACT_EMOJIS || '💛,❤️,💜,🤍,💙,👍,🔥');
             const emojis = emojisString.split(',').map(e => e.trim());
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
             
-            // REMOVED: Selected emoji log
+            this.logger.react(`❤️ Selected emoji: ${randomEmoji}`);
             
+            // Create reaction key with resolved participant JID
             const reactKey = {
                 remoteJid: 'status@broadcast',
                 id: message.key.id,
-                participant: participantJid,
+                participant: participantJid,  // ← Now using REAL JID!
                 fromMe: false
             };
             
-            // REMOVED: React key log
+            this.logger.react(`📨 React key: ${JSON.stringify(reactKey)}`);
             
+            // Send reaction with statusJidList option
             const result = await this.sock.sendMessage('status@broadcast', {
                 react: { text: randomEmoji, key: reactKey }
             }, { statusJidList: [participantJid] });
             
-            // REMOVED: Result log
+            this.logger.react(`📨 sendMessage result: ${JSON.stringify(result)}`);
             
             // Rate limiting
             this.recentReactions.add(reactionKey);
@@ -183,32 +198,35 @@ class StatusHandler {
             return true;
             
         } catch (error) {
-            await this.logger.error(`autoReactToStatus error: ${error.message}`);
+            this.logger.error(`autoReactToStatus error: ${error.message}`);
             return false;
         }
     }
     
     async downloadAndForwardStatus(message, sender, text, mediaType) {
         try {
+            this.logger.download(`📥 Downloading status media...`);
+            
             const buffer = await downloadMediaMessage(message, 'buffer', {}, {
                 logger: this.logger
             });
             
             if (!buffer) {
-                await this.logger.error(`❌ Failed to download status buffer`);
+                this.logger.error(`❌ Failed to download buffer`);
                 return;
             }
+            
+            this.logger.download(`✅ Downloaded ${buffer.length} bytes`);
             
             const ext = this.getExtension(mediaType);
             const filename = `status_${Date.now()}.${ext}`;
             
+            this.logger.download(`📤 Uploading to Catbox...`);
             const { url, success } = await Uploader.uploadAuto(buffer, filename);
             
             if (success && url && this.ownerJid) {
                 const senderShort = sender.split('@')[0];
-                
-                // Only log successful download
-                await this.logger.success(`📥 Status downloaded from @${senderShort}: ${url.substring(0, 50)}...`);
+                this.logger.download(`✅ Uploaded to: ${url}`);
                 
                 await this.sock.sendMessage(this.ownerJid, {
                     text: `📥 *STATUS DOWNLOADED*\n\n` +
@@ -219,19 +237,23 @@ class StatusHandler {
                           `⏰ *Time:* ${new Date().toLocaleTimeString()}`,
                     mentions: [sender]
                 });
+                
+                this.logger.download(`✅ Forwarded to owner`);
             }
             
         } catch (error) {
-            await this.logger.error(`downloadAndForwardStatus error: ${error.message}`);
+            this.logger.error(`downloadAndForwardStatus error: ${error.message}`);
         }
     }
     
     async handleStatusDelete(deletedMsg, key, deleter) {
         try {
-            // REMOVED: Separator logs
+            this.logger.delete('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            this.logger.delete('🗑️ STATUS DELETION DETECTED');
             
             const antiDeleteStatus = await this.db.getSetting('status_anti_delete', 'off');
             if (antiDeleteStatus !== 'on') {
+                this.logger.delete(`⏭️ Status anti-delete is OFF`);
                 return;
             }
             
@@ -242,11 +264,14 @@ class StatusHandler {
             const senderShort = sender?.split('@')[0] || 'Unknown';
             const deleterShort = deleterResolved?.split('@')[0] || 'Unknown';
             
-            // Only log if status was deleted
-            await this.logger.warn(`🗑️ Status deleted from @${senderShort} by @${deleterShort}`);
+            this.logger.delete(`👤 Sender: @${senderShort}`);
+            this.logger.delete(`🗑️ Deleted by: @${deleterShort}`);
             
             const text = this.extractText(deletedMsg.message);
             const mediaType = this.getMediaType(deletedMsg.message);
+            
+            if (text) this.logger.delete(`📝 Content: ${text}`);
+            if (mediaType) this.logger.delete(`📎 Type: ${mediaType}`);
             
             if (mediaType) {
                 try {
@@ -260,8 +285,7 @@ class StatusHandler {
                         const { url, success } = await Uploader.uploadAuto(buffer, filename);
                         
                         if (success && url && this.ownerJid) {
-                            await this.logger.success(`📥 Deleted status recovered: ${url.substring(0, 50)}...`);
-                            
+                            this.logger.delete(`✅ Media recovered, URL: ${url}`);
                             await this.sock.sendMessage(this.ownerJid, {
                                 text: `🚨 *STATUS DELETED - MEDIA* 🚨\n\n` +
                                       `👤 *From:* @${senderShort}\n` +
@@ -272,11 +296,12 @@ class StatusHandler {
                                       `⏰ *Time:* ${new Date().toLocaleTimeString()}`,
                                 mentions: [sender, deleterResolved]
                             });
+                            this.logger.delete(`✅ Forwarded to owner`);
                             return;
                         }
                     }
                 } catch (e) {
-                    await this.logger.error(`Media recovery failed: ${e.message}`);
+                    this.logger.error(`Media recovery failed: ${e.message}`);
                 }
             }
             
@@ -289,10 +314,10 @@ class StatusHandler {
                 mentions: [sender, deleterResolved]
             });
             
-            // REMOVED: Closing separator line
+            this.logger.delete('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             
         } catch (error) {
-            await this.logger.error(`handleStatusDelete error: ${error.message}`);
+            this.logger.error(`handleStatusDelete error: ${error.message}`);
         }
     }
 }

@@ -1,1 +1,865 @@
-const config=require("../../megan/config"),{createNewsletterContext:createNewsletterContext}=require("../../megan/helpers/newsletter"),commands=[],extractPhone=e=>{if(!e)return null;let t=e.replace("@s.whatsapp.net","");return t=t.replace(/\D/g,""),t||null};commands.push({name:"blacklist",description:"Blacklist a user (add/remove) - Owner Only",aliases:["bl"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r,isOwner:l}){if(!l){await o("❌");const s=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}const d=s[0]?.toLowerCase();let c=null;if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)c=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else if(s[1]){const e=extractPhone(s[1]);e&&e.length>=10&&(c=`${e}@s.whatsapp.net`)}if(!d||!["add","remove"].includes(d)||!c){const s=`🚫 *Blacklist*\n\nUsage: ${config.PREFIX}blacklist add <@user/phone>\n${config.PREFIX}blacklist remove <@user/phone>\n\nBlacklisted users cannot use the bot.`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Blacklist",body:"Usage Instructions"})},{quoted:e})}const u=c.split("@")[0],g=await a.db.getSetting("blacklist",[]);if("add"===d)if(g.includes(c)){const s=`⚠️ @${u} already in blacklist`;await i.sendMessage(t,{text:s,mentions:[c],...createNewsletterContext(n,{title:"Blacklist",body:"Already Exists"})},{quoted:e})}else{g.push(c),await a.db.setSetting("blacklist",g),await o("✅");const s=`🚫 @${u} added to blacklist`;await i.sendMessage(t,{text:s,mentions:[c],...createNewsletterContext(n,{title:"Blacklist",body:"User Added"})},{quoted:e})}else{const s=g.indexOf(c);if(s>-1){g.splice(s,1),await a.db.setSetting("blacklist",g),await o("✅");const r=`✅ @${u} removed from blacklist`;await i.sendMessage(t,{text:r,mentions:[c],...createNewsletterContext(n,{title:"Blacklist",body:"User Removed"})},{quoted:e})}else{const s=`⚠️ @${u} not in blacklist`;await i.sendMessage(t,{text:s,mentions:[c],...createNewsletterContext(n,{title:"Blacklist",body:"Not Found"})},{quoted:e})}}}}),commands.push({name:"whitelist",description:"Whitelist a user (add/remove) - Owner Only",aliases:["wl"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r,isOwner:l}){if(!l){await o("❌");const s=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}const d=s[0]?.toLowerCase();let c=null;if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)c=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else if(s[1]){const e=extractPhone(s[1]);e&&e.length>=10&&(c=`${e}@s.whatsapp.net`)}if(!d||!["add","remove"].includes(d)||!c){const s=`✅ *Whitelist*\n\nUsage: ${config.PREFIX}whitelist add <@user/phone>\n${config.PREFIX}whitelist remove <@user/phone>\n\nWhitelisted users bypass blacklist.`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Whitelist",body:"Usage Instructions"})},{quoted:e})}const u=c.split("@")[0],g=await a.db.getSetting("whitelist",[]);if("add"===d)if(g.includes(c)){const s=`⚠️ @${u} already in whitelist`;await i.sendMessage(t,{text:s,mentions:[c],...createNewsletterContext(n,{title:"Whitelist",body:"Already Exists"})},{quoted:e})}else{g.push(c),await a.db.setSetting("whitelist",g),await o("✅");const s=`✅ @${u} added to whitelist`;await i.sendMessage(t,{text:s,mentions:[c],...createNewsletterContext(n,{title:"Whitelist",body:"User Added"})},{quoted:e})}else{const s=g.indexOf(c);if(s>-1){g.splice(s,1),await a.db.setSetting("whitelist",g),await o("✅");const r=`✅ @${u} removed from whitelist`;await i.sendMessage(t,{text:r,mentions:[c],...createNewsletterContext(n,{title:"Whitelist",body:"User Removed"})},{quoted:e})}else{const s=`⚠️ @${u} not in whitelist`;await i.sendMessage(t,{text:s,mentions:[c],...createNewsletterContext(n,{title:"Whitelist",body:"Not Found"})},{quoted:e})}}}}),commands.push({name:"listblacklist",description:"Show all blacklisted users",aliases:["blacklistlist","bllist"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r}){await o("📋");const l=await a.db.getSetting("blacklist",[]);if(0===l.length){const s="📋 *Blacklist is empty.*";return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Blacklist",body:"Empty"})},{quoted:e})}let d=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n🚫 *BLACKLISTED USERS*\n\nTotal: ${l.length}\n\n`;l.forEach((e,t)=>{d+=`${t+1}. @${e.split("@")[0]}\n`}),d+="\n> created by wanga",await i.sendMessage(t,{text:d,mentions:l,...createNewsletterContext(n,{title:"Blacklist",body:`Total: ${l.length}`})},{quoted:e}),await o("✅")}}),commands.push({name:"listwhitelist",description:"Show all whitelisted users",aliases:["whitelistlist","wllist"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r}){await o("📋");const l=await a.db.getSetting("whitelist",[]);if(0===l.length){const s="📋 *Whitelist is empty.*";return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Whitelist",body:"Empty"})},{quoted:e})}let d=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n✅ *WHITELISTED USERS*\n\nTotal: ${l.length}\n\n`;l.forEach((e,t)=>{d+=`${t+1}. @${e.split("@")[0]}\n`}),d+="\n> created by wanga",await i.sendMessage(t,{text:d,mentions:l,...createNewsletterContext(n,{title:"Whitelist",body:`Total: ${l.length}`})},{quoted:e}),await o("✅")}}),commands.push({name:"muteuser",description:"Mute a user for specified minutes - Owner Only",aliases:["mute"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r,isOwner:l}){if(!l){await o("❌");const s=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}let d=null,c=60;if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length&&(d=e.message.extendedTextMessage.contextInfo.mentionedJid[0]),!d||s.length<1){const s=`🔇 *Mute User*\n\nUsage: ${config.PREFIX}muteuser <@user> [minutes]\nExample: ${config.PREFIX}muteuser @user 30\n\nMutes user for specified minutes (default: 60).`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Mute",body:"Usage Instructions"})},{quoted:e})}s.length>1&&(c=parseInt(s[1]),(isNaN(c)||c<1)&&(c=60));const u=d.split("@")[0],g=Date.now()+60*c*1e3,w=await a.db.getSetting("muted",{});w[d]=g,await a.db.setSetting("muted",w),await o("🔇");const m=`🔇 @${u} muted for ${c} minutes`;await i.sendMessage(t,{text:m,mentions:[d],...createNewsletterContext(n,{title:"Mute",body:"User Muted"})},{quoted:e})}}),commands.push({name:"unmuteuser",description:"Unmute a user - Owner Only",aliases:["unmute"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r,isOwner:l}){if(!l){await o("❌");const s=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}let d=null;if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)d=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else if(s[0]){const e=extractPhone(s[0]);e&&e.length>=10&&(d=`${e}@s.whatsapp.net`)}if(!d){const s=`🔊 *Unmute User*\n\nUsage: ${config.PREFIX}unmuteuser <@user/phone>`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Unmute",body:"Usage Instructions"})},{quoted:e})}const c=d.split("@")[0],u=await a.db.getSetting("muted",{});if(u[d]){delete u[d],await a.db.setSetting("muted",u),await o("🔊");const s=`🔊 @${c} unmuted`;await i.sendMessage(t,{text:s,mentions:[d],...createNewsletterContext(n,{title:"Unmute",body:"User Unmuted"})},{quoted:e})}else{const s=`⚠️ @${c} is not muted`;await i.sendMessage(t,{text:s,mentions:[d],...createNewsletterContext(n,{title:"Unmute",body:"Not Muted"})},{quoted:e})}}}),commands.push({name:"listmuted",description:"Show all muted users",aliases:["mutedlist"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r}){await o("📋");const l=await a.db.getSetting("muted",{}),d=Date.now(),c=[];for(const[e,t]of Object.entries(l))if(t>d){const n=Math.round((t-d)/6e4);c.push({jid:e,remaining:n})}if(0===c.length){const s="📋 *No muted users.*";return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Muted Users",body:"Empty"})},{quoted:e})}let u=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n🔇 *MUTED USERS*\n\nTotal: ${c.length}\n\n`;c.forEach((e,t)=>{u+=`${t+1}. @${e.jid.split("@")[0]} - ${e.remaining} min remaining\n`}),u+="\n> created by wanga",await i.sendMessage(t,{text:u,mentions:c.map(e=>e.jid),...createNewsletterContext(n,{title:"Muted Users",body:`Total: ${c.length}`})},{quoted:e}),await o("✅")}}),commands.push({name:"warnuser",description:"Warn a user (auto-kick after 3 warnings) - Owner Only",aliases:["warn"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r,isOwner:l}){if(!l){await o("❌");const s=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}let d=null,c="No reason provided";if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length&&(d=e.message.extendedTextMessage.contextInfo.mentionedJid[0],s.length>1&&(c=s.slice(1).join(" "))),!d){const s=`⚠️ *Warn User*\n\nUsage: ${config.PREFIX}warnuser <@user> [reason]\n\nAuto-kicks after 3 warnings.`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Warn",body:"Usage Instructions"})},{quoted:e})}const u=d.split("@")[0],g=await a.db.getSetting("warns",{});g[d]?(g[d].count+=1,g[d].reasons.push(c)):g[d]={count:1,reasons:[c]},await a.db.setSetting("warns",g),await o("⚠️");const w=`⚠️ @${u} warned (${g[d].count}/3)\nReason: ${c}`;if(await i.sendMessage(t,{text:w,mentions:[d],...createNewsletterContext(n,{title:"Warn",body:`Warning ${g[d].count}/3`})},{quoted:e}),g[d].count>=3&&t.endsWith("@g.us"))try{await i.groupParticipantsUpdate(t,[d],"remove");const s=`👋 @${u} kicked after 3 warnings`;await i.sendMessage(t,{text:s,mentions:[d],...createNewsletterContext(n,{title:"Auto-Kick",body:"3 Warnings Reached"})},{quoted:e}),delete g[d],await a.db.setSetting("warns",g)}catch(e){a.logger.error("Auto-kick error:",e)}}}),commands.push({name:"resetwarns",description:"Reset warnings for a user - Owner Only",aliases:["rw"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r,isOwner:l}){if(!l){await o("❌");const s=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}let d=null;if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)d=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else if(s[0]){const e=extractPhone(s[0]);e&&e.length>=10&&(d=`${e}@s.whatsapp.net`)}if(!d){const s=`🔄 *Reset Warnings*\n\nUsage: ${config.PREFIX}resetwarns <@user/phone>`;return await i.sendMessage(t,{text:s,...createNewsletterContext(n,{title:"Reset Warnings",body:"Usage Instructions"})},{quoted:e})}const c=d.split("@")[0],u=await a.db.getSetting("warns",{});if(u[d]){delete u[d],await a.db.setSetting("warns",u),await o("✅");const s=`✅ Warnings reset for @${c}`;await i.sendMessage(t,{text:s,mentions:[d],...createNewsletterContext(n,{title:"Reset Warnings",body:"Warnings Cleared"})},{quoted:e})}else{const s=`⚠️ @${c} has no warnings`;await i.sendMessage(t,{text:s,mentions:[d],...createNewsletterContext(n,{title:"Reset Warnings",body:"No Warnings"})},{quoted:e})}}}),commands.push({name:"userinfo",description:"Get detailed user information",aliases:["ui","info"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r}){let l=n;if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)l=e.message.extendedTextMessage.contextInfo.mentionedJid[0];else if(s[0]){const e=extractPhone(s[0]);e&&e.length>=10&&(l=`${e}@s.whatsapp.net`)}await o("ℹ️");try{const s=l.split("@")[0];let r="Not available",d="Unknown";try{const e=await i.fetchStatus(l);r=e.status||"Not set",d=new Date(e.setAt).toLocaleString()}catch(e){}let c="Not available";try{c=await i.profilePictureUrl(l,"image")}catch(e){c="No profile picture"}const u=await a.db.getSetting("warns",{}),g=u[l]?.count||0,w=u[l]?.reasons||[],m=await a.db.getSetting("muted",{}),x=!!m[l]&&new Date(m[l])>new Date,b=(x&&new Date(m[l]).toLocaleString(),x?Math.round((m[l]-Date.now())/6e4):0),f=await a.db.getSetting("blacklist",[]),h=await a.db.getSetting("whitelist",[]),y=f.includes(l),p=h.includes(l);let $=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n👤 *USER INFORMATION*\n\n━━━━━━━━━━━━━━━━━━━\n\n📱 *Phone:* ${s}\n\n🆔 *JID:* ${l}\n\n📝 *About:* ${r}\n\n🕒 *About set:* ${d}\n\n🖼️ *Profile pic:* ${c.substring(0,50)}...\n\n━━━━━━━━━━━━━━━━━━━\n\n*STATUS*\n\n━━━━━━━━━━━━━━━━━━━\n\n⚠️ *Warnings:* ${g}/3\n`;g>0&&($+=`📋 *Reasons:* ${w.join(", ")}\n`),$+=`🔇 *Muted:* ${x?`Yes (${b} min left)`:"No"}\n\n🚫 *Blacklisted:* ${y?"Yes":"No"}\n\n✅ *Whitelisted:* ${p?"Yes":"No"}\n\n> created by wanga`,await i.sendMessage(t,{text:$,mentions:[l],...createNewsletterContext(n,{title:"User Info",body:`Info for @${s}`})},{quoted:e}),await o("✅")}catch(s){a.logger.error("User info error:",s),await o("❌");const r=`❌ Failed to get user info: ${s.message}`;await i.sendMessage(t,{text:r,...createNewsletterContext(n,{title:"User Info",body:"Error"})},{quoted:e})}}}),commands.push({name:"usermgmt",description:"Show all user management commands",aliases:["userhelp","um"],async execute({msg:e,from:t,sender:n,args:s,bot:a,sock:i,react:o,reply:r}){const l=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n👥 *USER MANAGEMENT COMMANDS*\n\n━━━━━━━━━━━━━━━━━━━\n\n*Owner Only Commands:*\n\n━━━━━━━━━━━━━━━━━━━\n\n• ${config.PREFIX}blacklist add <@user> - Blacklist user\n\n• ${config.PREFIX}blacklist remove <@user> - Unblacklist\n\n• ${config.PREFIX}whitelist add <@user> - Whitelist user\n\n• ${config.PREFIX}whitelist remove <@user> - Unwhitelist\n\n• ${config.PREFIX}muteuser <@user> [min] - Mute user\n\n• ${config.PREFIX}unmuteuser <@user> - Unmute user\n\n• ${config.PREFIX}warnuser <@user> [reason] - Warn user\n\n• ${config.PREFIX}resetwarns <@user> - Reset warnings\n\n━━━━━━━━━━━━━━━━━━━\n\n*Public Commands (View Only):*\n\n━━━━━━━━━━━━━━━━━━━\n\n• ${config.PREFIX}listblacklist - Show blacklisted\n\n• ${config.PREFIX}listwhitelist - Show whitelisted\n\n• ${config.PREFIX}listmuted - Show muted users\n\n• ${config.PREFIX}userinfo <@user> - Get user details\n\n━━━━━━━━━━━━━━━━━━━\n\n> created by wanga`;await i.sendMessage(t,{text:l,...createNewsletterContext(n,{title:"User Management",body:"Command List"})},{quoted:e}),await o("✅")}}),module.exports={commands:commands};
+// MEGAN-MD User Management Commands - Consistent styling with buttons
+
+const config = require('../../megan/config');
+
+const commands = [];
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+// Helper function using same pattern as basic.js
+async function sendButtonMenu(sock, from, options, quotedMsg) {
+    const { sendButtons } = require('gifted-btns');
+    
+    try {
+        return await sendButtons(sock, from, {
+            title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: options.text,
+            footer: options.footer || '> created by wanga',
+            image: options.image ? { url: options.image } : null,
+            buttons: options.buttons || []
+        }, { quoted: quotedMsg });
+    } catch (error) {
+        console.error('Button error:', error);
+        await sock.sendMessage(from, { text: options.text }, { quoted: quotedMsg });
+    }
+}
+
+// Helper to extract phone from various formats
+const extractPhone = (input) => {
+    if (!input) return null;
+    let phone = input.replace('@s.whatsapp.net', '');
+    phone = phone.replace(/\D/g, '');
+    return phone || null;
+};
+
+// ============================================
+// BLACKLIST USER - OWNER ONLY
+// ============================================
+commands.push({
+    name: 'blacklist',
+    description: 'Blacklist a user (add/remove) - Owner Only',
+    aliases: ['bl'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, buttons }) {
+
+        if (!isOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const action = args[0]?.toLowerCase();
+        let target = null;
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+        } else if (args[1]) {
+            const phone = extractPhone(args[1]);
+            if (phone && phone.length >= 10) {
+                target = `${phone}@s.whatsapp.net`;
+            }
+        }
+
+        if (!action || !['add', 'remove'].includes(action) || !target) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🚫 *BLACKLIST*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n${config.PREFIX}blacklist add <@user/phone>\n${config.PREFIX}blacklist remove <@user/phone>\n\n_Blacklisted users cannot use the bot._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const userShort = target.split('@')[0];
+        const blacklist = await bot.db.getSetting('blacklist', []);
+
+        if (action === 'add') {
+            if (!blacklist.includes(target)) {
+                blacklist.push(target);
+                await bot.db.setSetting('blacklist', blacklist);
+                await react('✅');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `✅ *BLACKLIST ADDED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been added to the blacklist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            } else {
+                await react('⚠️');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `⚠️ *ALREADY BLACKLISTED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} is already in the blacklist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            }
+        } else {
+            const index = blacklist.indexOf(target);
+            if (index > -1) {
+                blacklist.splice(index, 1);
+                await bot.db.setSetting('blacklist', blacklist);
+                await react('✅');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `✅ *BLACKLIST REMOVED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been removed from the blacklist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            } else {
+                await react('⚠️');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `⚠️ *NOT IN BLACKLIST*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} is not in the blacklist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            }
+        }
+    }
+});
+
+// ============================================
+// WHITELIST USER - OWNER ONLY
+// ============================================
+commands.push({
+    name: 'whitelist',
+    description: 'Whitelist a user (add/remove) - Owner Only',
+    aliases: ['wl'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, buttons }) {
+
+        if (!isOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const action = args[0]?.toLowerCase();
+        let target = null;
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+        } else if (args[1]) {
+            const phone = extractPhone(args[1]);
+            if (phone && phone.length >= 10) {
+                target = `${phone}@s.whatsapp.net`;
+            }
+        }
+
+        if (!action || !['add', 'remove'].includes(action) || !target) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `✅ *WHITELIST*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n${config.PREFIX}whitelist add <@user/phone>\n${config.PREFIX}whitelist remove <@user/phone>\n\n_Whitelisted users bypass blacklist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const userShort = target.split('@')[0];
+        const whitelist = await bot.db.getSetting('whitelist', []);
+
+        if (action === 'add') {
+            if (!whitelist.includes(target)) {
+                whitelist.push(target);
+                await bot.db.setSetting('whitelist', whitelist);
+                await react('✅');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `✅ *WHITELIST ADDED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been added to the whitelist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            } else {
+                await react('⚠️');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `⚠️ *ALREADY WHITELISTED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} is already in the whitelist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            }
+        } else {
+            const index = whitelist.indexOf(target);
+            if (index > -1) {
+                whitelist.splice(index, 1);
+                await bot.db.setSetting('whitelist', whitelist);
+                await react('✅');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `✅ *WHITELIST REMOVED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been removed from the whitelist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            } else {
+                await react('⚠️');
+                return sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `⚠️ *NOT IN WHITELIST*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} is not in the whitelist._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+            }
+        }
+    }
+});
+
+// ============================================
+// LIST BLACKLIST - Public
+// ============================================
+commands.push({
+    name: 'listblacklist',
+    description: 'Show all blacklisted users',
+    aliases: ['blacklistlist', 'bllist'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+
+        await react('📋');
+        const blacklist = await bot.db.getSetting('blacklist', []);
+
+        if (blacklist.length === 0) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📋 *BLACKLIST*\n━━━━━━━━━━━━━━━━━━━\n_The blacklist is currently empty._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let listText = `🚫 *BLACKLISTED USERS*\n━━━━━━━━━━━━━━━━━━━\n_Total:_ ${blacklist.length}\n\n`;
+        blacklist.forEach((jid, index) => {
+            listText += `${index + 1}. @${jid.split('@')[0]}\n`;
+        });
+        listText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: listText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ============================================
+// LIST WHITELIST - Public
+// ============================================
+commands.push({
+    name: 'listwhitelist',
+    description: 'Show all whitelisted users',
+    aliases: ['whitelistlist', 'wllist'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+
+        await react('📋');
+        const whitelist = await bot.db.getSetting('whitelist', []);
+
+        if (whitelist.length === 0) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📋 *WHITELIST*\n━━━━━━━━━━━━━━━━━━━\n_The whitelist is currently empty._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let listText = `✅ *WHITELISTED USERS*\n━━━━━━━━━━━━━━━━━━━\n_Total:_ ${whitelist.length}\n\n`;
+        whitelist.forEach((jid, index) => {
+            listText += `${index + 1}. @${jid.split('@')[0]}\n`;
+        });
+        listText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: listText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ============================================
+// MUTE USER - OWNER ONLY
+// ============================================
+commands.push({
+    name: 'muteuser',
+    description: 'Mute a user for specified minutes - Owner Only',
+    aliases: ['mute'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, buttons }) {
+
+        if (!isOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let target = null;
+        let duration = 60;
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+        }
+
+        if (!target || args.length < 1) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔇 *MUTE USER*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n${config.PREFIX}muteuser <@user> [minutes]\n\n_Example:_\n${config.PREFIX}muteuser @user 30\n\n_Mutes user for specified minutes (default: 60)._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length > 1) {
+            duration = parseInt(args[1]);
+            if (isNaN(duration) || duration < 1) duration = 60;
+        }
+
+        const userShort = target.split('@')[0];
+        const mutedUntil = Date.now() + (duration * 60 * 1000);
+
+        const muted = await bot.db.getSetting('muted', {});
+        muted[target] = mutedUntil;
+        await bot.db.setSetting('muted', muted);
+        await react('🔇');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `🔇 *USER MUTED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been muted for ${duration} minute(s)._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// UNMUTE USER - OWNER ONLY
+// ============================================
+commands.push({
+    name: 'unmuteuser',
+    description: 'Unmute a user - Owner Only',
+    aliases: ['unmute'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, buttons }) {
+
+        if (!isOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let target = null;
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+        } else if (args[0]) {
+            const phone = extractPhone(args[0]);
+            if (phone && phone.length >= 10) {
+                target = `${phone}@s.whatsapp.net`;
+            }
+        }
+
+        if (!target) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔊 *UNMUTE USER*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n${config.PREFIX}unmuteuser <@user/phone>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const userShort = target.split('@')[0];
+        const muted = await bot.db.getSetting('muted', {});
+
+        if (muted[target]) {
+            delete muted[target];
+            await bot.db.setSetting('muted', muted);
+            await react('🔊');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔊 *USER UNMUTED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been unmuted._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        } else {
+            await react('⚠️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `⚠️ *NOT MUTED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} is not currently muted._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// LIST MUTED USERS - Public
+// ============================================
+commands.push({
+    name: 'listmuted',
+    description: 'Show all muted users',
+    aliases: ['mutedlist'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+
+        await react('📋');
+        const muted = await bot.db.getSetting('muted', {});
+        const now = Date.now();
+        const mutedList = [];
+
+        for (const [jid, until] of Object.entries(muted)) {
+            if (until > now) {
+                const remaining = Math.round((until - now) / 60000);
+                mutedList.push({ jid, remaining });
+            }
+        }
+
+        if (mutedList.length === 0) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📋 *MUTED USERS*\n━━━━━━━━━━━━━━━━━━━\n_No users are currently muted._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let listText = `🔇 *MUTED USERS*\n━━━━━━━━━━━━━━━━━━━\n_Total:_ ${mutedList.length}\n\n`;
+        mutedList.forEach((item, index) => {
+            listText += `${index + 1}. @${item.jid.split('@')[0]} - ${item.remaining} min remaining\n`;
+        });
+        listText += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: listText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+// ============================================
+// WARN USER - OWNER ONLY
+// ============================================
+commands.push({
+    name: 'warnuser',
+    description: 'Warn a user (auto-kick after 3 warnings) - Owner Only',
+    aliases: ['warn'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, buttons }) {
+
+        if (!isOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let target = null;
+        let reason = 'No reason provided';
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+            if (args.length > 1) {
+                reason = args.slice(1).join(' ');
+            }
+        }
+
+        if (!target) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `⚠️ *WARN USER*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n${config.PREFIX}warnuser <@user> [reason]\n\n_Example:_\n${config.PREFIX}warnuser @user Spamming\n\n_Auto-kicks after 3 warnings._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const userShort = target.split('@')[0];
+        const warns = await bot.db.getSetting('warns', {});
+
+        if (!warns[target]) {
+            warns[target] = { count: 1, reasons: [reason] };
+        } else {
+            warns[target].count += 1;
+            warns[target].reasons.push(reason);
+        }
+
+        await bot.db.setSetting('warns', warns);
+        await react('⚠️');
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `⚠️ *USER WARNED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been warned (${warns[target].count}/3)_\n_Reason:_ ${reason}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+
+        if (warns[target].count >= 3 && from.endsWith('@g.us')) {
+            try {
+                await sock.groupParticipantsUpdate(from, [target], 'remove');
+                await sendButtonMenu(sock, from, {
+                    title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                    text: `👋 *USER KICKED*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has been kicked after reaching 3 warnings._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                    image: BOT_LOGO,
+                    buttons: [
+                        { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]
+                }, msg);
+                delete warns[target];
+                await bot.db.setSetting('warns', warns);
+            } catch (error) {
+                console.error('Auto-kick error:', error);
+            }
+        }
+    }
+});
+
+// ============================================
+// RESET WARNS - OWNER ONLY
+// ============================================
+commands.push({
+    name: 'resetwarns',
+    description: 'Reset warnings for a user - Owner Only',
+    aliases: ['rw'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, buttons }) {
+
+        if (!isOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        let target = null;
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+        } else if (args[0]) {
+            const phone = extractPhone(args[0]);
+            if (phone && phone.length >= 10) {
+                target = `${phone}@s.whatsapp.net`;
+            }
+        }
+
+        if (!target) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔄 *RESET WARNINGS*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n${config.PREFIX}resetwarns <@user/phone>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const userShort = target.split('@')[0];
+        const warns = await bot.db.getSetting('warns', {});
+
+        if (warns[target]) {
+            delete warns[target];
+            await bot.db.setSetting('warns', warns);
+            await react('✅');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `✅ *WARNINGS RESET*\n━━━━━━━━━━━━━━━━━━━\n_Warnings for @${userShort} have been reset._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        } else {
+            await react('⚠️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `⚠️ *NO WARNINGS*\n━━━━━━━━━━━━━━━━━━━\n_@${userShort} has no warnings._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// USER INFO - Public
+// ============================================
+commands.push({
+    name: 'userinfo',
+    description: 'Get detailed user information',
+    aliases: ['ui'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+
+        let target = sender;
+
+        if (msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            target = msg.message.extendedTextMessage.contextInfo.mentionedJid[0];
+        } else if (args[0]) {
+            const phone = extractPhone(args[0]);
+            if (phone && phone.length >= 10) {
+                target = `${phone}@s.whatsapp.net`;
+            }
+        }
+
+        await react('ℹ️');
+
+        try {
+            const userShort = target.split('@')[0];
+
+            let about = 'Not available';
+            let aboutTime = 'Unknown';
+            try {
+                const status = await sock.fetchStatus(target);
+                about = status.status || 'Not set';
+                aboutTime = new Date(status.setAt).toLocaleString();
+            } catch (e) {}
+
+            let ppUrl = 'No profile picture';
+            try {
+                ppUrl = await sock.profilePictureUrl(target, 'image');
+            } catch (e) {}
+
+            const warns = await bot.db.getSetting('warns', {});
+            const userWarns = warns[target]?.count || 0;
+            const warnReasons = warns[target]?.reasons || [];
+
+            const muted = await bot.db.getSetting('muted', {});
+            const isMuted = muted[target] ? new Date(muted[target]) > new Date() : false;
+            const muteRemaining = isMuted ? Math.round((muted[target] - Date.now()) / 60000) : 0;
+
+            const blacklist = await bot.db.getSetting('blacklist', []);
+            const whitelist = await bot.db.getSetting('whitelist', []);
+            const isBlacklisted = blacklist.includes(target);
+            const isWhitelisted = whitelist.includes(target);
+
+            let infoText = `👤 *USER INFORMATION*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_📱 Phone:_ ${userShort}\n` +
+                `_🆔 JID:_ ${target}\n` +
+                `_📝 About:_ ${about}\n` +
+                `_🕒 About set:_ ${aboutTime}\n\n` +
+                `*STATUS*\n` +
+                `━━━━━━━━━━━━━━━━━━━\n` +
+                `_⚠️ Warnings:_ ${userWarns}/3\n`;
+
+            if (userWarns > 0) {
+                infoText += `_📋 Reasons:_ ${warnReasons.join(', ')}\n`;
+            }
+
+            infoText += `_🔇 Muted:_ ${isMuted ? `Yes (${muteRemaining} min left)` : 'No'}\n` +
+                `_🚫 Blacklisted:_ ${isBlacklisted ? 'Yes' : 'No'}\n` +
+                `_✅ Whitelisted:_ ${isWhitelisted ? 'Yes' : 'No'}\n\n` +
+                `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: infoText,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+            await react('✅');
+
+        } catch (error) {
+            console.error('User info error:', error);
+            await react('❌');
+            await sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *ERROR*\n━━━━━━━━━━━━━━━━━━━\n_Failed to get user info: ${error.message}_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}usermgmt`, text: '👥 User Mgmt' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+    }
+});
+
+// ============================================
+// USERMGMT HELP - Public
+// ============================================
+commands.push({
+    name: 'usermgmt',
+    description: 'Show all user management commands',
+    aliases: ['userhelp', 'um'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const prefix = config.PREFIX;
+
+        const helpText = `👥 *USER MANAGEMENT COMMANDS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `*👑 OWNER ONLY*\n` +
+            `_${prefix}blacklist add <@user>_ - Blacklist user\n` +
+            `_${prefix}blacklist remove <@user>_ - Unblacklist\n` +
+            `_${prefix}whitelist add <@user>_ - Whitelist user\n` +
+            `_${prefix}whitelist remove <@user>_ - Unwhitelist\n` +
+            `_${prefix}muteuser <@user> [min]_ - Mute user\n` +
+            `_${prefix}unmuteuser <@user>_ - Unmute user\n` +
+            `_${prefix}warnuser <@user> [reason]_ - Warn user\n` +
+            `_${prefix}resetwarns <@user>_ - Reset warnings\n\n` +
+
+            `*👤 PUBLIC*\n` +
+            `_${prefix}listblacklist_ - Show blacklisted\n` +
+            `_${prefix}listwhitelist_ - Show whitelisted\n` +
+            `_${prefix}listmuted_ - Show muted users\n` +
+            `_${prefix}userinfo <@user>_ - Get user details\n\n` +
+
+            `> created by wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: helpText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+module.exports = { commands };

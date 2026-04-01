@@ -1,1 +1,1350 @@
-const GroupHelper=require("../../megan/helpers/group"),config=require("../../megan/config"),Designs=require("../../megan/helpers/designs"),{createNewsletterContext:createNewsletterContext}=require("../../megan/helpers/newsletter"),commands=[],formatJid=e=>e?`@${e.split("@")[0]}`:"N/A",extractPhone=e=>{if(!e)return null;let t=e.replace("@s.whatsapp.net","");return t=t.replace(/\D/g,""),t||null},getJidFromMention=(e,t)=>{if(e.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length)return e.message.extendedTextMessage.contextInfo.mentionedJid[0];const a=extractPhone(t);return a?`${a}@s.whatsapp.net`:null};commands.push({name:"groupinfo",description:"Get detailed group information",aliases:["ginfo","infogc"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){let d=t;if(n.length>0){const e=n[0];if(e.includes("chat.whatsapp.com")){const t=e.split("/").pop();try{d=(await i.groupGetInviteInfo(t)).id}catch(e){return await o("❌"),r("❌ Invalid group invite link!")}}else d=e.endsWith("@g.us")?e:`${e}@g.us`}if(!d.endsWith("@g.us"))return await o("❌"),r("❌ This command only works for groups!");await o("🔄");try{const n=await i.groupMetadata(d),{subject:s,desc:r,size:c,creation:g,owner:p,participants:l,id:u}=n,m=new Date(1e3*g).toLocaleDateString("en-KE",{dateStyle:"full",timeStyle:"short"}),w=p?formatJid(p):"Not available",h=`https://chat.whatsapp.com/${await i.groupInviteCode(u).catch(()=>"N/A")}`,f=l.filter(e=>"admin"===e.admin||"superadmin"===e.admin),y=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📌 *GROUP INFO*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📛 *Name:* ${s}\n🆔 *ID:* ${u.split("@")[0]}\n👥 *Members:* ${c}\n👑 *Admins:* ${f.length}\n📅 *Created:* ${m}\n👤 *Owner:* ${w}\n🔗 *Link:* ${h}\n\n📝 *Description:*\n${r||"No description"}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:y,...createNewsletterContext(a,{title:"Group Info",body:s})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Group info error:",e),await o("❌"),await r(`❌ Failed to get group info: ${e.message}`)}}}),commands.push({name:"groups",description:"List all groups the bot is in",aliases:["grouplist","mygroups","gcs"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){await o("🔄");try{const n=await i.groupFetchAllParticipating(),s=Object.values(n);if(0===s.length)return r("❌ Bot is not in any groups.");let c=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📋 *MY GROUPS*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\nTotal: ${s.length}\n\n`;s.slice(0,20).forEach((e,t)=>{const a=e.participants.length,n=e.participants.filter(e=>e.admin).length;c+=`${t+1}. *${e.subject}*\n`,c+=`   👥 ${a} members | 👑 ${n} admins\n`,c+=`   🆔 ${e.id.split("@")[0]}\n\n`}),s.length>20&&(c+=`... and ${s.length-20} more groups\n\n`),c+="✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",await i.sendMessage(t,{text:c,...createNewsletterContext(a,{title:"My Groups",body:`${s.length} groups`})},{quoted:e}),await o("✅")}catch(e){s.logger.error("List groups error:",e),await o("❌"),await r(`❌ Failed to list groups: ${e.message}`)}}}),commands.push({name:"participants",description:"List all group participants",aliases:["members","memberlist"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const n=await i.groupMetadata(t),s=n.participants,r=[],c=[],d=[];s.forEach(e=>{const t=`@${e.id.split("@")[0]}`;"superadmin"===e.admin?r.push(`👑 ${t} (Super Admin)`):"admin"===e.admin?c.push(`👮 ${t} (Admin)`):d.push(`👤 ${t}`)});[...r,...c,...d].join("\n");const g=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   👥 *PARTICIPANTS* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n👑 *Super Admins (${r.length})*\n${r.join("\n")||"None"}\n\n👮 *Admins (${c.length})*\n${c.join("\n")||"None"}\n\n👤 *Members (${d.length})*\n${d.join("\n")||"None"}\n\n━━━━━━━━━━━━━━━━━━━\n👥 *Total:* ${s.length}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`,p=s.map(e=>e.id);await i.sendMessage(t,{text:g,mentions:p,...createNewsletterContext(a,{title:"Participants",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Participants error:",e),await o("❌"),await r(`❌ Error: ${e.message}`)}}}),commands.push({name:"invite",description:"Get group invite link",aliases:["link","gclink"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔗");try{const n=await i.groupMetadata(t);if(!GroupHelper.isAdmin(n.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can get invite link!");const s=`https://chat.whatsapp.com/${await i.groupInviteCode(t)}`,d=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   🔗 *INVITE LINK*  ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n📛 *Group:* ${n.subject}\n🔗 *Link:* ${s}\n\n⚠️ *Link expires in 7 days*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:d,...createNewsletterContext(a,{title:"Invite Link",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Invite link error:",e),await o("❌"),await r(`❌ Failed to get invite link: ${e.message}`)}}}),commands.push({name:"revokeinvite",description:"Revoke and generate new invite link",aliases:["revoke","newlink"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const n=await i.groupMetadata(t);if(!GroupHelper.isAdmin(n.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can revoke invite link!");await i.groupRevokeInvite(t);const s=`https://chat.whatsapp.com/${await i.groupInviteCode(t)}`,d=`✅ *Invite Link Revoked*\n\n📛 *Group:* ${n.subject}\n🔗 *New Link:* ${s}\n\n⚠️ Old link no longer works\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:d,...createNewsletterContext(a,{title:"Link Revoked",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Revoke invite error:",e),await o("❌"),await r(`❌ Failed to revoke invite link: ${e.message}`)}}}),commands.push({name:"join",description:"Join a group using invite link",aliases:["joingroup"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(0===n.length&&e.message?.extendedTextMessage?.contextInfo?.quotedMessage){const t=e.message.extendedTextMessage.contextInfo.quotedMessage;const a=(t.conversation||t.extendedTextMessage?.text||"").match(/(https?:\/\/)?chat\.whatsapp\.com\/[A-Za-z0-9]+/);a&&(n[0]=a[0])}if(0===n.length)return await o("❌"),r(`📝 *JOIN GROUP*\n\nUsage: ${config.PREFIX}join <invite link>\n\nExample: ${config.PREFIX}join https://chat.whatsapp.com/XXXXXX`);await o("🔄");try{const s=n[0];if(!s.includes("chat.whatsapp.com"))return r("❌ Invalid WhatsApp group link!");const c=s.split("/").pop(),d=`✅ *Successfully Joined Group!*\n\n🆔 *Group ID:* ${(await i.groupAcceptInvite(c)).split("@")[0]}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:d,...createNewsletterContext(a,{title:"Group Joined",body:"Success"})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Join group error:",e),await o("❌"),await r(`❌ Failed to join group: ${e.message}\n\nMake sure the link is valid and not expired.`)}}}),commands.push({name:"leave",description:"Leave a group",aliases:["left","exit","leavegc"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){let d=t;if(!t.endsWith("@g.us")&&n.length>0){const e=n[0];if(e.includes("chat.whatsapp.com")){const t=e.split("/").pop();try{d=(await i.groupGetInviteInfo(t)).id}catch(e){return await o("❌"),r("❌ Invalid group invite link!")}}else d=e.endsWith("@g.us")?e:`${e}@g.us`}if(!d.endsWith("@g.us"))return await o("❌"),r("❌ Please use this command in a group or provide a group link!");await o("👋");try{await i.sendMessage(d,{text:`👋 *${config.BOT_NAME} is leaving this group.*\n\nThank you for having me!`}),await i.groupLeave(d),t.endsWith("@g.us")||await i.sendMessage(t,{text:"✅ Successfully left the group."}),await o("✅")}catch(e){s.logger.error("Leave group error:",e),await o("❌"),await r(`❌ Failed to leave group: ${e.message}`)}}}),commands.push({name:"add",description:"Add participants to group",aliases:["addmember"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");if(0===n.length)return await o("❌"),r(`📝 *ADD PARTICIPANTS*\n\nUsage: ${config.PREFIX}add <phone numbers>\n\nExample: ${config.PREFIX}add 254700000000`);await o("🔄");try{const s=await i.groupMetadata(t);if(!GroupHelper.isAdmin(s.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can add participants!");const d=[];e.message?.extendedTextMessage?.contextInfo?.participant&&d.push(e.message.extendedTextMessage.contextInfo.participant);for(const t of n){const a=getJidFromMention(e,t);if(a&&!d.includes(a))d.push(a);else{const e=extractPhone(t);e&&e.length>=10&&d.push(`${e}@s.whatsapp.net`)}}if(0===d.length)return r("❌ No valid participants specified!");const g=await i.groupParticipantsUpdate(t,d,"add"),p=g.filter(e=>"200"===e.status).length,l=`✅ *Add Result*\n\n➕ Added: ${p}\n❌ Failed: ${g.filter(e=>"200"!==e.status).length}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"Add Members",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Add participants error:",e),await o("❌"),await r(`❌ Failed to add participants: ${e.message}`)}}}),commands.push({name:"remove",description:"Remove participants from group",aliases:["kick","rm"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const s=await i.groupMetadata(t);if(!GroupHelper.isAdmin(s.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can remove participants!");const d=[];e.message?.extendedTextMessage?.contextInfo?.participant&&d.push(e.message.extendedTextMessage.contextInfo.participant),e.message?.extendedTextMessage?.contextInfo?.mentionedJid&&d.push(...e.message.extendedTextMessage.contextInfo.mentionedJid);for(const t of n){const a=getJidFromMention(e,t);if(a&&!d.includes(a))d.push(a);else{const e=extractPhone(t);e&&e.length>=10&&d.push(`${e}@s.whatsapp.net`)}}if(0===d.length)return r("❌ No participants specified to remove!");const g=await i.groupParticipantsUpdate(t,d,"remove"),p=g.filter(e=>"200"===e.status).length,l=`✅ *Remove Result*\n\n➖ Removed: ${p}\n❌ Failed: ${g.filter(e=>"200"!==e.status).length}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"Remove Members",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Remove participants error:",e),await o("❌"),await r(`❌ Failed to remove participants: ${e.message}`)}}}),commands.push({name:"promote",description:"Promote members to admin",aliases:["makeadmin"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const s=await i.groupMetadata(t);if(!GroupHelper.isAdmin(s.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can promote members!");const d=[];e.message?.extendedTextMessage?.contextInfo?.participant&&d.push(e.message.extendedTextMessage.contextInfo.participant),e.message?.extendedTextMessage?.contextInfo?.mentionedJid&&d.push(...e.message.extendedTextMessage.contextInfo.mentionedJid);for(const t of n){const a=getJidFromMention(e,t);a&&!d.includes(a)&&d.push(a)}if(0===d.length)return r("❌ No members specified to promote!");const g=await i.groupParticipantsUpdate(t,d,"promote"),p=g.filter(e=>"200"===e.status).length,l=`✅ *Promote Result*\n\n👑 Promoted: ${p}\n❌ Failed: ${g.filter(e=>"200"!==e.status).length}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"Promote",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Promote error:",e),await o("❌"),await r(`❌ Failed to promote members: ${e.message}`)}}}),commands.push({name:"demote",description:"Demote admins to members",aliases:["removeadmin"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const s=await i.groupMetadata(t);if(!GroupHelper.isAdmin(s.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can demote members!");const d=[];e.message?.extendedTextMessage?.contextInfo?.participant&&d.push(e.message.extendedTextMessage.contextInfo.participant),e.message?.extendedTextMessage?.contextInfo?.mentionedJid&&d.push(...e.message.extendedTextMessage.contextInfo.mentionedJid);for(const t of n){const a=getJidFromMention(e,t);a&&!d.includes(a)&&d.push(a)}if(0===d.length)return r("❌ No admins specified to demote!");const g=await i.groupParticipantsUpdate(t,d,"demote"),p=g.filter(e=>"200"===e.status).length,l=`✅ *Demote Result*\n\n👤 Demoted: ${p}\n❌ Failed: ${g.filter(e=>"200"!==e.status).length}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:l,...createNewsletterContext(a,{title:"Demote",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Demote error:",e),await o("❌"),await r(`❌ Failed to demote members: ${e.message}`)}}}),commands.push({name:"setgcname",description:"Change group name",aliases:["setname","setsubject"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");if(0===n.length)return await o("❌"),r(`📝 *SET GROUP NAME*\n\nUsage: ${config.PREFIX}setgcname <new name>\n\nExample: ${config.PREFIX}setgcname Megan Support Group`);await o("🔄");try{const s=await i.groupMetadata(t);if(!GroupHelper.isAdmin(s.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can change group name!");const d=n.join(" ");await i.groupUpdateSubject(t,d);const g=`✅ *Group Name Updated*\n\n📛 *New Name:* ${d}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:g,...createNewsletterContext(a,{title:"Name Updated",body:d})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Set group name error:",e),await o("❌"),await r(`❌ Failed to update group name: ${e.message}`)}}}),commands.push({name:"setdesc",description:"Change group description",aliases:["setdescription","setabout"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");if(0===n.length)return await o("❌"),r(`📝 *SET GROUP DESCRIPTION*\n\nUsage: ${config.PREFIX}setdesc <description>\n\nExample: ${config.PREFIX}setdesc Welcome to our group!`);await o("🔄");try{const s=await i.groupMetadata(t);if(!GroupHelper.isAdmin(s.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can change group description!");const d=n.join(" ");await i.groupUpdateDescription(t,d);const g=`✅ *Group Description Updated*\n\n📝 *New Description:*\n${d}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:g,...createNewsletterContext(a,{title:"Description Updated",body:"Success"})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Set description error:",e),await o("❌"),await r(`❌ Failed to update description: ${e.message}`)}}}),commands.push({name:"tagall",description:"Tag all members (shows numbers)",aliases:["everyone","all"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const s=await i.groupMetadata(t),r=s.participants,c=r.map(e=>e.id),d=r.map(e=>`@${e.id.split("@")[0]}`).join(" "),g=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📢 *ANNOUNCEMENT* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n💬 *Message:*\n${n.length>0?n.join(" "):"📢 Attention everyone!"}\n\n👥 *Tagged Members:*\n${d}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:g,mentions:c,...createNewsletterContext(a,{title:"Tag All",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Tagall error:",e),await o("❌"),await r(`❌ Error: ${e.message}`)}}}),commands.push({name:"tag",description:"Silently tag all members (no numbers shown)",aliases:["silent"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");if(0===n.length)return await o("❌"),r(`📝 *SILENT TAG*\n\nUsage: ${config.PREFIX}tag <message>\n\nExample: ${config.PREFIX}tag Meeting at 5pm today!`);await o("🔄");try{const s=await i.groupMetadata(t),r=s.participants.map(e=>e.id),c=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   📢 *ANNOUNCEMENT* ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n💬 ${n.join(" ")}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:c,mentions:r,...createNewsletterContext(a,{title:"Announcement",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Tag error:",e),await o("❌"),await r(`❌ Error: ${e.message}`)}}}),commands.push({name:"tagadmins",description:"Tag all group admins",aliases:["admins"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔄");try{const s=await i.groupMetadata(t),c=s.participants.filter(e=>"admin"===e.admin||"superadmin"===e.admin);if(0===c.length)return await o("⚠️"),r("⚠️ No admins found in this group!");const d=c.map(e=>e.id),g=n.length>0?n.join(" "):"📢 Attention admins!",p=`╭━━━━━━━━━━━━━━━━━━━╮\n┃   👑 *TO ADMINS*    ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n💬 *Message:*\n${g}\n\n👑 *Admins:*\n${c.map(e=>`${"superadmin"===e.admin?"👑 Super Admin":"👮 Admin"} @${e.id.split("@")[0]}`).join("\n")}\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:p,mentions:d,...createNewsletterContext(a,{title:"Tag Admins",body:s.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Tagadmins error:",e),await o("❌"),await r(`❌ Error: ${e.message}`)}}}),commands.push({name:"lockgc",description:"Lock group (only admins can send messages)",aliases:["lock","closegroup"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔒");try{const n=await i.groupMetadata(t);if(!GroupHelper.isAdmin(n.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can lock the group!");await i.groupSettingUpdate(t,"announcement");const s=`🔒 *Group Locked*\n\n📛 *Group:* ${n.subject}\n👮 *Only admins can send messages now.*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:s,...createNewsletterContext(a,{title:"Group Locked",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Lock group error:",e),await o("❌"),await r(`❌ Failed to lock group: ${e.message}`)}}}),commands.push({name:"unlockgc",description:"Unlock group (everyone can send messages)",aliases:["unlock","opengroup"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔓");try{const n=await i.groupMetadata(t);if(!GroupHelper.isAdmin(n.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can unlock the group!");await i.groupSettingUpdate(t,"not_announcement");const s=`🔓 *Group Unlocked*\n\n📛 *Group:* ${n.subject}\n👥 *Everyone can send messages now.*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:s,...createNewsletterContext(a,{title:"Group Unlocked",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Unlock group error:",e),await o("❌"),await r(`❌ Failed to unlock group: ${e.message}`)}}}),commands.push({name:"locked",description:"Lock group info (only admins can edit)",aliases:["lockinfo"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔒");try{const n=await i.groupMetadata(t);if(!GroupHelper.isAdmin(n.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can lock group info!");await i.groupSettingUpdate(t,"locked");const s=`🔒 *Group Info Locked*\n\n📛 *Group:* ${n.subject}\n👮 *Only admins can edit group info now.*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:s,...createNewsletterContext(a,{title:"Info Locked",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Lock info error:",e),await o("❌"),await r(`❌ Failed to lock group info: ${e.message}`)}}}),commands.push({name:"unlocked",description:"Unlock group info (everyone can edit)",aliases:["unlockinfo"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");await o("🔓");try{const n=await i.groupMetadata(t);if(!GroupHelper.isAdmin(n.participants,a)&&!c)return await o("⚠️"),r("❌ Only admins can unlock group info!");await i.groupSettingUpdate(t,"unlocked");const s=`🔓 *Group Info Unlocked*\n\n📛 *Group:* ${n.subject}\n👥 *Everyone can edit group info now.*\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥`;await i.sendMessage(t,{text:s,...createNewsletterContext(a,{title:"Info Unlocked",body:n.subject})},{quoted:e}),await o("✅")}catch(e){s.logger.error("Unlock info error:",e),await o("❌"),await r(`❌ Failed to unlock group info: ${e.message}`)}}}),commands.push({name:"poll",description:"Create a poll",aliases:["createpoll"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");if(n.length<3)return await o("❌"),r(`📊 *CREATE POLL*\n\nUsage: ${config.PREFIX}poll "Question" "Option1" "Option2" "Option3"...\n\nExample: ${config.PREFIX}poll "Best color?" "Red" "Blue" "Green"`);await o("📊");try{const e=[];let a="",s=!1;for(let t=0;t<n.join(" ").length;t++){const i=n.join(" ")[t];'"'!==i||0!==t&&"\\"===n.join(" ")[t-1]?" "!==i||s?a+=i:a&&(e.push(a),a=""):(s=!s,!s&&a&&(e.push(a),a=""))}if(a&&e.push(a),e.length<3)return r("❌ Please provide at least 2 options!");const c=e[0],d=e.slice(1);await i.sendMessage(t,{poll:{name:c,values:d,selectableCount:1}}),await o("✅")}catch(e){s.logger.error("Poll error:",e),await o("❌"),await r(`❌ Failed to create poll: ${e.message}`)}}}),commands.push({name:"multipoll",description:"Create a poll with multiple selections",aliases:["mpoll"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");if(n.length<4)return await o("❌"),r(`📊 *MULTI-POLL*\n\nUsage: ${config.PREFIX}multipoll "Question" "Option1" "Option2" "Option3" [count]\n\nExample: ${config.PREFIX}multipoll "Favorite colors?" "Red" "Blue" "Green" 2`);await o("📊");try{const e=[];let a="",s=!1;for(let t=0;t<n.join(" ").length;t++){const i=n.join(" ")[t];'"'!==i||0!==t&&"\\"===n.join(" ")[t-1]?" "!==i||s?a+=i:a&&(e.push(a),a=""):(s=!s,!s&&a&&(e.push(a),a=""))}if(a&&e.push(a),e.length<3)return r("❌ Please provide at least 2 options!");let c=1;const d=e[e.length-1];isNaN(d)||d.startsWith('"')||(c=parseInt(d),e.pop());const g=e[0],p=e.slice(1);await i.sendMessage(t,{poll:{name:g,values:p,selectableCount:c}}),await o("✅")}catch(e){s.logger.error("Multi-poll error:",e),await o("❌"),await r(`❌ Failed to create poll: ${e.message}`)}}}),commands.push({name:"gstatus",description:"Send a status/story in the group",aliases:["groupstatus"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){if(!t.endsWith("@g.us"))return await o("❌"),r("❌ This command can only be used in groups!");const d=e.message?.extendedTextMessage?.contextInfo?.quotedMessage,g=e.message?.imageMessage||d?.imageMessage,p=e.message?.videoMessage||d?.videoMessage,l=e.message?.audioMessage||d?.audioMessage;if(0===n.length&&!g&&!p&&!l)return await o("❌"),r(`📝 *GROUP STATUS*\n\nUsage:\n• ${config.PREFIX}gstatus <text>\n• Reply to image/video/audio with ${config.PREFIX}gstatus`);await o("🔄");try{if(n.length>0){const e=n.join(" ");let a="#128C7E",s=1;const o=e.match(/#[A-Fa-f0-9]{6}/);o&&(a=o[0]);const r=e.match(/--font (\d)/);r&&(s=parseInt(r[1])),await i.sendMessage(t,{groupStatusMessage:{text:e,backgroundColor:a,font:s}})}else if(g){const a=e.message?.imageMessage?e:{...e,message:d},{downloadMediaMessage:s}=require("gifted-baileys"),o=await s(a,"buffer",{},{logger:console});await i.sendMessage(t,{groupStatusMessage:{image:o,caption:n.join(" ")||"Group status"}})}else if(p){const a=e.message?.videoMessage?e:{...e,message:d},s=await downloadMediaMessage(a,"buffer",{},{logger:console});await i.sendMessage(t,{groupStatusMessage:{video:s,caption:n.join(" ")||"Group status"}})}else if(l){const a=e.message?.audioMessage?e:{...e,message:d},n=await downloadMediaMessage(a,"buffer",{},{logger:console});await i.sendMessage(t,{groupStatusMessage:{audio:n,mimetype:"audio/mp4",ptt:!0}})}await o("✅")}catch(e){s.logger.error("Group status error:",e),await o("❌"),await r(`❌ Failed to send group status: ${e.message}`)}}}),commands.push({name:"grouphelp",description:"Show all group commands",aliases:["ghelp","helpgroup"],async execute({msg:e,from:t,sender:a,args:n,bot:s,sock:i,react:o,reply:r,isOwner:c}){await i.sendMessage(t,{text:"╭━━━━━━━━━━━━━━━━━━━╮\n┃   👥 *GROUP CMDS*   ┃\n╰━━━━━━━━━━━━━━━━━━━╯\n\n➣ .groupinfo - Group info\n➣ .groups - List my groups\n➣ .participants - List members\n➣ .invite - Get invite link\n➣ .revokeinvite - Reset link\n➣ .join - Join group\n➣ .leave - Bot leave group\n\n➣ .add - Add members\n➣ .remove/.kick - Remove members\n➣ .promote - Make admin\n➣ .demote - Remove admin\n➣ .setgcname - Change name\n➣ .setdesc - Change description\n\n➣ .tagall - Tag all (show numbers)\n➣ .tag - Silent tag all\n➣ .tagadmins - Tag admins\n\n➣ .lockgc - Lock group\n➣ .unlockgc - Unlock group\n➣ .locked - Lock info\n➣ .unlocked - Unlock info\n\n➣ .poll - Create poll\n➣ .multipoll - Multi poll\n➣ .gstatus - Group status\n\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥\n> created by wanga\n✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥✤✥",...createNewsletterContext(a,{title:"Group Commands",body:"Complete List"})},{quoted:e}),await o("✅")}}),module.exports={commands:commands};
+// MEGAN-MD Group Commands - Consistent styling with buttons
+
+const GroupHelper = require('../../megan/helpers/groupHelper');
+const config = require('../../megan/config');
+const { downloadMediaMessage } = require('gifted-baileys');
+
+const commands = [];
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+// Helper function using same pattern as basic.js
+async function sendButtonMenu(sock, from, options, quotedMsg) {
+    const { sendButtons } = require('gifted-btns');
+    
+    try {
+        return await sendButtons(sock, from, {
+            title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: options.text,
+            footer: options.footer || '> created by wanga',
+            image: options.image ? { url: options.image } : null,
+            buttons: options.buttons || []
+        }, { quoted: quotedMsg });
+    } catch (error) {
+        console.error('Button error:', error);
+        await sock.sendMessage(from, { text: options.text }, { quoted: quotedMsg });
+    }
+}
+
+async function sendWithLogo(sock, to, text, quoted = null) {
+    await sendButtonMenu(sock, to, {
+        title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+        text: text,
+        image: BOT_LOGO,
+        buttons: [
+            { id: `${config.PREFIX}grouphelp`, text: '👥 Group Help' },
+            { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+            { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+        ]
+    }, quoted);
+}
+
+// ============================================
+// SECTION 1: CREATION & INFORMATION
+// ============================================
+
+// 1. CREATE GROUP
+commands.push({
+    name: 'creategroup',
+    description: 'Create a new WhatsApp group',
+    aliases: ['creategc', 'newgroup'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (args.length < 1) {
+            await react('❌');
+            return sendWithLogo(sock, from, 
+                `📝 *CREATE GROUP*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}creategroup <name> [phone numbers]\n\n_Example:_ ${config.PREFIX}creategroup My Team 254700000000\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`, 
+                msg);
+        }
+
+        await react('🔄');
+
+        try {
+            const groupName = args[0];
+            const participants = [`${config.OWNER_NUMBER}@s.whatsapp.net`];
+
+            for (let i = 1; i < args.length; i++) {
+                const phone = GroupHelper.extractPhone(args[i]);
+                if (phone && phone.length >= 10) {
+                    participants.push(`${phone}@s.whatsapp.net`);
+                }
+            }
+
+            const group = await sock.groupCreate(groupName, participants);
+
+            const result = `✅ *GROUP CREATED*\n━━━━━━━━━━━━━━━━━━━\n_📛 Name:_ ${groupName}\n_👥 Members:_ ${participants.length}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Create group error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 2. GROUP INFO
+commands.push({
+    name: 'groupinfo',
+    description: 'Get detailed group information',
+    aliases: ['ginfo', 'infogc'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        let targetGroup = from;
+
+        if (args.length > 0) {
+            const link = args[0];
+            if (link.includes('chat.whatsapp.com')) {
+                const code = GroupHelper.extractGroupCode(link);
+                try {
+                    const data = await sock.groupGetInviteInfo(code);
+                    targetGroup = data.id;
+                } catch (e) {
+                    await react('❌');
+                    return reply(`❌ *Invalid group invite link!*\n\n> created by wanga`);
+                }
+            } else {
+                targetGroup = link.endsWith('@g.us') ? link : `${link}@g.us`;
+            }
+        }
+
+        if (!GroupHelper.isGroupJid(targetGroup)) {
+            await react('❌');
+            return reply(`❌ *Invalid group ID or link!*\n\n> created by wanga`);
+        }
+
+        await react('ℹ️');
+
+        try {
+            const metadata = await sock.groupMetadata(targetGroup);
+            const info = GroupHelper.formatGroupInfo(metadata);
+
+            await sendWithLogo(sock, from, info, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Group info error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 3. LIST GROUPS
+commands.push({
+    name: 'groups',
+    description: 'List all groups bot is in',
+    aliases: ['grouplist', 'mygroups'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        await react('📋');
+
+        try {
+            const groups = await sock.groupFetchAllParticipating();
+            const groupList = Object.values(groups);
+
+            if (groupList.length === 0) {
+                return reply(`❌ *Bot is not in any groups.*\n\n> created by wanga`);
+            }
+
+            let list = `*📋 MY GROUPS (${groupList.length})*\n\n`;
+
+            groupList.slice(0, 20).forEach((group, index) => {
+                const size = group.participants.length;
+                const admins = group.participants.filter(p => p.admin).length;
+                const status = group.announce ? '🔒' : '🔓';
+                list += `${index + 1}. ${status} *${group.subject}*\n`;
+                list += `   👥 ${size} members | 👑 ${admins} admins\n`;
+                list += `   🆔 ${group.id.split('@')[0]}\n\n`;
+            });
+
+            if (groupList.length > 20) {
+                list += `... and ${groupList.length - 20} more groups\n`;
+            }
+
+            list += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, list, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('List groups error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 4. PARTICIPANTS LIST
+commands.push({
+    name: 'participants',
+    description: 'List all group participants',
+    aliases: ['members', 'memberlist'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('📋');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+            const list = await GroupHelper.formatParticipantList(metadata.participants, sock);
+
+            const result = `*📋 PARTICIPANTS (${metadata.participants.length})*\n\n${list}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Participants error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// ============================================
+// SECTION 2: MEMBER MANAGEMENT
+// ============================================
+
+// 5. LEAVE GROUP
+commands.push({
+    name: 'leave',
+    description: 'Leave a group',
+    aliases: ['exit', 'leavegc'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        let targetGroup = from;
+
+        if (!GroupHelper.isGroupJid(from) && args.length > 0) {
+            const link = args[0];
+            if (link.includes('chat.whatsapp.com')) {
+                const code = GroupHelper.extractGroupCode(link);
+                try {
+                    const data = await sock.groupGetInviteInfo(code);
+                    targetGroup = data.id;
+                } catch (e) {
+                    await react('❌');
+                    return reply(`❌ *Invalid group invite link!*\n\n> created by wanga`);
+                }
+            }
+        }
+
+        if (!GroupHelper.isGroupJid(targetGroup)) {
+            await react('❌');
+            return reply(`❌ *Please use this command in a group or provide a valid link!*\n\n> created by wanga`);
+        }
+
+        await react('👋');
+
+        try {
+            await sock.sendMessage(targetGroup, { text: `👋 *${config.BOT_NAME} is leaving this group.*\n\nThank you for having me!` });
+            await sock.groupLeave(targetGroup);
+
+            if (!GroupHelper.isGroupJid(from)) {
+                await sendWithLogo(sock, from, `✅ *Successfully left the group.*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`, msg);
+            }
+
+            await react('✅');
+        } catch (error) {
+            console.error('Leave group error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 6. ADD MEMBERS
+commands.push({
+    name: 'add',
+    description: 'Add members to group',
+    aliases: ['addmember', 'invite'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0 && !msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length) {
+            await react('❌');
+            return reply(`📝 *ADD MEMBERS*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}add @user or ${config.PREFIX}add 254700000000\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can add members!*\n\n> created by wanga`);
+            }
+
+            const participants = [];
+            const mentions = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+            participants.push(...mentions);
+
+            for (const arg of args) {
+                const jid = GroupHelper.getJidFromInput(msg, arg);
+                if (jid && !participants.includes(jid)) {
+                    participants.push(jid);
+                }
+            }
+
+            if (participants.length === 0) {
+                return reply(`❌ *No valid participants specified!*\n\n> created by wanga`);
+            }
+
+            const results = await sock.groupParticipantsUpdate(from, participants, 'add');
+            const result = GroupHelper.formatActionResult('add', results);
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Add error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 7. REMOVE MEMBERS
+commands.push({
+    name: 'remove',
+    description: 'Remove members from group',
+    aliases: ['kick', 'rm'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can remove members!*\n\n> created by wanga`);
+            }
+
+            const participants = [];
+            const mentions = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+            participants.push(...mentions);
+
+            if (msg.message?.extendedTextMessage?.contextInfo?.participant) {
+                participants.push(msg.message.extendedTextMessage.contextInfo.participant);
+            }
+
+            for (const arg of args) {
+                const jid = GroupHelper.getJidFromInput(msg, arg);
+                if (jid && !participants.includes(jid)) {
+                    participants.push(jid);
+                }
+            }
+
+            if (participants.length === 0) {
+                return reply(`❌ *No participants specified to remove!*\n\n> created by wanga`);
+            }
+
+            const results = await sock.groupParticipantsUpdate(from, participants, 'remove');
+            const result = GroupHelper.formatActionResult('remove', results);
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Remove error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 8. PROMOTE TO ADMIN
+commands.push({
+    name: 'promote',
+    description: 'Promote members to admin',
+    aliases: ['makeadmin'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can promote members!*\n\n> created by wanga`);
+            }
+
+            const participants = [];
+            const mentions = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+            participants.push(...mentions);
+
+            if (msg.message?.extendedTextMessage?.contextInfo?.participant) {
+                participants.push(msg.message.extendedTextMessage.contextInfo.participant);
+            }
+
+            if (participants.length === 0) {
+                return reply(`❌ *No members specified to promote!*\n\n> created by wanga`);
+            }
+
+            const results = await sock.groupParticipantsUpdate(from, participants, 'promote');
+            const result = GroupHelper.formatActionResult('promote', results);
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Promote error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 9. DEMOTE FROM ADMIN
+commands.push({
+    name: 'demote',
+    description: 'Demote admins to members',
+    aliases: ['removeadmin'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can demote members!*\n\n> created by wanga`);
+            }
+
+            const participants = [];
+            const mentions = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+            participants.push(...mentions);
+
+            if (msg.message?.extendedTextMessage?.contextInfo?.participant) {
+                participants.push(msg.message.extendedTextMessage.contextInfo.participant);
+            }
+
+            if (participants.length === 0) {
+                return reply(`❌ *No admins specified to demote!*\n\n> created by wanga`);
+            }
+
+            const results = await sock.groupParticipantsUpdate(from, participants, 'demote');
+            const result = GroupHelper.formatActionResult('demote', results);
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Demote error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// ============================================
+// SECTION 3: TAGGING
+// ============================================
+
+// 10. TAG ALL MEMBERS
+commands.push({
+    name: 'tagall',
+    description: 'Tag all group members',
+    aliases: ['everyone', 'all'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+            const participants = metadata.participants;
+            const senderName = sender.split('@')[0];
+            const mentions = GroupHelper.getAllMentions(participants);
+
+            const formattedParticipants = await Promise.all(
+                participants.map(async (p, i) => {
+                    const formatted = await GroupHelper.formatJid(p.id, sock);
+                    return `${i + 1}. ${formatted}`;
+                })
+            );
+            const participantList = formattedParticipants.slice(0, 20).join('\n');
+            const messageText = args.length > 0 ? args.join(' ') : '📢 Attention everyone!';
+
+            let result = `𝐌𝐄𝐆𝐀𝐍-𝐌𝐃 𝐓𝐀𝐆\n\n📝 *Message:* ${messageText}\n\n👥 *Members (${participants.length}):*\n${participantList}`;
+            if (participants.length > 20) {
+                result += `\n... and ${participants.length - 20} more`;
+            }
+            result += `\n\n👤 *By:* @${senderName}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await sock.sendMessage(from, { text: ' ', mentions }, { quoted: msg });
+            await react('✅');
+        } catch (error) {
+            console.error('Tagall error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 11. HIDE TAG (secret mentions)
+commands.push({
+    name: 'hidetag',
+    description: 'Send message that secretly tags everyone',
+    aliases: ['htag', 'hidden'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *HIDE TAG*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}hidetag <message>\n\n_Example:_ ${config.PREFIX}hidetag Meeting at 5pm\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🕵️');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+            const participants = metadata.participants;
+            const senderName = sender.split('@')[0];
+            const mentions = GroupHelper.getAllMentions(participants);
+            const messageText = args.join(' ');
+
+            const result = `𝐌𝐄𝐆𝐀𝐍-𝐌𝐃 𝐓𝐀𝐆\n\n${messageText}\n\n👤 *By:* @${senderName}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await sock.sendMessage(from, { text: ' ', mentions }, { quoted: msg });
+            await react('✅');
+        } catch (error) {
+            console.error('Hidetag error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 12. TAG ADMINS
+commands.push({
+    name: 'tagadmins',
+    description: 'Tag all group admins',
+    aliases: ['admins'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('👑');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+            const adminParticipants = metadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin');
+            const adminJids = GroupHelper.getAdminMentions(metadata.participants);
+            const senderName = sender.split('@')[0];
+
+            if (adminJids.length === 0) {
+                await react('⚠️');
+                return reply(`⚠️ *No admins found in this group!*\n\n> created by wanga`);
+            }
+
+            const formattedAdmins = await Promise.all(
+                adminParticipants.map(async (p, i) => {
+                    const formatted = await GroupHelper.formatJid(p.id, sock);
+                    const role = p.admin === 'superadmin' ? '👑' : '👮';
+                    return `${i + 1}. ${role} ${formatted}`;
+                })
+            );
+            const adminList = formattedAdmins.join('\n');
+            const messageText = args.length > 0 ? args.join(' ') : '📢 Attention admins!';
+
+            const result = `𝐌𝐄𝐆𝐀𝐍-𝐌𝐃 𝐓𝐀𝐆\n\n📝 *Message:* ${messageText}\n\n👑 *Admins (${adminJids.length}):*\n${adminList}\n\n👤 *By:* @${senderName}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await sock.sendMessage(from, { text: ' ', mentions: adminJids }, { quoted: msg });
+            await react('✅');
+        } catch (error) {
+            console.error('Tagadmins error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// ============================================
+// SECTION 4: SETTINGS & MODERATION
+// ============================================
+
+// 13. SET GROUP NAME
+commands.push({
+    name: 'setname',
+    description: 'Change group name',
+    aliases: ['setgcname', 'setgroupname'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *SET NAME*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}setname <new name>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can change group name!*\n\n> created by wanga`);
+            }
+
+            const newName = args.join(' ');
+            await sock.groupUpdateSubject(from, newName);
+
+            const result = `✅ *NAME UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_📛 New Name:_ ${newName}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Set name error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 14. SET GROUP DESCRIPTION
+commands.push({
+    name: 'setdesc',
+    description: 'Change group description',
+    aliases: ['setdescription', 'setgcdesc'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *SET DESCRIPTION*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}setdesc <description>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can change group description!*\n\n> created by wanga`);
+            }
+
+            const newDesc = args.join(' ');
+            await sock.groupUpdateDescription(from, newDesc);
+
+            const result = `✅ *DESCRIPTION UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_📝 New Description:_\n${newDesc}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Set description error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 15. GET INVITE LINK
+commands.push({
+    name: 'invite',
+    description: 'Get group invite link',
+    aliases: ['link', 'gclink'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('🔗');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+            const isAdmin = GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER);
+
+            if (!isAdmin) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can get invite link!*\n\n> created by wanga`);
+            }
+
+            const botJid = sock.user?.id?.split(':')[0] + '@s.whatsapp.net';
+            const isBotAdmin = GroupHelper.isAdmin(metadata.participants, botJid);
+
+            if (!isBotAdmin) {
+                return reply(`⚠️ *Bot is not an admin!*\n\nMake the bot an admin first.\n\n> created by wanga`);
+            }
+
+            const code = await sock.groupInviteCode(from);
+            const link = `https://chat.whatsapp.com/${code}`;
+
+            const result = `🔗 *INVITE LINK*\n━━━━━━━━━━━━━━━━━━━\n_📛 Group:_ ${metadata.subject}\n_🔗 Link:_ ${link}\n\n⚠️ Expires in 7 days\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Invite error:', error);
+            await react('❌');
+            if (error.message === 'not-authorized' || error.data === 401) {
+                reply(`❌ *Bot is not authorized!*\n\nMake sure the bot is an admin in this group.\n\n> created by wanga`);
+            } else {
+                reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+            }
+        }
+    }
+});
+
+// 16. REVOKE INVITE LINK
+commands.push({
+    name: 'revoke',
+    description: 'Revoke and generate new invite link',
+    aliases: ['revokelink', 'newlink'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+            const isAdmin = GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER);
+
+            if (!isAdmin) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can revoke invite link!*\n\n> created by wanga`);
+            }
+
+            const botJid = sock.user?.id?.split(':')[0] + '@s.whatsapp.net';
+            const isBotAdmin = GroupHelper.isAdmin(metadata.participants, botJid);
+
+            if (!isBotAdmin) {
+                return reply(`⚠️ *Bot is not an admin!*\n\nMake the bot an admin first.\n\n> created by wanga`);
+            }
+
+            await sock.groupRevokeInvite(from);
+            const newCode = await sock.groupInviteCode(from);
+            const newLink = `https://chat.whatsapp.com/${newCode}`;
+
+            const result = `✅ *LINK REVOKED*\n━━━━━━━━━━━━━━━━━━━\n_📛 Group:_ ${metadata.subject}\n_🔗 New Link:_ ${newLink}\n\n⚠️ Old link no longer works\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Revoke error:', error);
+            await react('❌');
+            if (error.message === 'not-authorized' || error.data === 401) {
+                reply(`❌ *Bot is not authorized!*\n\nMake sure the bot is an admin in this group.\n\n> created by wanga`);
+            } else {
+                reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+            }
+        }
+    }
+});
+
+// 17. JOIN GROUP
+commands.push({
+    name: 'join',
+    description: 'Join a group using invite link',
+    aliases: ['joingroup'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (args.length === 0) {
+            if (msg.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
+                const quoted = msg.message.extendedTextMessage.contextInfo.quotedMessage;
+                const quotedText = quoted.conversation || quoted.extendedTextMessage?.text || '';
+                const linkMatch = quotedText.match(/(https?:\/\/)?chat\.whatsapp\.com\/[A-Za-z0-9]+/);
+                if (linkMatch) args[0] = linkMatch[0];
+            }
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *JOIN GROUP*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}join <invite link>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const link = args[0];
+            if (!link.includes('chat.whatsapp.com')) {
+                return reply(`❌ *Invalid WhatsApp group link!*\n\n> created by wanga`);
+            }
+
+            const code = GroupHelper.extractGroupCode(link);
+            const result = await sock.groupAcceptInvite(code);
+
+            const replyMsg = `✅ *JOINED GROUP*\n━━━━━━━━━━━━━━━━━━━\n_🆔 ID:_ ${result.split('@')[0]}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, replyMsg, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Join error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\nMake sure the link is valid.\n\n> created by wanga`);
+        }
+    }
+});
+
+// 18. LOCK MESSAGES
+commands.push({
+    name: 'lock',
+    description: 'Lock/unlock group messages (on/off)',
+    aliases: ['lockmessages'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0 || !['on', 'off'].includes(args[0].toLowerCase())) {
+            await react('❌');
+            return reply(`📝 *LOCK MESSAGES*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}lock on (admins only) or ${config.PREFIX}lock off (everyone)\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔒');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can change group settings!*\n\n> created by wanga`);
+            }
+
+            const setting = args[0].toLowerCase() === 'on' ? 'announcement' : 'not_announcement';
+            await sock.groupSettingUpdate(from, setting);
+
+            const status = setting === 'announcement' ? '🔒 *Locked* (admins only)' : '🔓 *Unlocked* (everyone)';
+            const result = `✅ *Messages ${status}*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Lock error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 19. LOCK INFO EDITING
+commands.push({
+    name: 'lockinfo',
+    description: 'Lock/unlock group info editing (on/off)',
+    aliases: ['lockedit'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0 || !['on', 'off'].includes(args[0].toLowerCase())) {
+            await react('❌');
+            return reply(`📝 *LOCK INFO*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}lockinfo on (admins only) or ${config.PREFIX}lockinfo off (everyone)\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔒');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can change group settings!*\n\n> created by wanga`);
+            }
+
+            const setting = args[0].toLowerCase() === 'on' ? 'locked' : 'unlocked';
+            await sock.groupSettingUpdate(from, setting);
+
+            const status = setting === 'locked' ? '🔒 *Locked* (admins only)' : '🔓 *Unlocked* (everyone)';
+            const result = `✅ *Info Editing ${status}*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Lock info error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 20. DISAPPEARING MESSAGES
+commands.push({
+    name: 'disappear',
+    description: 'Set disappearing messages (24h/7d/90d/off)',
+    aliases: ['ephemeral'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *DISAPPEARING MESSAGES*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}disappear <24h/7d/90d/off>\n\n_Examples:_\n• ${config.PREFIX}disappear 24h\n• ${config.PREFIX}disappear off\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('⏱️');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can change this setting!*\n\n> created by wanga`);
+            }
+
+            const option = args[0].toLowerCase();
+            let expiration = 0;
+            let text = 'off';
+
+            if (option === '24h') {
+                expiration = 86400;
+                text = '24 hours';
+            } else if (option === '7d') {
+                expiration = 604800;
+                text = '7 days';
+            } else if (option === '90d') {
+                expiration = 7776000;
+                text = '90 days';
+            }
+
+            await sock.groupToggleEphemeral(from, expiration);
+
+            const result = `✅ *Disappearing messages set to ${text}*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Disappear error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 21. ADD MEMBER MODE
+commands.push({
+    name: 'addmode',
+    description: 'Set who can add members (all/admins)',
+    aliases: ['memberaddmode'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0 || !['all', 'admins'].includes(args[0].toLowerCase())) {
+            await react('❌');
+            return reply(`📝 *ADD MEMBER MODE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}addmode all (everyone) or ${config.PREFIX}addmode admins (only admins)\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can change this setting!*\n\n> created by wanga`);
+            }
+
+            const mode = args[0].toLowerCase() === 'all' ? 'all_member_add' : 'admin_add';
+            await sock.groupMemberAddMode(from, mode);
+
+            const result = `✅ *Member add mode set to ${args[0].toLowerCase()}*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Addmode error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// ============================================
+// SECTION 5: INTERACTIVE
+// ============================================
+
+// 22. CREATE POLL
+commands.push({
+    name: 'poll',
+    description: 'Create a poll (single choice)',
+    aliases: ['createpoll'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length < 3) {
+            await react('❌');
+            return reply(`📊 *CREATE POLL*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}poll "Question" "Option1" "Option2" ...\n\n_Example:_ ${config.PREFIX}poll "Best color?" "Red" "Blue" "Green"\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('📊');
+
+        try {
+            const parsed = GroupHelper.parsePollArgs(args);
+            if (parsed.length < 2) {
+                return reply(`❌ *Please provide at least 2 options!*\n\n> created by wanga`);
+            }
+
+            const question = parsed[0];
+            const options = parsed.slice(1);
+
+            await sock.sendMessage(from, {
+                poll: {
+                    name: question,
+                    values: options,
+                    selectableCount: 1
+                }
+            });
+
+            await react('✅');
+        } catch (error) {
+            console.error('Poll error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 23. MULTI-POLL
+commands.push({
+    name: 'multipoll',
+    description: 'Create a poll with multiple selections',
+    aliases: ['mpoll'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length < 4) {
+            await react('❌');
+            return reply(`📊 *MULTI-POLL*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}multipoll "Question" "Option1" "Option2" ... [max selections]\n\n_Example:_ ${config.PREFIX}multipoll "Choose toppings" "Cheese" "Pepperoni" "Mushrooms" 2\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('📊');
+
+        try {
+            const parsed = GroupHelper.parsePollArgs(args);
+            if (parsed.length < 3) {
+                return reply(`❌ *Please provide at least 2 options!*\n\n> created by wanga`);
+            }
+
+            let selectableCount = 1;
+            const last = parsed[parsed.length - 1];
+            if (!isNaN(last) && !last.startsWith('"')) {
+                selectableCount = parseInt(last);
+                parsed.pop();
+            }
+
+            const question = parsed[0];
+            const options = parsed.slice(1);
+
+            await sock.sendMessage(from, {
+                poll: {
+                    name: question,
+                    values: options,
+                    selectableCount: selectableCount
+                }
+            });
+
+            await react('✅');
+        } catch (error) {
+            console.error('Multi-poll error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 24. GROUP STATUS
+commands.push({
+    name: 'gstatus',
+    description: 'Send a status/story in the group',
+    aliases: ['groupstatus'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        const hasImage = msg.message?.imageMessage || quoted?.imageMessage;
+        const hasVideo = msg.message?.videoMessage || quoted?.videoMessage;
+        const hasAudio = msg.message?.audioMessage || quoted?.audioMessage;
+
+        if (args.length === 0 && !hasImage && !hasVideo && !hasAudio) {
+            await react('❌');
+            return reply(`📝 *GROUP STATUS*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_\n• ${config.PREFIX}gstatus <text>\n• Reply to image/video/audio\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('🔄');
+
+        try {
+            if (args.length > 0) {
+                const text = args.join(' ');
+                await sock.sendMessage(from, {
+                    groupStatusMessage: { text }
+                });
+            } else if (hasImage || hasVideo || hasAudio) {
+                const targetMsg = msg.message?.imageMessage || msg.message?.videoMessage || msg.message?.audioMessage
+                    ? msg
+                    : { ...msg, message: quoted };
+
+                const buffer = await downloadMediaMessage(targetMsg, 'buffer', {}, { logger: console });
+
+                const content = {};
+                if (hasImage) content.image = buffer;
+                if (hasVideo) content.video = buffer;
+                if (hasAudio) {
+                    content.audio = buffer;
+                    content.ptt = true;
+                }
+
+                await sock.sendMessage(from, {
+                    groupStatusMessage: content
+                });
+            }
+
+            await react('✅');
+        } catch (error) {
+            console.error('Group status error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 25. JOIN REQUESTS
+commands.push({
+    name: 'requests',
+    description: 'List pending join requests',
+    aliases: ['joinrequests', 'pending'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        await react('📋');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can view join requests!*\n\n> created by wanga`);
+            }
+
+            const requests = await sock.groupRequestParticipantsList(from);
+
+            if (!requests || requests.length === 0) {
+                return reply(`📋 *No pending join requests.*\n\n> created by wanga`);
+            }
+
+            let list = `*📋 PENDING REQUESTS (${requests.length})*\n\n`;
+            for (let i = 0; i < requests.length; i++) {
+                const formatted = await GroupHelper.formatJid(requests[i].jid, sock);
+                list += `${i + 1}. ${formatted}\n`;
+            }
+            list += `\nUse ${config.PREFIX}approve <number> or ${config.PREFIX}reject <number>`;
+            list += `\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, list, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Requests error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 26. APPROVE JOIN REQUEST
+commands.push({
+    name: 'approve',
+    description: 'Approve join request',
+    aliases: ['accept'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *APPROVE*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}approve <number from requests list>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('✅');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can approve requests!*\n\n> created by wanga`);
+            }
+
+            const requests = await sock.groupRequestParticipantsList(from);
+            const index = parseInt(args[0]) - 1;
+
+            if (isNaN(index) || index < 0 || index >= requests.length) {
+                return reply(`❌ *Invalid request number!*\n\n> created by wanga`);
+            }
+
+            const targetJid = requests[index].jid;
+            const formattedJid = await GroupHelper.formatJid(targetJid, sock);
+            await sock.groupRequestParticipantsUpdate(from, [targetJid], 'approve');
+
+            const result = `✅ *Approved ${formattedJid}*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Approve error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 27. REJECT JOIN REQUEST
+commands.push({
+    name: 'reject',
+    description: 'Reject join request',
+    aliases: ['deny'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        if (!GroupHelper.isGroupJid(from)) {
+            await react('❌');
+            return reply(`❌ *This command can only be used in groups!*\n\n> created by wanga`);
+        }
+
+        if (args.length === 0) {
+            await react('❌');
+            return reply(`📝 *REJECT*\n━━━━━━━━━━━━━━━━━━━\n_Usage:_ ${config.PREFIX}reject <number from requests list>\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`);
+        }
+
+        await react('❌');
+
+        try {
+            const metadata = await sock.groupMetadata(from);
+
+            if (!GroupHelper.canPerformAdminAction(metadata, sender, config.OWNER_NUMBER)) {
+                await react('⚠️');
+                return reply(`❌ *Only admins can reject requests!*\n\n> created by wanga`);
+            }
+
+            const requests = await sock.groupRequestParticipantsList(from);
+            const index = parseInt(args[0]) - 1;
+
+            if (isNaN(index) || index < 0 || index >= requests.length) {
+                return reply(`❌ *Invalid request number!*\n\n> created by wanga`);
+            }
+
+            const targetJid = requests[index].jid;
+            const formattedJid = await GroupHelper.formatJid(targetJid, sock);
+            await sock.groupRequestParticipantsUpdate(from, [targetJid], 'reject');
+
+            const result = `❌ *Rejected ${formattedJid}*\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+            await sendWithLogo(sock, from, result, msg);
+            await react('✅');
+        } catch (error) {
+            console.error('Reject error:', error);
+            await react('❌');
+            reply(`❌ *Error:* ${error.message}\n\n> created by wanga`);
+        }
+    }
+});
+
+// 28. GROUP HELP
+commands.push({
+    name: 'grouphelp',
+    description: 'Show all group commands',
+    aliases: ['ghelp'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply }) {
+        const prefix = config.PREFIX;
+
+        const help = `👥 *GROUP COMMANDS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `*📋 INFO*\n` +
+            `_${prefix}creategroup <name> [phones]_ - Create group\n` +
+            `_${prefix}groupinfo [link]_ - Group details\n` +
+            `_${prefix}groups_ - List groups\n` +
+            `_${prefix}participants_ - List members\n\n` +
+
+            `*👤 MEMBERS*\n` +
+            `_${prefix}add <@user/phone>_ - Add members\n` +
+            `_${prefix}remove <@user>_ - Remove members\n` +
+            `_${prefix}promote <@user>_ - Make admin\n` +
+            `_${prefix}demote <@user>_ - Remove admin\n` +
+            `_${prefix}leave_ - Leave group\n\n` +
+
+            `*🏷️ TAGGING*\n` +
+            `_${prefix}tagall [message]_ - Tag all\n` +
+            `_${prefix}hidetag <message>_ - Secret tag\n` +
+            `_${prefix}tagadmins [message]_ - Tag admins\n\n` +
+
+            `*⚙️ SETTINGS*\n` +
+            `_${prefix}setname <name>_ - Change name\n` +
+            `_${prefix}setdesc <desc>_ - Change description\n` +
+            `_${prefix}lock on/off_ - Lock messages\n` +
+            `_${prefix}lockinfo on/off_ - Lock info editing\n` +
+            `_${prefix}disappear <24h/7d/90d/off>_ - Disappearing messages\n` +
+            `_${prefix}addmode all/admins_ - Who can add\n\n` +
+
+            `*🔗 INVITES*\n` +
+            `_${prefix}invite_ - Get invite link\n` +
+            `_${prefix}revoke_ - New invite link\n` +
+            `_${prefix}join <link>_ - Join group\n\n` +
+
+            `*📊 INTERACTIVE*\n` +
+            `_${prefix}poll "Q" "A" "B"..._ - Create poll\n` +
+            `_${prefix}multipoll "Q" "A" "B"... [count]_ - Multi poll\n` +
+            `_${prefix}gstatus [text/media]_ - Group status\n\n` +
+
+            `*👥 JOIN REQUESTS*\n` +
+            `_${prefix}requests_ - Pending requests\n` +
+            `_${prefix}approve <number>_ - Approve request\n` +
+            `_${prefix}reject <number>_ - Reject request\n\n` +
+
+            `> created by wanga`;
+
+        await sendWithLogo(sock, from, help, msg);
+        await react('✅');
+    }
+});
+
+module.exports = { commands };

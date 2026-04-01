@@ -1,4 +1,4 @@
-// MEGAN-MD Basic Commands - Enhanced Dropdown Menus with Command Examples
+// MEGAN-MD Basic Commands - With Dropdown Menus
 
 const config = require('../../megan/config');
 const moment = require('moment-timezone');
@@ -12,6 +12,7 @@ const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
 // Helper to send interactive buttons (simple reply/url/copy)
 async function sendInteractive(sock, from, options, quotedMsg) {
     const { sendInteractiveMessage } = require('gifted-btns');
+    
     try {
         return await sendInteractiveMessage(sock, from, {
             text: options.text,
@@ -27,17 +28,20 @@ async function sendInteractive(sock, from, options, quotedMsg) {
 // Helper to send dropdown menu (single_select)
 async function sendDropdownMenu(sock, from, options, quotedMsg) {
     const { sendInteractiveMessage } = require('gifted-btns');
+    
     try {
         return await sendInteractiveMessage(sock, from, {
             text: options.text,
             footer: options.footer || '> created by wanga',
-            interactiveButtons: [{
-                name: 'single_select',
-                buttonParamsJson: JSON.stringify({
-                    title: options.title || 'Select an option',
-                    sections: options.sections
-                })
-            }]
+            interactiveButtons: [
+                {
+                    name: 'single_select',
+                    buttonParamsJson: JSON.stringify({
+                        title: options.title || 'Select an option',
+                        sections: options.sections
+                    })
+                }
+            ]
         }, { quoted: quotedMsg });
     } catch (error) {
         console.error('Dropdown error:', error);
@@ -48,6 +52,7 @@ async function sendDropdownMenu(sock, from, options, quotedMsg) {
 // Helper to send buttons (simple reply buttons)
 async function sendButtonMenu(sock, from, options, quotedMsg) {
     const { sendButtons } = require('gifted-btns');
+    
     try {
         return await sendButtons(sock, from, {
             title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
@@ -66,40 +71,38 @@ async function sendButtonMenu(sock, from, options, quotedMsg) {
 async function sendAIDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '🤖 AI MODELS (Type with prefix)',
+            title: '🤖 AI Models',
             rows: [
-                { id: 'megan_cmd', title: 'Megan AI', description: '.megan <message>' },
-                { id: 'gemini_cmd', title: 'Gemini', description: '.gemini <question> | Reply to image' },
-                { id: 'gpt_cmd', title: 'GPT OSS', description: '.gpt <message>' },
-                { id: 'deepseek_cmd', title: 'DeepSeek', description: '.deepseek <question>' },
-                { id: 'mistral_cmd', title: 'Mistral', description: '.mistral <message>' },
-                { id: 'duckai_cmd', title: 'DuckAI', description: '.duckai <message>' }
+                { id: `${config.PREFIX}megan`, title: 'Megan AI', description: 'Cloudflare AI' },
+                { id: `${config.PREFIX}gemini`, title: 'Gemini', description: 'Google AI with vision' },
+                { id: `${config.PREFIX}gpt`, title: 'GPT OSS', description: '120B model' },
+                { id: `${config.PREFIX}deepseek`, title: 'DeepSeek', description: 'R1 reasoning model' },
+                { id: `${config.PREFIX}mistral`, title: 'Mistral', description: 'Fast and efficient' },
+                { id: `${config.PREFIX}duckai`, title: 'DuckAI', description: 'Multi-model AI' }
             ]
         },
         {
-            title: '📖 SPECIALIZED AI',
+            title: '📖 Specialized AI',
             rows: [
-                { id: 'codellama_cmd', title: 'CodeLlama', description: '.codellama <code question>' },
-                { id: 'teacher_cmd', title: 'Teacher AI', description: '.teacher <question>' },
-                { id: 'bibleai_cmd', title: 'Bible AI', description: '.bibleai <question>' },
-                { id: 'gita_cmd', title: 'Gita AI', description: '.gita <question>' }
+                { id: `${config.PREFIX}codellama`, title: 'CodeLlama', description: 'Coding assistant' },
+                { id: `${config.PREFIX}teacher`, title: 'Teacher AI', description: 'Educational help' },
+                { id: `${config.PREFIX}bibleai`, title: 'Bible AI', description: 'Biblical Q&A' },
+                { id: `${config.PREFIX}gita`, title: 'Gita AI', description: 'Bhagavad Gita' }
             ]
         },
         {
-            title: '⚙️ AI SETTINGS',
+            title: '⚙️ Settings',
             rows: [
-                { id: 'aimode_cmd', title: 'AI Mode', description: '.aimode <short/normal/detailed>' },
-                { id: 'chatbot_cmd', title: 'Chatbot', description: '.chatbot <dm/group/both/off>' },
-                { id: 'chatstatus_cmd', title: 'Chat Status', description: '.chatstatus - View memory stats' },
-                { id: 'clearchat_cmd', title: 'Clear Memory', description: '.clearchat - Reset conversation' }
+                { id: `${config.PREFIX}aimode`, title: 'AI Mode', description: 'Short/Normal/Detailed' },
+                { id: `${config.PREFIX}aimenu`, title: 'Full AI Menu', description: 'All AI commands' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '🤖 *AI COMMANDS*\n\nSelect an AI model to see the command format.\n\n_Type the full command with your message._\n\n📢 Join our channel for more updates!',
+        text: `🤖 *AI COMMANDS*\n\nSelect an AI model from the dropdown below.`,
         footer: '> created by wanga',
-        title: '🤖 AI Models & Settings',
+        title: '🤖 AI Models',
         sections: sections
     }, msg);
 }
@@ -108,34 +111,34 @@ async function sendAIDropdown(sock, from, msg, buttons) {
 async function sendAIImageDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '🖼️ IMAGE SEARCH',
+            title: '🖼️ Image Search',
             rows: [
-                { id: 'image_cmd', title: 'Image Search', description: '.image <search term>' },
-                { id: 'images_cmd', title: 'Bing Images', description: '.images <search term>' },
-                { id: 'pinterest_cmd', title: 'Pinterest', description: '.pinterest <search term>' },
-                { id: 'wallpaper_cmd', title: 'Wallpaper', description: '.wallpaper <theme>' }
+                { id: `${config.PREFIX}image`, title: 'Image Search', description: 'Search images' },
+                { id: `${config.PREFIX}images`, title: 'Bing Images', description: 'Bing image search' },
+                { id: `${config.PREFIX}pinterest`, title: 'Pinterest', description: 'Pinterest images' },
+                { id: `${config.PREFIX}wallpaper`, title: 'Wallpaper', description: 'HD wallpapers' }
             ]
         },
         {
-            title: '🎨 AI GENERATION',
+            title: '🎨 AI Generation',
             rows: [
-                { id: 'imagine_cmd', title: 'Imagine AI', description: '.imagine <prompt>' },
-                { id: 'create_cmd', title: 'Create Logo', description: '.create <text>' },
-                { id: 'textpro_cmd', title: 'TextPro', description: '.textpro <effect> <text>' }
+                { id: `${config.PREFIX}imagine`, title: 'Imagine AI', description: 'Generate images' },
+                { id: `${config.PREFIX}create`, title: 'Create Logo', description: 'Logo/text effects' },
+                { id: `${config.PREFIX}textpro`, title: 'TextPro', description: 'Text effects' }
             ]
         },
         {
-            title: '✨ IMAGE EDITING (Reply to image)',
+            title: '✨ Image Editing',
             rows: [
-                { id: 'beautiful_cmd', title: 'Beautiful', description: 'Reply to image with: .beautiful' },
-                { id: 'circle_cmd', title: 'Circle Image', description: 'Reply to image with: .circle' },
-                { id: 'removebg_cmd', title: 'Remove BG', description: 'Reply to image with: .removebg' }
+                { id: `${config.PREFIX}beautiful`, title: 'Beautiful', description: 'Add caption effect' },
+                { id: `${config.PREFIX}circle`, title: 'Circle Image', description: 'Make circular' },
+                { id: `${config.PREFIX}removebg`, title: 'Remove BG', description: 'Remove background' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '🎨 *AI IMAGE COMMANDS*\n\nSelect an image tool to see the command format.\n\n_Reply to images for editing commands._\n\n📢 Join our channel for more updates!',
+        text: `🎨 *AI IMAGE COMMANDS*\n\nSelect an image tool from the dropdown below.`,
         footer: '> created by wanga',
         title: '🎨 AI Image Tools',
         sections: sections
@@ -146,34 +149,34 @@ async function sendAIImageDropdown(sock, from, msg, buttons) {
 async function sendDownloaderDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '🎵 MUSIC DOWNLOADERS',
+            title: '🎵 Music Downloaders',
             rows: [
-                { id: 'play_cmd', title: 'Play', description: '.play <song name>' },
-                { id: 'ytmp3_cmd', title: 'YT to MP3', description: '.ytmp3 <YouTube URL>' },
-                { id: 'spotifydl_cmd', title: 'Spotify', description: '.spotifydl <song/URL>' },
-                { id: 'soundcloud_cmd', title: 'SoundCloud', description: '.soundcloud <URL>' }
+                { id: `${config.PREFIX}play`, title: 'Play', description: 'Search and download' },
+                { id: `${config.PREFIX}ytmp3`, title: 'YT to MP3', description: 'YouTube to audio' },
+                { id: `${config.PREFIX}spotifydl`, title: 'Spotify', description: 'Spotify tracks' },
+                { id: `${config.PREFIX}soundcloud`, title: 'SoundCloud', description: 'SoundCloud tracks' }
             ]
         },
         {
-            title: '📱 SOCIAL MEDIA',
+            title: '📱 Social Media',
             rows: [
-                { id: 'tiktokdl_cmd', title: 'TikTok', description: '.tiktokdl <URL>' },
-                { id: 'instagramdl_cmd', title: 'Instagram', description: '.instagramdl <URL>' },
-                { id: 'facebookdl_cmd', title: 'Facebook', description: '.facebookdl <URL>' },
-                { id: 'twitterdl_cmd', title: 'Twitter/X', description: '.twitterdl <URL>' }
+                { id: `${config.PREFIX}tiktokdl`, title: 'TikTok', description: 'TikTok videos' },
+                { id: `${config.PREFIX}instagramdl`, title: 'Instagram', description: 'Posts & reels' },
+                { id: `${config.PREFIX}facebookdl`, title: 'Facebook', description: 'Facebook videos' },
+                { id: `${config.PREFIX}twitterdl`, title: 'Twitter/X', description: 'Videos & media' }
             ]
         },
         {
-            title: '🌐 UNIVERSAL',
+            title: '🌐 Universal',
             rows: [
-                { id: 'savefrom_cmd', title: 'SaveFrom', description: '.savefrom <URL>' },
-                { id: 'dlfiles_cmd', title: 'DL Files', description: '.dlfiles <direct URL>' }
+                { id: `${config.PREFIX}savefrom`, title: 'SaveFrom', description: 'Universal downloader' },
+                { id: `${config.PREFIX}dlfiles`, title: 'DL Files', description: 'Direct file download' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '⬇️ *DOWNLOADER COMMANDS*\n\nSelect a downloader to see the command format.\n\n_Paste your link after the command._\n\n📢 Join our channel for more updates!',
+        text: `⬇️ *DOWNLOADER COMMANDS*\n\nSelect a downloader from the dropdown below.`,
         footer: '> created by wanga',
         title: '⬇️ Downloaders',
         sections: sections
@@ -184,46 +187,33 @@ async function sendDownloaderDropdown(sock, from, msg, buttons) {
 async function sendGroupDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '👥 MEMBER MANAGEMENT',
+            title: '👥 Member Management',
             rows: [
-                { id: 'add_cmd', title: 'Add', description: '.add <@user/phone>' },
-                { id: 'remove_cmd', title: 'Remove', description: '.remove <@user>' },
-                { id: 'promote_cmd', title: 'Promote', description: '.promote <@user>' },
-                { id: 'demote_cmd', title: 'Demote', description: '.demote <@user>' }
+                { id: `${config.PREFIX}add`, title: 'Add', description: 'Add members' },
+                { id: `${config.PREFIX}remove`, title: 'Remove', description: 'Remove members' },
+                { id: `${config.PREFIX}promote`, title: 'Promote', description: 'Make admin' },
+                { id: `${config.PREFIX}demote`, title: 'Demote', description: 'Remove admin' }
             ]
         },
         {
-            title: '📢 TAGGING',
+            title: '📢 Tagging',
             rows: [
-                { id: 'tagall_cmd', title: 'Tag All', description: '.tagall [message]' },
-                { id: 'tagadmins_cmd', title: 'Tag Admins', description: '.tagadmins [message]' },
-                { id: 'hidetag_cmd', title: 'Hide Tag', description: '.hidetag <message>' }
+                { id: `${config.PREFIX}tagall`, title: 'Tag All', description: 'Tag all members' },
+                { id: `${config.PREFIX}tagadmins`, title: 'Tag Admins', description: 'Tag admins only' }
             ]
         },
         {
-            title: '🔧 GROUP SETTINGS',
+            title: '🔧 Group Settings',
             rows: [
-                { id: 'invite_cmd', title: 'Invite Link', description: '.invite - Get group link' },
-                { id: 'revoke_cmd', title: 'Revoke Link', description: '.revoke - New invite link' },
-                { id: 'groupinfo_cmd', title: 'Group Info', description: '.groupinfo [link]' },
-                { id: 'participants_cmd', title: 'Members', description: '.participants - List all members' },
-                { id: 'lock_cmd', title: 'Lock Messages', description: '.lock <on/off>' },
-                { id: 'lockinfo_cmd', title: 'Lock Info', description: '.lockinfo <on/off>' },
-                { id: 'disappear_cmd', title: 'Disappear', description: '.disappear <24h/7d/90d/off>' },
-                { id: 'addmode_cmd', title: 'Add Mode', description: '.addmode <all/admins>' }
-            ]
-        },
-        {
-            title: '📊 POLLS',
-            rows: [
-                { id: 'poll_cmd', title: 'Poll', description: '.poll "Question" "Option1" "Option2"' },
-                { id: 'multipoll_cmd', title: 'Multi Poll', description: '.multipoll "Q" "A" "B" [max]' }
+                { id: `${config.PREFIX}invite`, title: 'Invite Link', description: 'Get invite link' },
+                { id: `${config.PREFIX}groupinfo`, title: 'Group Info', description: 'Group details' },
+                { id: `${config.PREFIX}lock`, title: 'Lock Messages', description: 'Admins only' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '👥 *GROUP COMMANDS*\n\nSelect a group action to see the command format.\n\n_Requires admin privileges for most commands._\n\n📢 Join our channel for more updates!',
+        text: `👥 *GROUP COMMANDS*\n\nSelect a group action from the dropdown below.`,
         footer: '> created by wanga',
         title: '👥 Group Management',
         sections: sections
@@ -234,39 +224,32 @@ async function sendGroupDropdown(sock, from, msg, buttons) {
 async function sendMediaDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '🎨 STICKERS',
+            title: '🎨 Stickers',
             rows: [
-                { id: 'sticker_cmd', title: 'Sticker', description: 'Reply to image/video with: .sticker' },
-                { id: 'toimage_cmd', title: 'To Image', description: 'Reply to sticker with: .toimage' }
+                { id: `${config.PREFIX}sticker`, title: 'Sticker', description: 'Create sticker' },
+                { id: `${config.PREFIX}toimage`, title: 'To Image', description: 'Sticker to image' }
             ]
         },
         {
-            title: '🎵 AUDIO',
+            title: '🎵 Audio',
             rows: [
-                { id: 'say_cmd', title: 'Text to Speech', description: '.say <text>' },
-                { id: 'voice_cmd', title: 'Voice Note', description: '.voice <text>' },
-                { id: 'toaudio_cmd', title: 'To Audio', description: 'Reply to video with: .toaudio' }
+                { id: `${config.PREFIX}say`, title: 'Say', description: 'Text to speech' },
+                { id: `${config.PREFIX}voice`, title: 'Voice Note', description: 'PTT voice note' },
+                { id: `${config.PREFIX}toaudio`, title: 'To Audio', description: 'Video to audio' }
             ]
         },
         {
-            title: '🖼️ RANDOM',
+            title: '🖼️ Random',
             rows: [
-                { id: 'waifu_cmd', title: 'Waifu', description: '.waifu - Random anime girl' },
-                { id: 'neko_cmd', title: 'Neko', description: '.neko - Random neko girl' },
-                { id: 'meme_cmd', title: 'Meme', description: '.meme - Random meme' }
-            ]
-        },
-        {
-            title: '📤 UPLOAD',
-            rows: [
-                { id: 'catbox_cmd', title: 'Catbox', description: 'Reply to media with: .catbox' },
-                { id: 'cleantemp_cmd', title: 'Clean Temp', description: '.cleantemp - Clear temp files' }
+                { id: `${config.PREFIX}waifu`, title: 'Waifu', description: 'Random waifu' },
+                { id: `${config.PREFIX}neko`, title: 'Neko', description: 'Random neko' },
+                { id: `${config.PREFIX}meme`, title: 'Meme', description: 'Random meme' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '🎵 *MEDIA COMMANDS*\n\nSelect a media tool to see the command format.\n\n_Reply to media for sticker/audio commands._\n\n📢 Join our channel for more updates!',
+        text: `🎵 *MEDIA COMMANDS*\n\nSelect a media tool from the dropdown below.`,
         footer: '> created by wanga',
         title: '🎵 Media Tools',
         sections: sections
@@ -277,41 +260,33 @@ async function sendMediaDropdown(sock, from, msg, buttons) {
 async function sendSearchDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '🌐 WEB SEARCH',
+            title: '🌐 Web Search',
             rows: [
-                { id: 'google_cmd', title: 'Google', description: '.google <query>' },
-                { id: 'bing_cmd', title: 'Bing', description: '.bing <query>' },
-                { id: 'duckduckgo_cmd', title: 'DuckDuckGo', description: '.duckduckgo <query>' },
-                { id: 'searchall_cmd', title: 'Multi-Search', description: '.searchall <query>' }
+                { id: `${config.PREFIX}google`, title: 'Google', description: 'Google search' },
+                { id: `${config.PREFIX}bing`, title: 'Bing', description: 'Bing search' },
+                { id: `${config.PREFIX}duckduckgo`, title: 'DuckDuckGo', description: 'Private search' }
             ]
         },
         {
-            title: '📚 KNOWLEDGE',
+            title: '📚 Knowledge',
             rows: [
-                { id: 'wiki_cmd', title: 'Wikipedia', description: '.wiki <topic>' },
-                { id: 'dictionary_cmd', title: 'Dictionary', description: '.dictionary <word>' },
-                { id: 'thesaurus_cmd', title: 'Thesaurus', description: '.thesaurus <word>' },
-                { id: 'movie_cmd', title: 'Movie', description: '.movie <movie name>' }
+                { id: `${config.PREFIX}wiki`, title: 'Wikipedia', description: 'Encyclopedia' },
+                { id: `${config.PREFIX}dictionary`, title: 'Dictionary', description: 'Word definitions' },
+                { id: `${config.PREFIX}movie`, title: 'Movie', description: 'Movie info' },
+                { id: `${config.PREFIX}anime`, title: 'Anime', description: 'Anime search' }
             ]
         },
         {
-            title: '📰 NEWS',
+            title: '🎬 Media',
             rows: [
-                { id: 'newstop_cmd', title: 'Top News', description: '.newstop - Latest headlines' },
-                { id: 'kenyanews_cmd', title: 'Kenyan News', description: '.kenyanews - Local news' }
-            ]
-        },
-        {
-            title: '🎬 MEDIA',
-            rows: [
-                { id: 'youtube_cmd', title: 'YouTube', description: '.youtube <search term>' },
-                { id: 'weather_cmd', title: 'Weather', description: '.weather <city>' }
+                { id: `${config.PREFIX}youtube`, title: 'YouTube', description: 'Search videos' },
+                { id: `${config.PREFIX}weather`, title: 'Weather', description: 'Weather info' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '🔍 *SEARCH COMMANDS*\n\nSelect a search tool to see the command format.\n\n_Type your search after the command._\n\n📢 Join our channel for more updates!',
+        text: `🔍 *SEARCH COMMANDS*\n\nSelect a search tool from the dropdown below.`,
         footer: '> created by wanga',
         title: '🔍 Search Tools',
         sections: sections
@@ -322,54 +297,35 @@ async function sendSearchDropdown(sock, from, msg, buttons) {
 async function sendToolsDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '🔢 ENCODING',
+            title: '🔢 Encoding',
             rows: [
-                { id: 'binary_cmd', title: 'Binary', description: '.binary <text>' },
-                { id: 'debinary_cmd', title: 'Debinary', description: '.debinary <binary>' },
-                { id: 'base64_cmd', title: 'Base64', description: '.base64 <text> or decode <base64>' },
-                { id: 'hash_cmd', title: 'Hash', description: '.hash <text>' },
-                { id: 'morse_cmd', title: 'Morse', description: '.morse <text>' }
+                { id: `${config.PREFIX}binary`, title: 'Binary', description: 'Text to binary' },
+                { id: `${config.PREFIX}base64`, title: 'Base64', description: 'Encode/decode' },
+                { id: `${config.PREFIX}hash`, title: 'Hash', description: 'MD5, SHA1, SHA256' },
+                { id: `${config.PREFIX}morse`, title: 'Morse', description: 'Morse code' }
             ]
         },
         {
-            title: '🔐 SECURITY',
+            title: '🔐 Security',
             rows: [
-                { id: 'encrypt_cmd', title: 'Encrypt', description: '.encrypt <password> <text>' },
-                { id: 'decrypt_cmd', title: 'Decrypt', description: '.decrypt <password> <encrypted>' },
-                { id: 'password_cmd', title: 'Password', description: '.password [length]' },
-                { id: 'vcc_cmd', title: 'VCC', description: '.vcc [type] [count]' }
+                { id: `${config.PREFIX}encrypt`, title: 'Encrypt', description: 'AES encryption' },
+                { id: `${config.PREFIX}decrypt`, title: 'Decrypt', description: 'AES decryption' },
+                { id: `${config.PREFIX}password`, title: 'Password', description: 'Generate passwords' },
+                { id: `${config.PREFIX}vcc`, title: 'VCC', description: 'Fake credit cards' }
             ]
         },
         {
-            title: '🌐 WEB TOOLS',
+            title: '🎲 Utilities',
             rows: [
-                { id: 'browse_cmd', title: 'Browse', description: '.browse <url>' },
-                { id: 'tinyurl_cmd', title: 'Shorten', description: '.tinyurl <url>' },
-                { id: 'screenshot_cmd', title: 'Screenshot', description: '.screenshot <url>' },
-                { id: 'subdomains_cmd', title: 'Subdomains', description: '.subdomains <domain>' }
-            ]
-        },
-        {
-            title: '🌍 INFO',
-            rows: [
-                { id: 'countryinfo_cmd', title: 'Country', description: '.countryinfo <country>' },
-                { id: 'githubstalk_cmd', title: 'GitHub', description: '.githubstalk <username>' },
-                { id: 'youtubestalk_cmd', title: 'YouTube', description: '.youtubestalk <channel>' }
-            ]
-        },
-        {
-            title: '🧮 MATH & TEXT',
-            rows: [
-                { id: 'calculate_cmd', title: 'Calculate', description: '.calc <equation>' },
-                { id: 'fliptext_cmd', title: 'Flip Text', description: '.fliptext <text>' },
-                { id: 'emojimix_cmd', title: 'Emoji Mix', description: '.emojimix 😅+🤔' },
-                { id: 'zodiak_cmd', title: 'Zodiac', description: '.zodiak <sign>' }
+                { id: `${config.PREFIX}calculate`, title: 'Calculate', description: 'Math calculator' },
+                { id: `${config.PREFIX}fliptext`, title: 'Flip Text', description: 'Upside down text' },
+                { id: `${config.PREFIX}zodiak`, title: 'Zodiak', description: 'Zodiac info' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '🛠️ *TOOLS*\n\nSelect a tool to see the command format.\n\n_Type the full command with your input._\n\n📢 Join our channel for more updates!',
+        text: `🛠️ *TOOLS*\n\nSelect a tool from the dropdown below.`,
         footer: '> created by wanga',
         title: '🛠️ Utility Tools',
         sections: sections
@@ -380,37 +336,32 @@ async function sendToolsDropdown(sock, from, msg, buttons) {
 async function sendFeaturesDropdown(sock, from, msg, buttons) {
     const sections = [
         {
-            title: '⚙️ AUTO FEATURES',
+            title: '⚙️ Auto Features',
             rows: [
-                { id: 'autoreact_cmd', title: 'Auto React', description: '.autoreact <on/off>' },
-                { id: 'autoread_cmd', title: 'Auto Read', description: '.autoread <on/off>' },
-                { id: 'chatbot_cmd2', title: 'Chatbot', description: '.chatbot <dm/group/both/off>' },
-                { id: 'aimode_cmd2', title: 'AI Mode', description: '.aimode <short/normal/detailed>' }
+                { id: `${config.PREFIX}autoreact`, title: 'Auto React', description: 'Auto reaction' },
+                { id: `${config.PREFIX}autoread`, title: 'Auto Read', description: 'Auto mark as read' }
             ]
         },
         {
-            title: '🛡️ ANTI FEATURES',
+            title: '🛡️ Anti Features',
             rows: [
-                { id: 'antidelete_cmd', title: 'Anti Delete', description: '.antidelete <on/off>' },
-                { id: 'anticall_cmd', title: 'Anti Call', description: '.anticall <on/off>' },
-                { id: 'antilink_cmd', title: 'Anti Link', description: '.antilink <on/off> (in group)' }
+                { id: `${config.PREFIX}antidelete`, title: 'Anti Delete', description: 'Catch deleted messages' },
+                { id: `${config.PREFIX}anticall`, title: 'Anti Call', description: 'Block calls' },
+                { id: `${config.PREFIX}antilink`, title: 'Anti Link', description: 'Block links' }
             ]
         },
         {
-            title: '📱 STATUS FEATURES',
+            title: '📱 Status Features',
             rows: [
-                { id: 'autoviewstatus_cmd', title: 'Auto View Status', description: '.autoviewstatus <on/off>' },
-                { id: 'autoreactstatus_cmd', title: 'Auto React Status', description: '.autoreactstatus <on/off>' },
-                { id: 'autodownloadstatus_cmd', title: 'Auto Download', description: '.autodownloadstatus <on/off>' },
-                { id: 'setstatusemoji_cmd', title: 'Status Emojis', description: '.setstatusemoji ❤️,👍,🔥' },
-                { id: 'antideletestatus_cmd', title: 'Anti Delete Status', description: '.antideletestatus <on/off>' },
-                { id: 'autoviewonce_cmd', title: 'Auto View Once', description: '.autoviewonce <on/off>' }
+                { id: `${config.PREFIX}autoviewstatus`, title: 'Auto View Status', description: 'View statuses' },
+                { id: `${config.PREFIX}autoreactstatus`, title: 'Auto React Status', description: 'React to statuses' },
+                { id: `${config.PREFIX}setstatusemoji`, title: 'Status Emojis', description: 'Set reaction emojis' }
             ]
         }
     ];
-
+    
     await sendDropdownMenu(sock, from, {
-        text: '⚙️ *FEATURE TOGGLES*\n\nSelect a feature to see the command format.\n\n_Type the full command to toggle features._\n\n📢 Join our channel for more updates!',
+        text: `⚙️ *FEATURE TOGGLES*\n\nSelect a feature to toggle from the dropdown below.`,
         footer: '> created by wanga',
         title: '⚙️ Features',
         sections: sections
@@ -423,22 +374,23 @@ commands.push({
     description: 'Show bot menu with dropdown buttons',
     aliases: ['help', 'cmds', 'allmenu', '📋 Menu'],
     async execute({ msg, from, sender, bot, sock, react, reply, buttons }) {
+        
         const now = moment().tz(config.TIMEZONE || 'Africa/Nairobi');
         const timeStr = now.format('h:mm A');
         const dateStr = now.format('DD/MM/YYYY');
-
+        
         const uptime = process.uptime();
         const days = Math.floor(uptime / 86400);
         const hours = Math.floor((uptime % 86400) / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
-
+        
         const totalMem = os.totalmem() / (1024 * 1024 * 1024);
         const freeMem = os.freemem() / (1024 * 1024 * 1024);
         const usedMem = (totalMem - freeMem).toFixed(2);
         const totalMemFixed = totalMem.toFixed(2);
 
-        const menuText = '*𝐌𝐄𝐆𝐀𝐍 𝐌𝐃*\n\n' +
-            '✧･ﾟ: ✧･ﾟ:  𝐒𝐘𝐒𝐓𝐄𝐌  :･ﾟ✧:･ﾟ✧\n' +
+        const menuText = `*𝐌𝐄𝐆𝐀𝐍 𝐌𝐃*\n\n` +
+            `✧･ﾟ: ✧･ﾟ:  𝐒𝐘𝐒𝐓𝐄𝐌  :･ﾟ✧:･ﾟ✧\n` +
             `➤ Version  : 3.0.0\n` +
             `➤ Owner    : ${config.OWNER_NAME}\n` +
             `➤ Prefix   : ${config.PREFIX}\n` +
@@ -447,7 +399,7 @@ commands.push({
             `➤ Time     : ${timeStr}\n` +
             `➤ Date     : ${dateStr}\n` +
             `➤ RAM      : ${usedMem}GB/${totalMemFixed}GB\n\n` +
-            '📌 *Click a category button below to see available commands with examples*';
+            `📌 *Click a category button below to open dropdown menu*`;
 
         await sendButtonMenu(sock, from, {
             title: '🎯 MEGAN-MD MAIN MENU',
@@ -543,7 +495,9 @@ commands.push({
     }
 });
 
-// ==================== EXISTING COMMAND ALIASES ====================
+// ==================== KEEP EXISTING COMMANDS ====================
+
+// AIMENU - also show dropdown
 commands.push({
     name: 'aimenu',
     description: 'Show AI commands dropdown',
@@ -554,6 +508,7 @@ commands.push({
     }
 });
 
+// IMAGEMEN - also show dropdown
 commands.push({
     name: 'imagemen',
     description: 'Show AI Image commands dropdown',
@@ -564,6 +519,7 @@ commands.push({
     }
 });
 
+// DOWNLOADHELP - also show dropdown
 commands.push({
     name: 'downloadhelp',
     description: 'Show Downloader commands dropdown',
@@ -574,6 +530,7 @@ commands.push({
     }
 });
 
+// GROUPHELP - also show dropdown
 commands.push({
     name: 'grouphelp',
     description: 'Show Group commands dropdown',
@@ -584,6 +541,7 @@ commands.push({
     }
 });
 
+// MEDIA - also show dropdown
 commands.push({
     name: 'media',
     description: 'Show Media commands dropdown',
@@ -594,6 +552,7 @@ commands.push({
     }
 });
 
+// SEARCHHELP - also show dropdown
 commands.push({
     name: 'searchhelp',
     description: 'Show Search commands dropdown',
@@ -604,6 +563,7 @@ commands.push({
     }
 });
 
+// TOOLS - also show dropdown
 commands.push({
     name: 'tools',
     description: 'Show Tools dropdown menu',
@@ -614,6 +574,7 @@ commands.push({
     }
 });
 
+// FEATURES - also show dropdown
 commands.push({
     name: 'features',
     description: 'Show Features dropdown menu',
@@ -633,14 +594,14 @@ commands.push({
         const start = Date.now();
         await new Promise(resolve => setTimeout(resolve, 50));
         const ping = Date.now() - start;
-
+        
         await sendButtonMenu(sock, from, {
             title: '⚡ Bot Speed',
             text: `*Pong!* 🏓\n\n📡 Response: ${ping}ms`,
             footer: '> created by wanga',
             buttons: [
-                { id: 'uptime_cmd', text: '⏱️ Uptime' },
-                { id: 'menu_cmd', text: '📋 Menu' },
+                { id: `${config.PREFIX}uptime`, text: '⏱️ Uptime' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
                 { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
             ]
         }, msg);
@@ -664,8 +625,8 @@ commands.push({
             text: `📅 *Days:* ${days}\n⏰ *Hours:* ${hours}\n⏱️ *Minutes:* ${minutes}\n⏲️ *Seconds:* ${seconds}`,
             footer: '> created by wanga',
             buttons: [
-                { id: 'ping_cmd', text: '⚡ Ping' },
-                { id: 'menu_cmd', text: '📋 Menu' },
+                { id: `${config.PREFIX}ping`, text: '⚡ Ping' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
                 { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
             ]
         }, msg);
@@ -681,17 +642,17 @@ commands.push({
         const now = moment().tz(config.TIMEZONE || 'Africa/Nairobi');
         const timeStr = now.format('h:mm A');
         const dateStr = now.format('DD/MM/YYYY');
-
+        
         const uptime = process.uptime();
         const days = Math.floor(uptime / 86400);
         const hours = Math.floor((uptime % 86400) / 3600);
-
+        
         const totalMem = os.totalmem() / (1024 * 1024 * 1024);
         const freeMem = os.freemem() / (1024 * 1024 * 1024);
         const usedMem = (totalMem - freeMem).toFixed(2);
         const totalMemFixed = totalMem.toFixed(2);
 
-        const infoText = '📱 *BOT INFO*\n\n' +
+        const infoText = `📱 *BOT INFO*\n\n` +
             `👤 *Owner:* ${config.OWNER_NAME}\n` +
             `📞 *Phone:* ${config.OWNER_NUMBER}\n` +
             `🤖 *Bot:* ${config.BOT_NAME}\n` +
@@ -709,8 +670,8 @@ commands.push({
             footer: '> created by wanga',
             image: BOT_LOGO,
             buttons: [
-                { id: 'status_cmd', text: '📊 Status' },
-                { id: 'menu_cmd', text: '📋 Menu' },
+                { id: `${config.PREFIX}status`, text: '📊 Status' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
                 { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
             ]
         }, msg);
@@ -728,12 +689,12 @@ commands.push({
         const hours = Math.floor((uptime % 86400) / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
         const seconds = Math.floor(uptime % 60);
-
+        
         const memory = process.memoryUsage();
         const usedMB = Math.round(memory.heapUsed / 1024 / 1024);
         const totalMB = Math.round(os.totalmem() / 1024 / 1024);
 
-        const statusText = '📊 *BOT STATUS*\n\n' +
+        const statusText = `📊 *BOT STATUS*\n\n` +
             `⏱️ *Uptime:* ${days}d ${hours}h ${minutes}m ${seconds}s\n` +
             `💾 *Memory:* ${usedMB}MB / ${totalMB}MB\n` +
             `📚 *Commands:* ${bot.commands.size}\n` +
@@ -745,8 +706,8 @@ commands.push({
             text: statusText,
             footer: '> created by wanga',
             buttons: [
-                { id: 'info_cmd', text: 'ℹ️ Info' },
-                { id: 'menu_cmd', text: '📋 Menu' },
+                { id: `${config.PREFIX}info`, text: 'ℹ️ Info' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
                 { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
             ]
         }, msg);
@@ -759,19 +720,19 @@ commands.push({
     description: 'Show owner information',
     aliases: ['creator'],
     async execute({ msg, from, sender, bot, sock, react, reply, buttons }) {
-        const ownerInfo = '👑 *OWNER INFO*\n\n' +
+        const ownerInfo = `👑 *OWNER INFO*\n\n` +
             `📛 *Name:* ${config.OWNER_NAME}\n` +
             `📞 *Phone:* ${config.OWNER_NUMBER}\n` +
-            '🌍 *Country:* Kenya\n\n' +
-            '> created by wanga';
+            `🌍 *Country:* Kenya\n\n` +
+            `> created by wanga`;
 
         await sendButtonMenu(sock, from, {
             title: '👑 Bot Owner',
             text: ownerInfo,
             footer: '> created by wanga',
             buttons: [
-                { id: 'info_cmd', text: 'ℹ️ Info' },
-                { id: 'menu_cmd', text: '📋 Menu' },
+                { id: `${config.PREFIX}info`, text: 'ℹ️ Info' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
                 { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
             ]
         }, msg);

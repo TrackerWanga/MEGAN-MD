@@ -1,1 +1,58 @@
-const{getContentType:getContentType,extractMessageContent:extractMessageContent,downloadMediaMessage:downloadMediaMessage}=require("gifted-baileys"),config=require("../config");class MessageHelper{static extractText(e){if(!e)return"";try{if(e.conversation)return e.conversation;if(e.extendedTextMessage?.text)return e.extendedTextMessage.text;if(e.imageMessage?.caption)return e.imageMessage.caption;if(e.videoMessage?.caption)return e.videoMessage.caption;if(e.documentMessage?.caption)return e.documentMessage.caption;if(e.protocolMessage)return null;if(e.senderKeyDistributionMessage)return null;const t=getContentType(e);if(t){const s=extractMessageContent(e[t]);if(s){if(s.text)return s.text;if(s.caption)return s.caption;if(s.contentText)return s.contentText;if(s.conversation)return s.conversation;if(s.listMessage?.description)return s.listMessage.description;if(s.buttonsMessage?.contentText)return s.buttonsMessage.contentText;if(s.templateMessage?.hydratedTemplate?.hydratedContentText)return s.templateMessage.hydratedTemplate.hydratedContentText}}return null}catch(e){return null}}static getMediaType(e){if(!e)return null;if(e.imageMessage)return"IMAGE";if(e.videoMessage)return"VIDEO";if(e.audioMessage)return"AUDIO";if(e.stickerMessage)return"STICKER";if(e.documentMessage)return"DOCUMENT";if(e.contactMessage)return"CONTACT";if(e.locationMessage)return"LOCATION";if(e.liveLocationMessage)return"LIVE_LOCATION";if(e.reactionMessage)return"REACTION";try{const t=getContentType(e);return t?t.includes("ImageMessage")?"IMAGE":t.includes("VideoMessage")?"VIDEO":t.includes("AudioMessage")?"AUDIO":t.includes("StickerMessage")?"STICKER":t.includes("DocumentMessage")?"DOCUMENT":t.includes("ContactMessage")?"CONTACT":t.includes("LocationMessage")?"LOCATION":null:null}catch(e){return null}}static isCommand(e,t){return e&&e.startsWith(t)}static parseCommand(e,t){if(!e||!e.startsWith(t))return null;const s=e.slice(t.length).trim(),n=s.split(/ +/)[0].toLowerCase();return{name:n,args:s.slice(n.length).trim().split(/ +/).filter(e=>e),fullText:s}}static createReply(e,t,s){return async n=>e.sendMessage(t,{text:n},{quoted:s})}static createReact(e,t){return async s=>e.sendMessage(t.remoteJid,{react:{key:t,text:s}})}static async downloadMedia(e,t="buffer"){try{return await downloadMediaMessage(e,t,{},{logger:console,reuploadRequest:async e=>{}})}catch(e){return console.error("Media download error:",e),null}}}module.exports=MessageHelper;
+// MEGAN-MD Message Helper
+
+class MessageHelper {
+    static extractText(message) {
+        if (!message) return '';
+        
+        if (message.conversation) return message.conversation;
+        if (message.extendedTextMessage?.text) return message.extendedTextMessage.text;
+        if (message.imageMessage?.caption) return message.imageMessage.caption;
+        if (message.videoMessage?.caption) return message.videoMessage.caption;
+        if (message.documentMessage?.caption) return message.documentMessage.caption;
+        
+        return '';
+    }
+    
+    static isCommand(text, prefix) {
+        if (!text || typeof text !== 'string') return false;
+        return text.startsWith(prefix);
+    }
+    
+    static parseCommand(text, prefix) {
+        if (!text || !text.startsWith(prefix)) return null;
+        
+        const withoutPrefix = text.slice(prefix.length).trim();
+        const parts = withoutPrefix.split(/\s+/);
+        const name = parts[0].toLowerCase();
+        const args = parts.slice(1);
+        const fullText = withoutPrefix;
+        
+        return { name, args, fullText };
+    }
+    
+    static getMediaType(message) {
+        if (!message) return null;
+        if (message.imageMessage) return 'image';
+        if (message.videoMessage) return 'video';
+        if (message.audioMessage) return 'audio';
+        if (message.stickerMessage) return 'sticker';
+        if (message.documentMessage) return 'document';
+        return null;
+    }
+    
+    static createReply(sock, jid, quotedMsg) {
+        return async (text, options = {}) => {
+            return await sock.sendMessage(jid, { text, ...options }, { quoted: quotedMsg });
+        };
+    }
+    
+    static createReact(sock, key) {
+        return async (emoji) => {
+            return await sock.sendMessage(key.remoteJid, {
+                react: { key, text: emoji }
+            });
+        };
+    }
+}
+
+module.exports = MessageHelper;

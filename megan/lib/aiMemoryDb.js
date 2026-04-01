@@ -1,4 +1,270 @@
-// MEGAN-MD - With Fixed Reply Detection
+// MEGAN-MD AI Memory Manager - Separate SQLite Database
+// Uses sqlite3 directly, no Sequelize complexity
+
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const fs = require('fs-extra');
+
+class AIMemoryDb {
+    constructor() {
+        this.dbPath = path.join(process.cwd(), 'ai_memory.db');
+        this.db = null;
+        this.retentionHours = 24;
+        this.maxMessages = 20;
+        this.initialized = false;
+    }
+
+    async initialize() {
+        if (this.initialized) return this;
+
+        // Ensure directory exists
+        await fs.ensureDir(path.dirname(this.dbPath));
+
+        return new Promise((resolve, reject) => {
+            this.db = new sqlite3.Database(this.dbPath, (err) => {
+                if (err) {
+                    console.error('AI Memory DB error:', err);
+                    reject(err);
+                    return;
+                }
+                this.createTables();
+                this.initialized = true;
+                console.log('🗄️  AI Memory database connected');
+                resolve(this);
+            });
+        });
+    }
+
+    createTables() {
+        // Create messages table
+        this.db.run(`
+            CREATE TABLE IF NOT EXISTS chat_memory (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                chatId TEXT NOT NULL,
+                userId TEXT NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                timestamp INTEGER NOT NULL
+            )
+        `);
+
+        // Create indexes for faster queries
+        this.db.run(`CREATE INDEX IF NOT EXISTS idx_chatId ON chat_memory (chatId)`);
+        this.db.run(`CREATE INDEX IF NOT EXISTS idx_timestamp ON chat_memory (timestamp)`);
+
+        // Create stats table
+        this.db.run(`
+            CREATE TABLE IF NOT EXISTS memory_stats (
+                chatId TEXT PRIMARY KEY,
+                messageCount INTEGER DEFAULT 0,
+                storageBytes INTEGER DEFAULT 0,
+                lastActivity INTEGER DEFAULT 0
+            )
+        `);
+
+        console.log('✅ AI Memory tables ready');
+    }
+
+    // Add message to memory
+    addMessage(chatId, userId, role, content) {
+        if (!chatId || !userId || !role || !content) return false;
+
+        const timestamp = Date.now();
+
+        this.db.run(
+            `INSERT INTO chat_memory (chatId, userId, role, content, timestamp) VALUES (?, ?, ?, ?, ?)`,
+            [chatId, userId, role, content, timestamp],
+            (err) => {
+                if (err) {
+                    console.error('Add memory error:', err);
+                } else {
+                    this.updateStats(chatId);
+                    this.trimChat(chatId);
+                }
+            }
+        );
+        return true;
+    }
+
+    // Get conversation history
+    getHistory(chatId, limit = 15, callback) {
+        this.db.all(
+            `SELECT role, content, userId, timestamp FROM chat_memory 
+             WHERE chatId = ? 
+             ORDER BY timestamp ASC 
+             LIMIT ?`,
+            [chatId, limit],
+            (err, rows) => {
+                if (err) {
+                    console.error('Get history error:', err);
+                    callback([]);
+                } else {
+                    callback(rows || []);
+                }
+            }
+        );
+    }
+
+    // Get history synchronously (for use in async function)
+    async getHistorySync(chatId, limit = 15) {
+        return new Promise((resolve) => {
+            this.db.all(
+                `SELECT role, content, userId, timestamp FROM chat_memory 
+                 WHERE chatId = ? 
+                 ORDER BY timestamp ASC 
+                 LIMIT ?`,
+                [chatId, limit],
+                (err, rows) => {
+                    if (err) {
+                        console.error('Get history error:', err);
+                        resolve([]);
+                    } else {
+                        resolve(rows || []);
+                    }
+                }
+            );
+        });
+    }
+
+    // Clear memory for a chat
+    clearMemory(chatId, callback) {
+        this.db.run(`DELETE FROM chat_memory WHERE chatId = ?`, [chatId], (err) => {
+            if (!err) {
+                this.updateStats(chatId);
+            }
+            if (callback) callback(err ? 0 : 1);
+        });
+    }
+
+    // Clear memory synchronously
+    async clearMemorySync(chatId) {
+        return new Promise((resolve) => {
+            this.db.run(`DELETE FROM chat_memory WHERE chatId = ?`, [chatId], (err) => {
+                if (!err) this.updateStats(chatId);
+                resolve(!err);
+            });
+        });
+    }
+
+    // Trim chat to maxMessages (keep most recent)
+    trimChat(chatId) {
+        this.db.get(
+            `SELECT COUNT(*) as count FROM chat_memory WHERE chatId = ?`,
+            [chatId],
+            (err, row) => {
+                if (err || !row) return;
+                if (row.count > this.maxMessages) {
+                    const toDelete = row.count - this.maxMessages;
+                    this.db.run(
+                        `DELETE FROM chat_memory WHERE chatId = ? AND id IN (
+                            SELECT id FROM chat_memory WHERE chatId = ? 
+                            ORDER BY timestamp ASC LIMIT ?
+                        )`,
+                        [chatId, chatId, toDelete]
+                    );
+                }
+            }
+        );
+    }
+
+    // Update stats for a chat
+    updateStats(chatId) {
+        this.db.get(
+            `SELECT COUNT(*) as count, SUM(LENGTH(content)) as bytes FROM chat_memory WHERE chatId = ?`,
+            [chatId],
+            (err, row) => {
+                if (err) return;
+                const count = row?.count || 0;
+                const bytes = row?.bytes || 0;
+                this.db.run(
+                    `INSERT OR REPLACE INTO memory_stats (chatId, messageCount, storageBytes, lastActivity) 
+                     VALUES (?, ?, ?, ?)`,
+                    [chatId, count, bytes, Date.now()]
+                );
+            }
+        );
+    }
+
+    // Get stats for a chat
+    async getStats(chatId) {
+        return new Promise((resolve) => {
+            this.db.get(
+                `SELECT messageCount, storageBytes, lastActivity FROM memory_stats WHERE chatId = ?`,
+                [chatId],
+                (err, row) => {
+                    if (err || !row) {
+                        resolve({ messageCount: 0, storageBytes: 0, lastActivity: 0 });
+                    } else {
+                        resolve(row);
+                    }
+                }
+            );
+        });
+    }
+
+    // Get global stats
+    async getGlobalStats() {
+        return new Promise((resolve) => {
+            this.db.get(
+                `SELECT 
+                    COUNT(DISTINCT chatId) as activeChats,
+                    SUM(messageCount) as totalMessages,
+                    SUM(storageBytes) as totalBytes
+                 FROM memory_stats`,
+                (err, row) => {
+                    if (err || !row) {
+                        resolve({ activeChats: 0, totalMessages: 0, totalMB: '0' });
+                    } else {
+                        resolve({
+                            activeChats: row.activeChats || 0,
+                            totalMessages: row.totalMessages || 0,
+                            totalMB: ((row.totalBytes || 0) / (1024 * 1024)).toFixed(2)
+                        });
+                    }
+                }
+            );
+        });
+    }
+
+    // Cleanup old messages
+    cleanupOld(callback) {
+        const cutoff = Date.now() - (this.retentionHours * 60 * 60 * 1000);
+        this.db.run(
+            `DELETE FROM chat_memory WHERE timestamp < ?`,
+            [cutoff],
+            (err) => {
+                if (!err) {
+                    // Update all stats after cleanup
+                    this.db.all(`SELECT DISTINCT chatId FROM chat_memory`, [], (err, rows) => {
+                        if (rows) {
+                            rows.forEach(row => this.updateStats(row.chatId));
+                        }
+                    });
+                }
+                if (callback) callback();
+            }
+        );
+    }
+
+    // Start auto-cleanup
+    startAutoCleanup(intervalHours = 1) {
+        setInterval(() => {
+            this.cleanupOld();
+        }, intervalHours * 60 * 60 * 1000);
+        console.log(`🧠 AI Memory auto-cleanup: every ${intervalHours} hour(s)`);
+    }
+
+    // Close database
+    close() {
+        if (this.db) {
+            this.db.close();
+        }
+    }
+}
+
+module.exports = AIMemoryDb;
+EOFcat > index.js << 'EOF'
+// MEGAN-MD - With Separate AI Memory Database
 
 const {
     default: makeWASocket,
@@ -22,7 +288,7 @@ dotenv.config();
 const config = require('./megan/config');
 const { createLogger } = require('./megan/logger');
 const DatabaseManager = require('./megan/lib/database');
-const SimpleMemory = require('./megan/lib/simpleMemory');
+const AIMemoryDb = require('./megan/lib/aiMemoryDb');
 const CacheManager = require('./megan/lib/cache');
 const MessageStore = require('./megan/lib/messageStore');
 const EventHandler = require('./megan/events/handler');
@@ -43,7 +309,7 @@ class MeganBot {
         this.cache = new CacheManager(this.logger);
         this.messageStore = null;
         this.db = null;
-        this.memory = new SimpleMemory();
+        this.aiMemory = null;  // Separate AI memory database
         this.media = new MediaProcessor();
         this.autoReact = null;
         this.lidResolver = null;
@@ -52,13 +318,7 @@ class MeganBot {
         this.aliases = new Map();
         this.ownerJid = null;
         this.ownerLid = null;
-        
-        // Conversation tracking
-        this.activeConversations = new Map();
-        this.CONVERSATION_TIMEOUT = 10 * 60 * 1000;
         this.createRequiredFolders();
-        
-        setInterval(() => this.cleanupConversations(), 5 * 60 * 1000);
     }
 
     createRequiredFolders() {
@@ -74,37 +334,43 @@ class MeganBot {
         console.log('╚═══════════════════════════════════════════════════════════╝\n');
 
         try {
-            console.log('🔐 [1/7] Loading WhatsApp session...');
+            console.log('🔐 [1/8] Loading WhatsApp session...');
             await this.setupSession();
-            console.log('✅ [1/7] Session loaded successfully\n');
+            console.log('✅ [1/8] Session loaded successfully\n');
 
-            console.log('🗄️  [2/7] Initializing database...');
+            console.log('🗄️  [2/8] Initializing main database...');
             this.db = new DatabaseManager();
             await this.db.initialize();
-            console.log('✅ [2/7] Database ready\n');
+            console.log('✅ [2/8] Main database ready\n');
 
-            console.log('💾 [3/7] Initializing message store...');
+            console.log('🧠 [3/8] Initializing AI Memory database...');
+            this.aiMemory = new AIMemoryDb();
+            await this.aiMemory.initialize();
+            this.aiMemory.startAutoCleanup(1); // Clean every hour
+            console.log('✅ [3/8] AI Memory database ready\n');
+
+            console.log('💾 [4/8] Initializing message store...');
             this.messageStore = new MessageStore();
             this.messageStore.setDatabase(this.db);
-            console.log('✅ [3/7] Message store ready\n');
+            console.log('✅ [4/8] Message store ready\n');
 
-            console.log('📚 [4/7] Loading commands...');
+            console.log('📚 [5/8] Loading commands...');
             await this.loadCommands();
-            console.log(`✅ [4/7] Loaded ${this.commands.size} commands\n`);
+            console.log(`✅ [5/8] Loaded ${this.commands.size} commands\n`);
 
-            console.log('🎮 [5/7] Initializing handlers...');
+            console.log('🎮 [6/8] Initializing handlers...');
             this.autoReact = new AutoReactHandler(this);
             this.lidResolver = new LidResolver(this);
-            console.log('✅ [5/7] Handlers ready\n');
+            console.log('✅ [6/8] Handlers ready\n');
 
-            console.log('🌐 [6/7] Connecting to WhatsApp...');
+            console.log('🌐 [7/8] Connecting to WhatsApp...');
             await this.connect();
 
             const currentTime = await timeUtils.getCurrentTimeString(this.db);
             const statusView = await this.db.getSetting('status_auto_view', 'on');
             const statusReact = await this.db.getSetting('status_auto_react', 'off');
             const autoViewOnce = await this.db.getSetting('autoviewonce', 'on');
-            const memoryStats = this.memory.getGlobalStats();
+            const memoryStats = await this.aiMemory.getGlobalStats();
 
             console.log('\n╔═══════════════════════════════════════════════════════════╗');
             console.log('║                    BOT STATUS                              ║');
@@ -113,7 +379,7 @@ class MeganBot {
             console.log(`📱 Status Auto-View: ${statusView === 'on' ? 'ON' : 'OFF'}`);
             console.log(`❤️ Status Auto-React: ${statusReact === 'on' ? 'ON' : 'OFF'}`);
             console.log(`🔐 Auto-View-Once: ${autoViewOnce === 'on' ? 'ON' : 'OFF'}`);
-            console.log(`🧠 AI Memory: ${memoryStats.activeChats} chats, ${memoryStats.totalMessages} messages`);
+            console.log(`🧠 AI Memory: ${memoryStats.activeChats} chats, ${memoryStats.totalMessages} messages, ${memoryStats.totalMB}MB`);
             console.log('═══════════════════════════════════════════════════════════════\n');
 
             console.log('✅ MEGAN-MD is now online and ready!\n');
@@ -187,196 +453,13 @@ class MeganBot {
         }
     }
 
-    // ==================== CONVERSATION MANAGEMENT ====================
-    
-    setActiveConversation(chatId, command, context = {}) {
-        this.activeConversations.set(chatId, {
-            command,
-            context,
-            lastActive: Date.now()
-        });
-        console.log(`💬 Active conversation set: ${chatId} -> ${command}`);
-    }
-    
-    getActiveConversation(chatId) {
-        const conv = this.activeConversations.get(chatId);
-        if (conv && (Date.now() - conv.lastActive) < this.CONVERSATION_TIMEOUT) {
-            return conv;
-        }
-        if (conv) {
-            this.activeConversations.delete(chatId);
-        }
-        return null;
-    }
-    
-    clearActiveConversation(chatId) {
-        if (this.activeConversations.has(chatId)) {
-            this.activeConversations.delete(chatId);
-            console.log(`💬 Cleared conversation for: ${chatId}`);
-        }
-    }
-    
-    cleanupConversations() {
-        const now = Date.now();
-        let cleaned = 0;
-        for (const [id, conv] of this.activeConversations) {
-            if (now - conv.lastActive > this.CONVERSATION_TIMEOUT) {
-                this.activeConversations.delete(id);
-                cleaned++;
-            }
-        }
-        if (cleaned > 0) {
-            console.log(`🧹 Cleaned up ${cleaned} expired conversations`);
-        }
-    }
-    
-    // ==================== FIXED REPLY DETECTION ====================
-    
-    async handleReplyToPrompt(msg, from, sender, text, quotedMsg) {
-        // Check if replying to a bot message
-        if (!quotedMsg || !quotedMsg.key?.fromMe) {
-            return false;
-        }
-        
-        // Check if the quoted message has a command hint in its text
-        const quotedText = quotedMsg.message?.conversation || 
-                          quotedMsg.message?.extendedTextMessage?.text || '';
-        
-        // Look for command hints in the quoted message text
-        const commandHints = ['PLAY', 'YTMP3', 'YTMP4', 'SPOTIFY', 'SOUNDCLOUD', 'SAVEFROM', 'UNIVERSAL'];
-        let detectedCommand = null;
-        
-        for (const hint of commandHints) {
-            if (quotedText.toUpperCase().includes(hint)) {
-                detectedCommand = hint.toLowerCase();
-                break;
-            }
-        }
-        
-        // Also check for specific patterns
-        if (quotedText.includes('play') || quotedText.includes('song')) {
-            detectedCommand = 'play';
-        } else if (quotedText.includes('ytmp3') || quotedText.includes('MP3')) {
-            detectedCommand = 'ytmp3';
-        } else if (quotedText.includes('ytmp4') || quotedText.includes('video')) {
-            detectedCommand = 'ytmp4';
-        } else if (quotedText.includes('spotify')) {
-            detectedCommand = 'spotifydl';
-        } else if (quotedText.includes('soundcloud')) {
-            detectedCommand = 'soundcloud';
-        } else if (quotedText.includes('savefrom') || quotedText.includes('universal')) {
-            detectedCommand = 'savefrom';
-        }
-        
-        if (!detectedCommand) {
-            // Also check if there's an active conversation
-            const active = this.getActiveConversation(from);
-            if (active) {
-                detectedCommand = active.command;
-            } else {
-                return false;
-            }
-        }
-        
-        console.log(`💬 Reply detected: replying to ${detectedCommand} with "${text}"`);
-        
-        // Find the command
-        const cmd = this.commands.get(detectedCommand);
-        if (cmd) {
-            const resolvedSender = await this.eventHandler?.resolveRealJid?.(sender) || sender;
-            const isOwner = await this.eventHandler?.isOwner?.(resolvedSender) || false;
-            const isGroup = isJidGroup(from);
-            
-            const context = {
-                msg,
-                from,
-                sender: resolvedSender,
-                isOwner,
-                isGroup,
-                args: [text],
-                command: detectedCommand,
-                text: text,
-                bot: this,
-                sock: this.sock,
-                buttons: this.buttons,
-                reply: MessageHelper.createReply(this.sock, from, msg),
-                react: MessageHelper.createReact(this.sock, msg.key),
-                db: this.db,
-                logger: this.logger,
-                cache: this.cache,
-                ownerManager: this.eventHandler?.ownerManager,
-                resolveRealJid: (jid) => this.eventHandler?.resolveRealJid?.(jid) || jid,
-                getFormattedTime: () => timeUtils.formatTime12h(Date.now(), this.db),
-                getFormattedDate: () => timeUtils.formatDate(Date.now(), this.db),
-                quoted: quotedMsg,
-                isConversation: true
-            };
-            
-            // Update active conversation
-            this.setActiveConversation(from, detectedCommand, { lastQuery: text });
-            
-            await cmd.execute(context);
-            return true;
-        }
-        
-        return false;
-    }
-    
-    async handleConversationReply(msg, from, sender, text, isGroup) {
-        const active = this.getActiveConversation(from);
-        
-        if (!active) return false;
-        
-        // Update last active
-        active.lastActive = Date.now();
-        this.activeConversations.set(from, active);
-        
-        console.log(`💬 Continuing conversation: ${active.command} with "${text}"`);
-        
-        const cmd = this.commands.get(active.command);
-        if (cmd) {
-            const resolvedSender = await this.eventHandler?.resolveRealJid?.(sender) || sender;
-            const isOwner = await this.eventHandler?.isOwner?.(resolvedSender) || false;
-            
-            const context = {
-                msg,
-                from,
-                sender: resolvedSender,
-                isOwner,
-                isGroup,
-                args: [text],
-                command: active.command,
-                text: text,
-                bot: this,
-                sock: this.sock,
-                buttons: this.buttons,
-                reply: MessageHelper.createReply(this.sock, from, msg),
-                react: MessageHelper.createReact(this.sock, msg.key),
-                db: this.db,
-                logger: this.logger,
-                cache: this.cache,
-                ownerManager: this.eventHandler?.ownerManager,
-                resolveRealJid: (jid) => this.eventHandler?.resolveRealJid?.(jid) || jid,
-                getFormattedTime: () => timeUtils.formatTime12h(Date.now(), this.db),
-                getFormattedDate: () => timeUtils.formatDate(Date.now(), this.db),
-                quoted: null,
-                isConversation: true,
-                conversationContext: active.context
-            };
-            
-            await cmd.execute(context);
-            return true;
-        }
-        
-        return false;
-    }
-    
-    // ==================== AI WITH SIMPLE MEMORY ====================
+    // ==================== AI WITH MEMORY ====================
     async getAIResponse(chatId, userId, query, systemPrompt = null) {
         const defaultSystemPrompt = `You are MEGAN-MD, a friendly WhatsApp bot created by TrackerWanga. Be helpful, concise, and engaging. Keep responses under 2000 characters.`;
 
         const system = systemPrompt || defaultSystemPrompt;
 
+        // Get AI mode
         const aiMode = await this.db.getSetting('ai_mode', 'normal');
         let stylePrompt = '';
         
@@ -387,8 +470,18 @@ class MeganBot {
         }
 
         const fullSystemPrompt = system + stylePrompt;
-        const context = this.memory.getContext(chatId, fullSystemPrompt, query, 15);
 
+        // Get conversation history from AI memory
+        const history = await this.aiMemory.getHistorySync(chatId, 15);
+        
+        // Build messages array
+        const messages = [
+            { role: 'system', content: fullSystemPrompt },
+            ...history.map(h => ({ role: h.role, content: h.content })),
+            { role: 'user', content: query }
+        ];
+
+        // APIs in priority order
         const apis = [
             {
                 name: 'primary',
@@ -429,8 +522,11 @@ class MeganBot {
                 const aiResponse = api.parse(response.data);
                 if (aiResponse && typeof aiResponse === 'string' && aiResponse.trim().length > 0) {
                     console.log(`✅ AI response from ${api.name} API`);
-                    this.memory.addMessage(chatId, userId, 'user', query);
-                    this.memory.addMessage(chatId, userId, 'assistant', aiResponse);
+                    
+                    // Save to AI memory (async, don't wait)
+                    this.aiMemory.addMessage(chatId, userId, 'user', query);
+                    this.aiMemory.addMessage(chatId, userId, 'assistant', aiResponse);
+                    
                     return aiResponse;
                 }
             } catch (error) {
@@ -566,54 +662,6 @@ class MeganBot {
             } else {
                 sender = msg.key.participant || from;
             }
-            
-            // Get quoted message info
-            const quotedMsg = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-            const isReplying = !!quotedMsg;
-            const isReplyingToBot = isReplying && quotedMsg.key?.fromMe;
-
-            // ========== BUTTON RESPONSE HANDLER ==========
-            const isButtonResponse = await this.handleButtonResponse(msg, from, sender);
-            if (isButtonResponse) {
-                return;
-            }
-
-            // ========== COMMAND DETECTION ==========
-            const isCommand = text && MessageHelper.isCommand(text, config.PREFIX);
-            
-            if (isCommand) {
-                // Check for end command
-                const parsed = MessageHelper.parseCommand(text, config.PREFIX);
-                if (parsed.name === 'end') {
-                    this.clearActiveConversation(from);
-                    await this.sock.sendMessage(from, { text: `✅ *Conversation ended*` }, { quoted: msg });
-                    return;
-                }
-                
-                // Command with prefix - execute and clear previous conversation
-                const active = this.getActiveConversation(from);
-                if (active) {
-                    this.clearActiveConversation(from);
-                }
-                
-                if (this.eventHandler) {
-                    await this.eventHandler.handleCommand(msg, text, from, sender, isGroup);
-                }
-                return;
-            }
-            
-            // ========== REPLY TO PROMPT (from dropdown) ==========
-            if (isReplyingToBot) {
-                const handled = await this.handleReplyToPrompt(msg, from, sender, text, quotedMsg);
-                if (handled) return;
-            }
-            
-            // ========== CONTINUE ACTIVE CONVERSATION ==========
-            const active = this.getActiveConversation(from);
-            if (active && text && !isStatus && !msg.key.fromMe) {
-                const handled = await this.handleConversationReply(msg, from, sender, text, isGroup);
-                if (handled) return;
-            }
 
             // Anti-delete detection
             if (msg.message?.protocolMessage?.type === 0) {
@@ -665,159 +713,20 @@ class MeganBot {
                 }, 500);
             }
 
-            // Chatbot with memory (if no active conversation)
-            if (text && !msg.key.fromMe && !isStatus && !active) {
+            // Chatbot with memory
+            if (text && !msg.key.fromMe && !isStatus) {
                 await this.handleChatbot(msg, text, from, sender, isGroup);
+            }
+
+            // Commands
+            if (text && MessageHelper.isCommand(text, config.PREFIX)) {
+                if (this.eventHandler) {
+                    await this.eventHandler.handleCommand(msg, text, from, sender, isGroup);
+                }
             }
 
         } catch (error) {
             console.error(`Message error: ${error.message}`);
-        }
-    }
-    
-    // ==================== BUTTON RESPONSE HANDLER ====================
-    async handleButtonResponse(msg, from, sender) {
-        try {
-            const templateButton = msg.message?.templateButtonReplyMessage;
-            const buttonsResponse = msg.message?.buttonsResponseMessage;
-            const interactiveResponse = msg.message?.interactiveResponseMessage?.nativeFlowResponseMessage;
-
-            let buttonId = null;
-            let buttonText = null;
-
-            if (templateButton) {
-                buttonId = templateButton.selectedId;
-                buttonText = templateButton.selectedDisplayText;
-                console.log(`🔘 Template button clicked: ID=${buttonId}, Text=${buttonText}`);
-            } else if (buttonsResponse) {
-                buttonId = buttonsResponse.selectedButtonId;
-                buttonText = buttonsResponse.selectedDisplayText;
-                console.log(`🔘 Buttons response: ID=${buttonId}, Text=${buttonText}`);
-            } else if (interactiveResponse) {
-                buttonId = interactiveResponse.params?.id;
-                buttonText = interactiveResponse.params?.display_text;
-                console.log(`🔘 Interactive response: ID=${buttonId}, Text=${buttonText}`);
-            }
-
-            if (!buttonId && !buttonText) return false;
-
-            // Map button text to command names
-            const buttonToCommandMap = {
-                '🤖 AI': 'aimenu',
-                'AI': 'aimenu',
-                '🎨 AI Image': 'imagemen',
-                'AI Image': 'imagemen',
-                '⬇️ Downloader': 'downloadhelp',
-                'Downloader': 'downloadhelp',
-                '👥 Group': 'grouphelp',
-                'Group': 'grouphelp',
-                '🎵 Media': 'media',
-                'Media': 'media',
-                '🔍 Search': 'searchhelp',
-                'Search': 'searchhelp',
-                '🛠️ Tools': 'tools',
-                'Tools': 'tools',
-                '⚙️ Features': 'features',
-                'Features': 'features',
-                '📋 Menu': 'menu',
-                'Menu': 'menu',
-                '◀️ Back': 'menu',
-                'Back': 'menu',
-                '📢 Channel': 'channel',
-                'Channel': 'channel'
-            };
-
-            let commandToExecute = null;
-            let args = [];
-
-            if (buttonId) {
-                if (buttonId.startsWith(config.PREFIX)) {
-                    commandToExecute = buttonId.slice(config.PREFIX.length);
-                } else if (this.commands.has(buttonId)) {
-                    commandToExecute = buttonId;
-                } else if (this.commands.has(buttonId.toLowerCase())) {
-                    commandToExecute = buttonId.toLowerCase();
-                }
-            }
-
-            if (!commandToExecute && buttonText) {
-                const cleanText = buttonText.replace(/[^\w\s]/g, '').trim().toLowerCase();
-                const mappedCommand = buttonToCommandMap[buttonText] || buttonToCommandMap[cleanText];
-                
-                if (mappedCommand && this.commands.has(mappedCommand)) {
-                    commandToExecute = mappedCommand;
-                }
-                
-                if (!commandToExecute && this.commands.has(buttonText.toLowerCase())) {
-                    commandToExecute = buttonText.toLowerCase();
-                }
-            }
-
-            if (!commandToExecute && buttonText && buttonText.includes('🤖')) {
-                const aiCommandMap = {
-                    'Megan': 'megan',
-                    'Gemini': 'gemini',
-                    'GPT': 'gpt',
-                    'DeepSeek': 'deepseek',
-                    'Mistral': 'mistral',
-                    'DuckAI': 'duckai',
-                    'CodeLlama': 'codellama',
-                    'Teacher': 'teacher',
-                    'BibleAI': 'bibleai',
-                    'Gita': 'gita'
-                };
-                
-                const aiName = buttonText.replace('🤖', '').trim();
-                if (aiCommandMap[aiName]) {
-                    commandToExecute = aiCommandMap[aiName];
-                    args = [];
-                }
-            }
-
-            if (commandToExecute) {
-                const cmd = this.commands.get(commandToExecute);
-                if (cmd) {
-                    const resolvedSender = await this.eventHandler?.resolveRealJid?.(sender) || sender;
-                    const isOwner = await this.eventHandler?.isOwner?.(resolvedSender) || false;
-                    const isGroup = isJidGroup(from);
-                    
-                    console.log(`🎯 Executing command from button: ${commandToExecute}`);
-                    
-                    const context = {
-                        msg,
-                        from,
-                        sender: resolvedSender,
-                        isOwner,
-                        isGroup,
-                        args,
-                        command: commandToExecute,
-                        text: buttonText || commandToExecute,
-                        bot: this,
-                        sock: this.sock,
-                        buttons: this.buttons,
-                        reply: MessageHelper.createReply(this.sock, from, msg),
-                        react: MessageHelper.createReact(this.sock, msg.key),
-                        db: this.db,
-                        logger: this.logger,
-                        cache: this.cache,
-                        ownerManager: this.eventHandler?.ownerManager,
-                        resolveRealJid: (jid) => this.eventHandler?.resolveRealJid?.(jid) || jid,
-                        getFormattedTime: () => timeUtils.formatTime12h(Date.now(), this.db),
-                        getFormattedDate: () => timeUtils.formatDate(Date.now(), this.db),
-                        quoted: this.eventHandler?.buildQuotedMessage?.(msg) || null
-                    };
-                    
-                    await cmd.execute(context);
-                    return true;
-                }
-            }
-
-            console.log(`⚠️ No command found for button: ID=${buttonId}, Text=${buttonText}`);
-            return false;
-            
-        } catch (error) {
-            console.error(`Button response error: ${error.message}`);
-            return false;
         }
     }
 
@@ -836,7 +745,9 @@ class MeganBot {
             if (!shouldRespond) return false;
 
             await this.sock.sendPresenceUpdate('composing', from);
+
             const aiResponse = await this.getAIResponse(from, sender, text);
+
             await this.sock.sendMessage(from, { text: aiResponse }, { quoted: msg });
             return true;
 
@@ -851,14 +762,15 @@ class MeganBot {
             if (!this.sock) return;
             const ownerJid = config.OWNER_NUMBER.includes('@') ? config.OWNER_NUMBER : `${config.OWNER_NUMBER}@s.whatsapp.net`;
             const currentTime = await timeUtils.getCurrentTimeString(this.db);
-            const memoryStats = this.memory.getGlobalStats();
-            const message = `✅ *${config.BOT_NAME} CONNECTED*\n\n🕐 *Time:* ${currentTime}\n👤 *Owner:* ${config.OWNER_NAME}\n📞 *Number:* ${config.OWNER_NUMBER}\n🔧 *Prefix:* ${config.PREFIX}\n📚 *Commands:* ${this.commands.size}\n🧠 *AI Memory:* ${memoryStats.activeChats} chats, ${memoryStats.totalMessages} messages\n\n> created by wanga`;
+            const memoryStats = await this.aiMemory.getGlobalStats();
+            const message = `✅ *${config.BOT_NAME} CONNECTED*\n\n🕐 *Time:* ${currentTime}\n👤 *Owner:* ${config.OWNER_NAME}\n📞 *Number:* ${config.OWNER_NUMBER}\n🔧 *Prefix:* ${config.PREFIX}\n📚 *Commands:* ${this.commands.size}\n🧠 *AI Memory:* ${memoryStats.activeChats} chats, ${memoryStats.totalMessages} messages, ${memoryStats.totalMB}MB\n\n> created by wanga`;
             await this.sock.sendMessage(ownerJid, { text: message });
         } catch (error) {}
     }
 
     async cleanup() {
         if (this.db) await this.db.save();
+        if (this.aiMemory) this.aiMemory.close();
         if (this.sock) await this.sock.end();
         process.exit(0);
     }

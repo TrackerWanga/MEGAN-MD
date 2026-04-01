@@ -1,1 +1,1101 @@
-let vmj=typeof globalThis!=='undefined'?globalThis:typeof window!=='undefined'?window:global,vmT=Object['defineProperty'],vmM=Object['create'],vmK=Object['getOwnPropertyDescriptor'],vmE=Object['getOwnPropertyNames'],vma=Object['getOwnPropertySymbols'],vmi=Object['setPrototypeOf'],vmJ=Object['getPrototypeOf'],vmD_50917=vmj['vmD_50917']||(vmj['vmD_50917']={});const vms_2f7a4e=(function(){let B=[{'_$YuwdPm':[0xa0,null,0x8,0x0,0x47,0x0,0x3,null,0xa0,null,0x8,0x0,0x46,0x1,0x47,0x1,0x3,null,0xa0,null,0x8,0x1,0x47,0x2,0x3,null,0xa0,null,0x8,0x2,0x47,0x3,0x3,null,0xa0,null,0x8,0x3,0x47,0x4,0x3,null,0x1,null,0x38,null],'_$1C0PAq':['bot','sock','logger','cache','features'],'_$m5t2Wk':0x4,'_$ewibdt':0x0,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0],'_$1C0PAq':[],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0xd3,0x0,0x46,0x1,0x4,null,0x46,0x2,0xd3,0x3,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x4d,null,0x4,null,0xd3,0x4,0x46,0x5,0x47,0x5,0x3,null,0x4,null,0xd3,0x6,0x47,0x7,0x3,null,0x47,0x8,0x3,null,0x1b,null,0x1b,null,0x0,0x9,0x37,0x2,0x4,null,0x46,0xa,0x0,0xb,0x64,null,0x1b,null,0x1b,null,0x0,0xc,0x37,0x1,0x3,null],'_$1C0PAq':['__this__','sock','sendMessage','from$$1','_0x4a4aaa','key','_0x578b3b$$3','text','react',0x2,'catch',0x1,0x1],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0],'_$1C0PAq':[],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0x8,0x0,0xd7,0x0,0x3,null,0xa0,null,0xd4,0x5a,0x3,null,0x3a,null,0xd5,0x0,0xd2,0x0,0xda,0x1,0xda,0x2,0xda,0x3,0xda,0x4,0xda,0x5,0xda,0x6,0xda,0x7,0xda,0x8,0xda,0x9,0xd3,0x0,0x46,0xa,0x20,null,0x4,null,0x33,null,0x3,null,0xd3,0x0,0x46,0xb,0x20,null,0x34,null,0x1,null,0x38,null,0xd3,0x0,0x46,0xb,0x46,0xc,0xd9,0x1,0xd3,0x0,0x46,0xb,0x46,0xd,0x4,null,0x33,null,0x3,null,0xd3,0x1,0xd9,0x2,0xd3,0x1,0xd3,0xe,0x0,0xf,0x36,0x1,0xd9,0x3,0xd3,0x1,0xd3,0x10,0x0,0xf,0x36,0x1,0xd9,0x4,0xd3,0x1,0x4,null,0x46,0x11,0x0,0x12,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0xd9,0x5,0xd3,0x1,0x4,null,0x46,0x11,0x0,0x13,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0xd9,0x6,0x0,0x14,0xd7,0x7,0xd3,0x3,0x34,null,0x0,0x15,0x4,null,0xd4,0x7,0x3,null,0x32,null,0xd3,0x4,0x34,null,0x0,0x16,0x4,null,0xd4,0x7,0x3,null,0x32,null,0xd3,0x5,0x34,null,0x0,0x17,0x4,null,0xd4,0x7,0x3,null,0x32,null,0xd3,0x6,0x34,null,0x0,0x18,0x4,null,0xd4,0x7,0x3,null,0xd3,0x19,0x4,null,0x46,0x1a,0xd3,0x0,0x46,0xa,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0xd9,0x8,0xd3,0x19,0x4,null,0x46,0x1b,0xd3,0x0,0x46,0xa,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0xd9,0x9,0xd3,0x0,0x46,0xa,0x46,0x1c,0x34,null,0x1,null,0x38,null,0xd3,0x0,0x46,0xb,0x4e,0x1d,0x20,null,0x4,null,0x34,null,0x3,null,0xd3,0x4,0x20,null,0x34,null,0xd5,0x0,0xd2,0x0,0xda,0x1e,0xa0,null,0x46,0x1f,0x46,0x20,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x21,0x7,0xa,0x7,0xb,0x0,0x22,0x0,0x23,0x6,0xb,0x6,0xa,0x0,0x24,0x37,0x2,0x7a,null,0xd9,0x1e,0xd3,0x1e,0x0,0x25,0x2a,null,0x4,null,0x33,null,0x3,null,0xd3,0x1e,0x0,0x26,0x2a,null,0x34,null,0xd5,0x0,0xd2,0x0,0xda,0x27,0xa0,null,0x46,0x28,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x29,0x0,0x2a,0x37,0x0,0x4,null,0x33,null,0x3,null,0x5a,null,0x0,0x2b,0x5b,null,0x0,0x2c,0x5b,null,0x0,0x2d,0x5b,null,0x0,0x2e,0x5b,null,0x0,0x2f,0x5b,null,0x0,0x30,0x5b,null,0x0,0x31,0x5b,null,0x0,0x32,0x5b,null,0x0,0x33,0x5b,null,0x0,0x34,0x5b,null,0x4b,0x35,0x4,null,0x46,0x36,0x4b,0x35,0x4,null,0x46,0x37,0x0,0x2a,0x37,0x0,0x0,0x38,0xc,null,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x48,null,0xd9,0x27,0x0,0x39,0x64,null,0x0,0x3a,0x4b,0x3b,0x0,0x24,0x36,0x2,0x3,null,0xa0,null,0x46,0x3c,0x4,null,0x46,0x3d,0x0,0x3e,0xd3,0x27,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x3,null,0xd6,0x0,0xd6,0x0,0xa0,null,0x46,0x28,0x4,null,0x34,null,0x3,null,0xd3,0x4,0x20,null,0x34,null,0xa0,null,0x46,0x28,0x4,null,0x46,0x3f,0xd3,0x0,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x7a,null,0x3,null,0xd3,0x3,0x4,null,0x34,null,0x3,null,0xd3,0x8,0x4,null,0x34,null,0x3,null,0xa0,null,0x46,0x28,0x34,null,0xa0,null,0x46,0x28,0x4,null,0x46,0x40,0xd3,0x0,0x1b,null,0x1b,null,0xd3,0x1,0x1b,null,0x1b,null,0xd3,0x2,0x1b,null,0x1b,null,0x0,0x41,0x37,0x3,0x7a,null,0xd9,0x42,0xd3,0x42,0x34,null,0x1,null,0x38,null,0xa0,null,0x46,0x28,0x4,null,0x34,null,0x3,null,0xd3,0x4,0x20,null,0x4,null,0x34,null,0x3,null,0xd3,0x5,0x20,null,0x34,null,0xa0,null,0x46,0x28,0x4,null,0x46,0x43,0xd3,0x1,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x4,null,0x46,0x44,0x0,0x45,0x64,null,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x3,null,0xd3,0x46,0x46,0x47,0x46,0x48,0x4,null,0x34,null,0x3,null,0xd3,0x4,0x4,null,0x33,null,0x3,null,0xd3,0x3,0x34,null,0xa0,null,0x46,0x49,0x4,null,0x46,0x4a,0xd3,0x0,0x46,0xb,0x46,0x4b,0x1b,null,0x1b,null,0x4d,null,0x4,null,0xd3,0x0,0x47,0xa,0x3,null,0x4,null,0xd3,0x8,0x47,0x4c,0x3,null,0x4,null,0xd3,0x9,0x47,0x4d,0x3,null,0x4,null,0xd3,0x1,0x47,0x4e,0x3,null,0x4,null,0xd3,0x2,0x47,0x4f,0x3,null,0x4,null,0xd3,0x0,0x46,0xb,0x47,0xb,0x3,null,0x1b,null,0x1b,null,0xd3,0x7,0x1b,null,0x1b,null,0x0,0x41,0x37,0x3,0x3,null,0xd3,0x8,0x4,null,0x33,null,0x3,null,0xd3,0x9,0x34,null,0xd3,0x8,0x4,null,0x33,null,0x3,null,0xd3,0x9,0x4,null,0x33,null,0x3,null,0x0,0x50,0xd9,0x51,0xd3,0x3,0x34,null,0xd3,0x1,0x4,null,0x46,0x52,0x0,0x53,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x0,0x2a,0x48,null,0x32,null,0x2,null,0xd9,0x54,0xa0,null,0x46,0x3c,0x4,null,0x46,0x55,0xd3,0x7,0x1b,null,0x1b,null,0xd3,0x2,0x1b,null,0x1b,null,0xd3,0x51,0x1b,null,0x1b,null,0xd3,0x0,0x46,0xb,0x46,0x4b,0x1b,null,0x1b,null,0xd3,0x3,0x1b,null,0x1b,null,0xd3,0x54,0x1b,null,0x1b,null,0x0,0x56,0x37,0x6,0x3,null,0xd6,0x0,0x3b,null,0x32,null,0xd5,0x0,0xd2,0x0,0x3c,0x57,0xa0,null,0x46,0x3c,0x4,null,0x46,0x58,0x0,0x59,0xd3,0x57,0x46,0xa,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xf,0x37,0x1,0x3,null,0xd6,0x0,0x32,null,0xd6,0x0,0x1,null,0x38,null],'_$1C0PAq':['_0x4a4aaa','from$$1','sender$$1','_0x428e48$$1','_0x2f31dd$$1','_0x3994b7$$1','_0x390131$$1','_0x52b78a$$1','text$$1','mediaType$$1','message','key','remoteJid','participant','isJidGroup',0x1,'isJidStatusBroadcast','endsWith','@newsletter','@lid','PVT','GROUP','STATUS','NEWSLETTER','LID','MessageHelper','extractText','getMediaType','protocolMessage','fromMe','_0x3e358c$$2','bot','db','getSetting','autoreact','off',0x2,'on','true','_0x578b3b$$3','features','getRandomEmoji',0x0,'❤️','👍','🔥','✨','⭐','💫','👋','😊','🎉','💯','Math','floor','random',0xa,0x2,0x1f4,'setTimeout','logger','debug','Auto-reacted\x20with\x20','autoRead','handleAntiLink',0x3,'_0x5524a9$$2','setPresence','catch',0x3,'config','CACHE','MESSAGES','cache','set','id','text','mediaType','from','sender','NO\x20TEXT','_0x23bb13$$2','split','@','_0x40da24$$2','messageLog',0x6,'_0x4a7dab$$1','error','Message\x20handling\x20error:\x20','__this__'],'_$m5t2Wk':0x1,'_$ewibdt':0xe,'_$AmoF55':[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1d,null,null,null,null,0x20,null,null,null,null,null,null,null,null,null,null,0x2b,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x51,null,null,null,null,0x65,null,0x58,null,null,null,null,0x65,null,0x5f,null,null,null,null,0x65,null,0x65,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x7f,null,null,null,null,null,null,null,0x88,null,null,null,0xf6,null,null,null,null,null,null,null,0x94,null,null,0x9e,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0xa9,null,null,null,null,0xf5,null,null,null,null,null,null,0xb4,null,null,0xb8,null,null,null,null,null,0xdf,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0xfd,null,null,null,0x109,null,null,null,null,null,null,null,null,null,null,null,null,null,0x10e,null,null,null,0x113,null,null,null,0x129,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x129,null,null,null,null,null,0x130,null,null,null,null,0x135,null,null,null,0x148,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x153,null,null,null,0x153,null,null,0x17f,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x184,null,null,0x1b9,null,null,0x18a,null,null,null,0x18e,null,null,null,null,0x19c,null,null,null,null,null,null,null,null,null,null,0x19d,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1cf,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1cf],'_$i6v1Hn':[null,null,null,null,null,null,null,null,[0x1bc,-0x1,0x1cf]],'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd3,0x0,0x4,null,0x46,0x1,0x8,0x1,0x1b,null,0x1b,null,0xd3,0x2,0x46,0x3,0x1b,null,0x1b,null,0x0,0x4,0x37,0x2,0x7,0x5,0x6,0x5,0x20,null,0x34,null,0x1,null,0x38,null,0x6,0x5,0x4,null,0x46,0x5,0x7,0x6,0x4,null,0x46,0x6,0x7,0x7,0x4,null,0x46,0x7,0x7,0x8,0x3,null,0x8,0x3,0x4,null,0x46,0x8,0x0,0x9,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x0,0xb,0x48,null,0x7,0x9,0xa0,null,0x46,0xc,0x4,null,0x46,0xd,0x0,0xe,0x6,0x6,0x1d,null,0xa,null,0x0,0xf,0xa,null,0x6,0x9,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x3,null,0xa0,null,0x4,null,0x46,0x10,0x8,0x3,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x7,0xa,0xa6,0x0,0x4,null,0x33,null,0x3,null,0x0,0x11,0x7,0xb,0x6,0xb,0x0,0x12,0x2a,null,0x4,null,0x34,null,0x3,null,0x6,0xa,0x20,null,0x34,null,0x1,null,0x38,null,0xa0,null,0x46,0x13,0x46,0x14,0x4,null,0x46,0x15,0x6,0x6,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x7,0xc,0x6,0xc,0x20,null,0x4,null,0x34,null,0x3,null,0xa0,null,0x46,0x13,0x46,0x16,0x4,null,0x46,0x17,0x6,0x6,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x34,null,0xa0,null,0x46,0x13,0x46,0x14,0x4,null,0x46,0x15,0xa0,null,0x46,0x13,0x46,0x16,0x4,null,0x46,0x15,0x6,0x6,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x4,null,0x7,0xc,0x3,null,0x6,0xc,0x34,null,0x3a,null,0x4d,null,0x4,null,0x8,0x0,0x47,0x18,0x3,null,0x4,null,0x8,0x2,0x47,0x19,0x3,null,0x4,null,0x8,0x3,0x47,0x1a,0x3,null,0x4,null,0x8,0x4,0x47,0x1b,0x3,null,0x4,null,0x6,0x7,0x47,0x6,0x3,null,0x4,null,0x6,0x6,0x47,0xd,0x3,null,0x4,null,0x6,0x8,0x47,0x1c,0x3,null,0x4,null,0x8,0x1,0x47,0x7,0x3,null,0x4,null,0xa0,null,0x46,0x13,0x47,0x13,0x3,null,0x4,null,0xa0,null,0x46,0x1d,0x47,0x1d,0x3,null,0x4,null,0xd3,0x0,0x4,null,0x46,0x1e,0xa0,null,0x46,0x1d,0x1b,null,0x1b,null,0x8,0x2,0x1b,null,0x1b,null,0x8,0x0,0x1b,null,0x1b,null,0x0,0x1f,0x37,0x3,0x47,0x20,0x3,null,0x4,null,0xd3,0x0,0x4,null,0x46,0x21,0xa0,null,0x46,0x1d,0x1b,null,0x1b,null,0x8,0x0,0x46,0x22,0x1b,null,0x1b,null,0x0,0x4,0x37,0x2,0x47,0x23,0x3,null,0x4,null,0x6,0xa,0x47,0x10,0x3,null,0x7,0xd,0x6,0xc,0x4,null,0x46,0x24,0x6,0xd,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x7a,null,0x3,null,0xa0,null,0x46,0xc,0x4,null,0x46,0xd,0x0,0xe,0x6,0x6,0x1d,null,0xa,null,0x0,0x25,0xa,null,0x1b,null,0x1b,null,0x0,0x26,0x1b,null,0x1b,null,0x0,0x4,0x37,0x2,0x3,null,0x3b,null,0x32,null,0xd5,0x0,0xd2,0x0,0x3c,0x27,0xa0,null,0x46,0xc,0x4,null,0x46,0x28,0x0,0x29,0x6,0x6,0x1d,null,0xa,null,0x0,0x2a,0xa,null,0xd3,0x27,0x46,0x2b,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x3,null,0x6,0xa,0x34,null,0xa0,null,0x46,0x1d,0x4,null,0x46,0x2c,0x8,0x2,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x0,0x2d,0xd3,0x27,0x46,0x2b,0x1d,null,0xa,null,0x47,0x1c,0x3,null,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x8,0x0,0x47,0x2e,0x3,null,0x1b,null,0x1b,null,0x0,0x1f,0x37,0x3,0x7a,null,0x3,null,0xd6,0x0,0x32,null,0x32,null,0x6,0xa,0x34,null,0xa0,null,0x46,0x1d,0x4,null,0x46,0x2c,0x8,0x2,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x0,0x2f,0x6,0x6,0x1d,null,0xa,null,0x47,0x1c,0x3,null,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x8,0x0,0x47,0x2e,0x3,null,0x1b,null,0x1b,null,0x0,0x1f,0x37,0x3,0x7a,null,0x3,null,0x1,null,0x38,null],'_$1C0PAq':['MessageHelper','parseCommand','config','PREFIX',0x2,'name','args','fullText','split','@',0x1,0x0,'logger','command','','\x20from\x20','isOwner','public','private','bot','commands','get','aliases','has','msg','from','sender','isGroup','text','sock','createReply',0x3,'reply','createReact','key','react','execute','\x20executed\x20successfully','✅','_0x2c856d$$2','error','Command\x20error\x20(','):\x20','message','sendMessage','❌\x20Error:\x20','quoted','❌\x20Unknown\x20command:\x20'],'_$m5t2Wk':0x5,'_$ewibdt':0x9,'_$AmoF55':[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x48,null,null,null,null,null,null,null,0x51,null,null,null,0x54,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x6e,null,null,null,null,null,null,null,null,null,null,null,0x85,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x130,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x12f,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x12d,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x12f,0x14e,null,0x14e],'_$i6v1Hn':[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,[0xf8,-0x1,0x12f]],'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0x8,0x0,0x20,null,0x34,null,0x0,0x0,0x38,null,0xd3,0x1,0x46,0x2,0x7,0x1,0x8,0x0,0x4,null,0x46,0x3,0x0,0x4,0x1b,null,0x1b,null,0x0,0x5,0x37,0x1,0x0,0x6,0x48,null,0x4,null,0x46,0x3,0x0,0x7,0x1b,null,0x1b,null,0x0,0x5,0x37,0x1,0x0,0x6,0x48,null,0x7,0x2,0x6,0x2,0x6,0x1,0x2a,null,0x34,null,0x0,0x8,0x38,null,0xa0,null,0x46,0x9,0x46,0xa,0x34,null,0xa0,null,0x46,0x9,0x46,0xa,0x4,null,0x46,0x3,0x0,0x4,0x1b,null,0x1b,null,0x0,0x5,0x37,0x1,0x0,0x6,0x48,null,0x4,null,0x46,0x3,0x0,0x7,0x1b,null,0x1b,null,0x0,0x5,0x37,0x1,0x0,0x6,0x48,null,0x7,0x3,0x6,0x2,0x6,0x3,0x2a,null,0x34,null,0x0,0x8,0x38,null,0xa0,null,0x46,0x9,0x46,0xb,0x34,null,0xa0,null,0x46,0x9,0x46,0xb,0x4,null,0x46,0x3,0x0,0x4,0x1b,null,0x1b,null,0x0,0x5,0x37,0x1,0x0,0x6,0x48,null,0x4,null,0x46,0x3,0x0,0x7,0x1b,null,0x1b,null,0x0,0x5,0x37,0x1,0x0,0x6,0x48,null,0x7,0x4,0x6,0x2,0x6,0x4,0x2a,null,0x34,null,0x0,0x8,0x38,null,0x0,0x0,0x38,null],'_$1C0PAq':[![],'config','OWNER_NUMBER','split','@',0x1,0x0,':',!![],'bot','ownerJid','ownerLid'],'_$m5t2Wk':0x1,'_$ewibdt':0x4,'_$AmoF55':[null,null,0x5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x22,null,null,null,null,null,0x42,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x42,null,null,null,null,null,0x62,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x62],'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0x3a,null,0x8,0x0,0x4,null,0x46,0x0,0x7,0x1,0x4,null,0x46,0x1,0x7,0x2,0x3,null,0x6,0x2,0x4e,0x2,0x34,null,0xa0,null,0x46,0x3,0x4,null,0x46,0x4,0x0,0x5,0x6,0x1,0x46,0x6,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x1b,null,0x1b,null,0x0,0xa,0x37,0x2,0x1d,null,0xa,null,0x0,0xb,0xa,null,0x6,0x2,0x46,0x2,0x46,0xc,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xd,0x1b,null,0x1b,null,0x0,0xa,0x37,0x2,0x3,null,0x6,0x2,0x4e,0xe,0x4b,0xf,0x2b,null,0x34,null,0x4d,null,0x4,null,0x0,0x10,0x47,0x11,0x3,null,0x4,null,0x0,0x12,0x47,0x13,0x3,null,0x4,null,0x0,0x14,0x47,0x15,0x3,null,0x4,null,0x0,0x16,0x47,0x17,0x3,null,0x7,0x3,0xa0,null,0x46,0x3,0x4,null,0x46,0x4,0x0,0x18,0x6,0x1,0x46,0x6,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x1b,null,0x1b,null,0x0,0xa,0x37,0x2,0x1d,null,0xa,null,0x0,0xb,0xa,null,0x6,0x3,0x6,0x2,0x46,0xe,0x48,null,0x4,null,0x33,null,0x3,null,0x6,0x2,0x46,0xe,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0x19,0x1b,null,0x1b,null,0x0,0xa,0x37,0x2,0x3,null,0x3b,null,0x32,null,0xd5,0x0,0xd2,0x0,0x3c,0x1a,0xd6,0x0,0x32,null,0x1,null,0x38,null],'_$1C0PAq':['key','update','reaction','logger','message','Reaction\x20on\x20','id','substring',0x0,0x8,0x2,':\x20','text','👍','status','undefined','📤\x20Sent','1','✅\x20Delivered','2','👁️\x20Read','3','🕒\x20Pending','4','Status\x20update\x20for\x20','📨','_0x458b80$$1'],'_$m5t2Wk':0x1,'_$ewibdt':0x3,'_$AmoF55':[null,null,null,null,null,null,null,null,null,null,null,0x2e,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x6d,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x63,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x74,null,null,null,null,0x74],'_$i6v1Hn':[[0x6f,-0x1,0x74]],'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0x3a,null,0x8,0x0,0x46,0x0,0x4,null,0x33,null,0x3,null,0x8,0x0,0x7,0x1,0x6,0x1,0x20,null,0x4,null,0x33,null,0x3,null,0x4b,0x1,0x4,null,0x46,0x2,0x6,0x1,0x1b,null,0x1b,null,0x0,0x3,0x37,0x1,0x20,null,0x34,null,0x1,null,0x38,null,0xa0,null,0x46,0x4,0x4,null,0x46,0x5,0x0,0x6,0x6,0x1,0x46,0x7,0x1d,null,0xa,null,0x0,0x8,0xa,null,0x1b,null,0x1b,null,0x0,0x3,0x37,0x1,0x3,null,0x6,0x1,0x7f,null,0x7,0x2,0x3,null,0x0,0x9,0x7,0x3,0x3,null,0x0,0x9,0x7,0x3,0x3,null,0x6,0x2,0x7b,null,0x4,null,0x80,null,0x33,null,0x46,0xa,0x7,0x4,0x3a,null,0xa0,null,0x46,0xb,0x46,0xc,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0xd,0x7,0x5,0x7,0x6,0x6,0x4,0x46,0xe,0x6,0x4,0x46,0xf,0x6,0x6,0x6,0x5,0x0,0x10,0x37,0x2,0x7a,null,0x7,0x5,0x6,0x5,0x4,null,0x34,null,0x3,null,0xa0,null,0x46,0x11,0x34,null,0x6,0x4,0x46,0x12,0x4,null,0x33,null,0x3,null,0x6,0x4,0x46,0xe,0x7,0x6,0x6,0x5,0x46,0x13,0x4e,0x12,0x4,null,0x33,null,0x3,null,0x6,0x5,0x46,0x13,0x4e,0xe,0x7,0x7,0xa0,null,0x46,0x11,0x4,null,0x46,0x14,0x6,0x5,0x1b,null,0x1b,null,0x6,0x4,0x1b,null,0x1b,null,0x6,0x6,0x1b,null,0x1b,null,0x6,0x7,0x1b,null,0x1b,null,0x0,0x15,0x37,0x4,0x7a,null,0x3,null,0xa0,null,0x46,0xb,0x46,0xc,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x16,0x7,0x8,0x7,0x9,0x6,0x4,0x46,0xe,0x6,0x4,0x46,0xf,0x6,0x9,0x6,0x8,0x0,0x10,0x37,0x2,0x3,null,0x3b,null,0x32,null,0x3d,null,0x6,0x3,0x33,null,0x6,0x2,0x7c,null,0x3e,null,0x3,null,0x3b,null,0x32,null,0xd5,0x0,0xd2,0x0,0x3c,0x17,0xa0,null,0x46,0x4,0x4,null,0x46,0x18,0x0,0x19,0xd3,0x17,0x46,0x1a,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0x3,0x37,0x1,0x3,null,0xd6,0x0,0x32,null,0x1,null,0x38,null],'_$1C0PAq':['keys','Array','isArray',0x1,'logger','debug','Delete\x20event\x20received\x20with\x20','length','\x20keys',![],'value','bot','messageStore','getMessage','remoteJid','id',0x2,'features','participant','key','handleAntiDelete',0x4,'removeMessage','_0x49f595$$1','error','Message\x20delete\x20error:\x20','message'],'_$m5t2Wk':0x1,'_$ewibdt':0x9,'_$AmoF55':[null,null,null,null,0x7,null,null,null,null,null,null,0x16,null,null,null,null,null,null,null,null,null,null,0x19,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x9b,null,null,null,null,null,null,null,0x43,null,null,0x4f,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x57,null,null,null,0x93,null,null,null,0x5f,null,null,null,null,null,null,null,null,0x69,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x86,null,null,0x92,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x30,null,null,0x9a,null,null,null,null,null,0xb1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0xb1],'_$i6v1Hn':[[0x9e,-0x1,0xb1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,[-0x1,0x95,0x9c]],'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0x8,0x0,0x4,null,0x46,0x0,0x0,0x1,0x1b,null,0x1b,null,0x0,0x2,0x37,0x1,0x0,0x3,0x48,null,0x38,null],'_$1C0PAq':['split','@',0x1,0x0],'_$m5t2Wk':0x1,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0x8,0x0,0x46,0x0,0x38,null],'_$1C0PAq':['admin'],'_$m5t2Wk':0x1,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0],'_$1C0PAq':[],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0xd3,0x0,0x46,0x1,0x46,0x2,0x4,null,0x46,0x3,0xd3,0x4,0x46,0x5,0x1b,null,0x1b,null,0xd3,0x6,0x1b,null,0x1b,null,0x0,0x7,0x37,0x2,0x4,null,0x46,0x8,0x0,0x9,0x64,null,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x7a,null,0x3,null],'_$1C0PAq':['__this__','bot','buttons','sendChannelPromo','_0x4ebe1b','id','_0x72ffe4',0x2,'catch',0xb,0x1],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0x8,0x0,0x46,0x0,0x38,null],'_$1C0PAq':['admin'],'_$m5t2Wk':0x1,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0],'_$1C0PAq':[],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0xd3,0x0,0x46,0x1,0x46,0x2,0x4,null,0x46,0x3,0xd3,0x4,0x46,0x5,0x1b,null,0x1b,null,0xd3,0x6,0x1b,null,0x1b,null,0x0,0x7,0x37,0x2,0x4,null,0x46,0x8,0x0,0x9,0x64,null,0x1b,null,0x1b,null,0x0,0xa,0x37,0x1,0x7a,null,0x3,null],'_$1C0PAq':['__this__','bot','buttons','sendChannelPromo','_0x4ebe1b','id','_0x47f8f8',0x2,'catch',0xe,0x1],'_$m5t2Wk':0x0,'_$ewibdt':0x0,'_$vwIhct':0x1,'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1},{'_$YuwdPm':[0xd5,0x0,0xd2,0x0,0x8,0x0,0xd7,0x0,0x3,null,0xa0,null,0xd4,0x6b,0x3,null,0xa0,null,0x46,0x1,0x4,null,0x46,0x2,0x0,0x3,0xd3,0x0,0x46,0x4,0x1d,null,0xa,null,0x0,0x5,0xa,null,0xd3,0x0,0x46,0x6,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x0,0xa,0x48,null,0x1d,null,0xa,null,0x0,0xb,0xa,null,0x1b,null,0x1b,null,0x0,0xc,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x3,null,0x4b,0xe,0x4,null,0x46,0xf,0x0,0x10,0x1b,null,0x1b,null,0xd3,0x0,0x46,0x11,0x4,null,0x46,0x12,0x0,0x13,0x64,null,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x4,null,0x46,0x14,0x0,0x15,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x3,null,0xd3,0x0,0x46,0x4,0x0,0x16,0x2a,null,0x34,null,0xd5,0x0,0xd2,0x0,0xda,0x17,0xa0,null,0x46,0x18,0x46,0x19,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x1a,0x7,0x1,0x7,0x2,0x0,0x1b,0x0,0x1c,0x6,0x2,0x6,0x1,0x0,0xd,0x37,0x2,0x7a,null,0xd9,0x17,0xd3,0x17,0x0,0x1d,0x2a,null,0x34,null,0xd5,0x0,0xd2,0x0,0xda,0x1e,0xa0,null,0x46,0x18,0x46,0x19,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x1a,0x7,0x3,0x7,0x4,0x0,0x1f,0x0,0x20,0x6,0x4,0x6,0x3,0x0,0xd,0x37,0x2,0x7a,null,0xd9,0x1e,0xd3,0x0,0x46,0x11,0x7f,null,0x7,0x3,0x3,null,0x0,0x21,0x7,0x4,0x3,null,0x0,0x21,0x7,0x4,0x3,null,0x6,0x3,0x7b,null,0x4,null,0x80,null,0x33,null,0xd5,0x0,0xd2,0x0,0x46,0x22,0xd9,0x23,0x3a,null,0xd5,0x0,0xd2,0x0,0x3a,null,0xd5,0x0,0xd2,0x0,0xda,0x24,0xda,0x25,0xda,0x26,0xda,0x27,0xda,0x28,0xda,0x29,0xda,0x2a,0xa0,null,0x46,0x2b,0x4,null,0x46,0x2c,0xd3,0x0,0x46,0x6,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x7a,null,0xd9,0x24,0xd3,0x24,0x46,0x11,0x46,0x2d,0xd9,0x25,0xd3,0x24,0x46,0x11,0x4,null,0x46,0x2e,0x0,0x2f,0x64,null,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x46,0x2d,0xd9,0x26,0xd3,0x24,0x46,0x30,0x4,null,0x33,null,0x3,null,0x0,0x31,0xd9,0x27,0xd3,0x25,0xd9,0x28,0xd3,0x1e,0x4,null,0x46,0x32,0x0,0x33,0x1b,null,0x1b,null,0x0,0x8,0xd3,0x23,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x0,0xa,0x48,null,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x34,0x1b,null,0x1b,null,0xd3,0x24,0x46,0x35,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x36,0x1b,null,0x1b,null,0xd3,0x25,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x37,0x1b,null,0x1b,null,0xd3,0x26,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x38,0x1b,null,0x1b,null,0xd3,0x28,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x39,0x1b,null,0x1b,null,0xd3,0x27,0x4,null,0x46,0x3a,0x0,0xa,0x1b,null,0x1b,null,0x0,0x3b,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0xd9,0x29,0x0,0x3c,0xd3,0x29,0x1d,null,0xa,null,0x0,0x3d,0xa,null,0xd3,0x25,0x1d,null,0xa,null,0x0,0x3e,0xa,null,0xd3,0x26,0x1d,null,0xa,null,0x0,0x3f,0xa,null,0xd3,0x27,0x4,null,0x46,0x3a,0x0,0xa,0x1b,null,0x1b,null,0x0,0x40,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x1d,null,0xa,null,0xd3,0x27,0x46,0x2d,0x0,0x40,0x2e,null,0x34,null,0x0,0x41,0x32,null,0x0,0x42,0x1d,null,0xa,null,0x0,0x43,0xa,null,0xd9,0x2a,0xa0,null,0x46,0x2b,0x4,null,0x46,0x44,0xd3,0x0,0x46,0x6,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x4d,null,0x4,null,0xd3,0x45,0x47,0x46,0x3,null,0x47,0x47,0x3,null,0x4,null,0xd3,0x2a,0x47,0x48,0x3,null,0x4,null,0x5a,null,0xd3,0x23,0x5b,null,0x47,0x49,0x3,null,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x7a,null,0x3,null,0xa0,null,0x46,0x18,0x46,0x4a,0x34,null,0x0,0x4b,0x64,null,0x0,0x4c,0x4b,0x4d,0x0,0xd,0x36,0x2,0x3,null,0xd6,0x0,0x3b,null,0x32,null,0xd5,0x0,0xd2,0x0,0x3c,0x4e,0xa0,null,0x46,0x1,0x4,null,0x46,0x4f,0x0,0x50,0xd3,0x4e,0x46,0x51,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x3,null,0xa0,null,0x46,0x2b,0x4,null,0x46,0x44,0xd3,0x0,0x46,0x6,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x0,0x52,0xd3,0x23,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x0,0xa,0x48,null,0x1d,null,0xa,null,0x0,0x53,0xa,null,0xd3,0x54,0x1d,null,0xa,null,0x47,0x55,0x3,null,0x4,null,0x5a,null,0xd3,0x23,0x5b,null,0x47,0x49,0x3,null,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x7a,null,0x3,null,0xd6,0x0,0x32,null,0xd6,0x0,0xd6,0x0,0x3b,null,0x32,null,0x3d,null,0x6,0x4,0x33,null,0x6,0x3,0x7c,null,0x3e,null,0x3,null,0xd6,0x0,0xd6,0x0,0x32,null,0xd3,0x0,0x46,0x4,0x0,0x56,0x2a,null,0x34,null,0xd5,0x0,0xd2,0x0,0xda,0x57,0xa0,null,0x46,0x18,0x46,0x19,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x1a,0x7,0xc,0x7,0xd,0x0,0x58,0x0,0x1c,0x6,0xd,0x6,0xc,0x0,0xd,0x37,0x2,0x7a,null,0xd9,0x57,0xd3,0x57,0x0,0x1d,0x2a,null,0x34,null,0xd5,0x0,0xd2,0x0,0xda,0x59,0xa0,null,0x46,0x18,0x46,0x19,0x4,null,0x35,null,0x3,null,0x1,null,0x32,null,0x4,null,0x46,0x1a,0x7,0xe,0x7,0xf,0x0,0x5a,0x0,0x5b,0x6,0xf,0x6,0xe,0x0,0xd,0x37,0x2,0x7a,null,0xd9,0x59,0xd3,0x0,0x46,0x11,0x7f,null,0x7,0xe,0x3,null,0x0,0x21,0x7,0xf,0x3,null,0x0,0x21,0x7,0xf,0x3,null,0x6,0xe,0x7b,null,0x4,null,0x80,null,0x33,null,0xd5,0x0,0xd2,0x0,0x46,0x22,0xd9,0x5c,0x3a,null,0xd5,0x0,0xd2,0x0,0x3a,null,0xd5,0x0,0xd2,0x0,0xda,0x5d,0xda,0x5e,0xda,0x5f,0xda,0x60,0xda,0x61,0xa0,null,0x46,0x2b,0x4,null,0x46,0x2c,0xd3,0x0,0x46,0x6,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x7a,null,0xd9,0x5d,0xd3,0x5d,0x46,0x11,0x46,0x2d,0xd9,0x5e,0xd3,0x5d,0x46,0x11,0x4,null,0x46,0x2e,0x0,0x62,0x64,null,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x46,0x2d,0xd9,0x5f,0xd3,0x59,0x4,null,0x46,0x32,0x0,0x33,0x1b,null,0x1b,null,0x0,0x8,0xd3,0x5c,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x0,0xa,0x48,null,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x34,0x1b,null,0x1b,null,0xd3,0x5d,0x46,0x35,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x36,0x1b,null,0x1b,null,0xd3,0x5e,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x4,null,0x46,0x32,0x0,0x37,0x1b,null,0x1b,null,0xd3,0x5f,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0xd9,0x60,0x0,0x63,0xd3,0x60,0x1d,null,0xa,null,0x0,0x64,0xa,null,0xd3,0x5e,0x1d,null,0xa,null,0x0,0x3e,0xa,null,0xd3,0x5f,0x1d,null,0xa,null,0x0,0x65,0xa,null,0xd9,0x61,0xa0,null,0x46,0x2b,0x4,null,0x46,0x44,0xd3,0x0,0x46,0x6,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x4d,null,0x4,null,0xd3,0x45,0x47,0x46,0x3,null,0x47,0x47,0x3,null,0x4,null,0xd3,0x61,0x47,0x48,0x3,null,0x4,null,0x5a,null,0xd3,0x5c,0x5b,null,0x47,0x49,0x3,null,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x7a,null,0x3,null,0xa0,null,0x46,0x18,0x46,0x4a,0x34,null,0x0,0x66,0x64,null,0x0,0x4c,0x4b,0x4d,0x0,0xd,0x36,0x2,0x3,null,0xd6,0x0,0x3b,null,0x32,null,0xd5,0x0,0xd2,0x0,0x3c,0x67,0xa0,null,0x46,0x1,0x4,null,0x46,0x4f,0x0,0x68,0xd3,0x67,0x46,0x51,0x1d,null,0xa,null,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x3,null,0xa0,null,0x46,0x2b,0x4,null,0x46,0x44,0xd3,0x0,0x46,0x6,0x1b,null,0x1b,null,0x4d,null,0x4,null,0x0,0x69,0xd3,0x5c,0x4,null,0x46,0x7,0x0,0x8,0x1b,null,0x1b,null,0x0,0x9,0x37,0x1,0x0,0xa,0x48,null,0x1d,null,0xa,null,0x0,0x6a,0xa,null,0xd3,0x54,0x1d,null,0xa,null,0x47,0x55,0x3,null,0x4,null,0x5a,null,0xd3,0x5c,0x5b,null,0x47,0x49,0x3,null,0x1b,null,0x1b,null,0x0,0xd,0x37,0x2,0x7a,null,0x3,null,0xd6,0x0,0x32,null,0xd6,0x0,0xd6,0x0,0x3b,null,0x32,null,0x3d,null,0x6,0xf,0x33,null,0x6,0xe,0x7c,null,0x3e,null,0x3,null,0xd6,0x0,0xd6,0x0,0xd6,0x0,0x1,null,0x38,null],'_$1C0PAq':['_0x4ebe1b','logger','group','Participants\x20','action','\x20in\x20','id','split','@',0x1,0x0,':','👥',0x2,'console','log','\x20\x20\x20└\x20Participants:','participants','map',0x9,'join',',\x20','add','_0x276d79$$1','bot','db','getSetting','welcome','off','on','_0x10dce3$$2','welcomemessage','Hey\x20@user!\x20🌟\x20I\x20am\x20really\x20glad\x20you\x27re\x20here!\x20Welcome\x20to\x20{groupName}!\x20Hope\x20you\x20have\x20fun\x20and\x20connect\x20with\x20everyone.\x20You\x27re\x20the\x20{joinNumber}th\x20member!\x20🎉',![],'value','_0x72ffe4','_0x4a0183$$5','_0x93bf6$$5','_0x2de0d0$$5','_0x2d2f0f$$5','_0xa0e743$$5','_0x504de6$$5','_0x399978$$5','sock','groupMetadata','length','filter',0xa,'desc','No\x20description\x20set','replace','@user','{groupName}','subject','{memberCount}','{adminCount}','{joinNumber}','{groupDesc}','substring',0x64,'┏━━━━━━━━━━━━━━━━━━━┓\x0a\x0a┃\x20\x20👋\x20*WELCOME!*\x20👋\x20\x20\x20\x0a\x0a┗━━━━━━━━━━━━━━━━━━━┛\x0a\x0a','\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a📊\x20*GROUP\x20STATS*\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a👥\x20*Members:*\x20','\x0a\x0a👑\x20*Admins:*\x20','\x0a\x0a📝\x20*Description:*\x20\x0a\x0a',0x96,'...','','\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a💫\x20*Welcome\x20to\x20the\x20family!*\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a>\x20created\x20by\x20wanga','sendMessage','WELCOME_IMAGE','url','image','caption','mentions','buttons',0xc,0x3e8,'setTimeout','_0x47ea70$$5','error','Welcome\x20error:\x20','message','👋\x20Welcome\x20@','!\x0a\x0aJoin\x20our\x20channel:\x20','CHANNEL_LINK','text','remove','_0x515e96$$1','goodbye','_0x27669a$$2','goodbyemessage','😢\x20Goodbye\x20@user!\x20We\x27ll\x20miss\x20you\x20in\x20{groupName}.\x20Hope\x20to\x20see\x20you\x20again\x20soon!\x20👋','_0x47f8f8','_0x59a2cc$$5','_0x4f5a0b$$5','_0x10d372$$5','_0x1bdfe4$$5','_0x5b0ad4$$5',0xd,'┏━━━━━━━━━━━━━━━━━━━┓\x0a\x0a┃\x20\x20👋\x20*GOODBYE!*\x20👋\x20\x20\x20\x0a\x0a┗━━━━━━━━━━━━━━━━━━━┛\x0a\x0a','\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a📊\x20*UPDATED\x20STATS*\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a👥\x20*Remaining:*\x20','\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a💫\x20*You\x27ll\x20be\x20missed!*\x0a\x0a━━━━━━━━━━━━━━━━━━━\x0a\x0a>\x20created\x20by\x20wanga',0xf,'_0x36cfec$$5','Goodbye\x20error:\x20','👋\x20@','\x20left\x20the\x20group.\x0a\x0aJoin\x20our\x20channel:\x20','__this__'],'_$m5t2Wk':0x1,'_$ewibdt':0x14,'_$AmoF55':[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1bc,null,null,null,null,null,null,null,0x56,null,null,0x60,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1ba,null,null,null,null,null,null,null,0x71,null,null,0x7b,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1b8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0xc0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x13c,null,0x13d,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x16e,null,null,null,null,null,null,null,null,null,0x1ae,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x1ae,null,null,null,0x85,null,null,0x1b7,null,null,null,null,null,null,0x2ef,null,null,null,null,0x2ef,null,null,null,null,null,null,null,0x1cc,null,null,0x1d6,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x2ee,null,null,null,null,null,null,null,0x1e7,null,null,0x1f1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x2ec,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x2a2,null,null,null,null,null,null,null,null,null,0x2e2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0x2e2,null,null,null,0x1fb,null,null,0x2eb],'_$i6v1Hn':[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,[-0x1,0x1b2,0x1b9],null,null,[0x171,-0x1,0x1ae],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,[-0x1,0x2e6,0x2ed],null,null,[0x2a5,-0x1,0x2e2]],'_$hXc2am':0x1,'_$IcVVB2':0x1,'_$A5hl43':0x1}],A=[process.env.MODE],m=(function(){let L=B;B=null;let R=null;for(let O=0x0;O<L['length'];O++){let N=L[O];if(N&&N['_$1C0PAq'])for(let g=0x0;g<N['_$1C0PAq']['length'];g++){let x=N['_$1C0PAq'][g];if(typeof x==='string'&&x['length']>0x1&&x[x['length']-0x1]==='n')try{N['_$1C0PAq'][g]=BigInt(x['slice'](0x0,-0x1));}catch(n){}}}if(R){let c={};return function(B0){let B1=R[B0];if(B1 in c)return c[B1];return c[B1]=L[B1],L[B1]=null,c[B1];};}return function(B0){return L[B0];};}()),d={'0':0x123,'1':0x183,'2':0x100,'3':0x10e,'4':0x18b,'5':0xe1,'6':0x173,'7':0xac,'8':0x86,'9':0x150,'10':0x125,'11':0x31,'12':0x3b,'13':0x1e1,'14':0x1d5,'15':0x14d,'16':0x113,'17':0x17,'18':0x19c,'19':0xda,'20':0xfb,'21':0xe4,'22':0x22,'23':0x1b,'24':0x1a9,'25':0x13,'26':0xa1,'27':0xc4,'28':0x6b,'29':0x104,'32':0x1c4,'40':0xbb,'41':0x4b,'42':0x1e5,'43':0x1a,'44':0x112,'45':0x1df,'46':0x1b0,'47':0xca,'50':0xde,'51':0x16d,'52':0xb1,'53':0x55,'54':0x105,'55':0x5f,'56':0x60,'57':0x12b,'58':0x85,'59':0x8,'60':0x1d1,'61':0xdc,'62':0x1c,'63':0x1f1,'64':0xfd,'65':0x1ea,'70':0x133,'71':0x168,'72':0xe,'73':0x139,'74':0x186,'75':0x16b,'76':0x1cf,'77':0x1da,'78':0x1bf,'79':0xed,'80':0x145,'81':0x108,'82':0x14a,'83':0x88,'84':0x16c,'90':0xb6,'91':0x1c2,'92':0x5c,'93':0x67,'94':0x28,'95':0x2c,'100':0x1a4,'101':0x56,'102':0x48,'103':0x33,'104':0x1a1,'105':0x12d,'106':0x19e,'107':0x1a5,'110':0x194,'111':0x190,'112':0x2f,'120':0x131,'121':0xcd,'122':0x62,'123':0x1dd,'124':0x103,'125':0x4d,'126':0x17a,'127':0xf8,'128':0xa,'129':0x160,'130':0x18f,'131':0x81,'132':0x153,'140':0x96,'141':0x11f,'142':0x9b,'143':0x176,'144':0x1e4,'145':0x16e,'146':0xaa,'147':0xe2,'148':0x185,'149':0xea,'150':0x197,'151':0x1ec,'152':0x198,'153':0x1c1,'154':0x61,'155':0xad,'156':0xe3,'157':0x34,'158':0x76,'160':0x58,'161':0x146,'162':0xf9,'163':0x1ac,'164':0x89,'165':0x1e3,'166':0x1f3,'167':0x1c7,'168':0x1b4,'169':0x1e9,'180':0x136,'181':0x12c,'182':0xab,'183':0xa7,'184':0x132,'185':0x177,'200':0x2e,'201':0xd,'202':0x3,'210':0x13b,'211':0x78,'212':0x111,'213':0x1f0,'214':0x1ad,'215':0x106,'216':0x6c,'217':0x154,'218':0x19,'219':0x15b,'220':0x158,'250':0x1ff,'251':0x1b9,'252':0x126,'253':0x9,'254':0x64,'255':0xbe,'256':0x41,'257':0x157,'258':0x2a,'259':0x6d,'260':0x1c0,'261':0x117};const s={},I=0x1,X=0x2,D=0x3,k=0x4,f=0x78,j=0x79,C=0x7a,G=typeof 0x0n,T=Object['freeze']([]);let M=new WeakSet(),K=new WeakSet();function E(L,R,O){try{vmT(L,R,O);}catch(N){}}function a(L,R){let O=new Array(R),N=![];for(let x=R-0x1;x>=0x0;x--){let n=L();n&&typeof n==='object'&&M['has'](n)?(N=!![],O[x]=n):O[x]=n;}if(!N)return O;let g=[];for(let c=0x0;c<R;c++){let B0=O[c];if(B0&&typeof B0==='object'&&M['has'](B0)){let B1=B0['value'];if(Array['isArray'](B1)){for(let B2=0x0;B2<B1['length'];B2++)g['push'](B1[B2]);}}else g['push'](B0);}return g;}function i(L){let R=[];for(let O in L){R['push'](O);}return R;}function J(L){return Array['prototype']['slice']['call'](L);}function h(L){return typeof L==='function'&&L['prototype']?L['prototype']:L;}function l(L){if(typeof L==='function')return vmJ(L);let R=vmJ(L),O=R&&R['constructor']&&(R['constructor']['prototype']===R||vmJ(R['constructor']['prototype'])===vmJ(R));if(O)return vmJ(R);return R;}function F(L,R){let O=L;while(O!==null){let N=vmK(O,R);if(N)return{'desc':N,'proto':O};O=vmJ(O);}return{'desc':null,'proto':L};}function Z(L,R){if(!L['_$WgevKK'])return;R in L['_$WgevKK']&&delete L['_$WgevKK'][R];let O=R['indexOf']('$$');if(O!==-0x1){let N=R['substring'](0x0,O);N in L['_$WgevKK']&&delete L['_$WgevKK'][N];}}function Y(L,R){let O=L;while(O){Z(O,R),O=O['_$xh1DmH'];}}function W(L,R,O,N){if(N){let g=Reflect['set'](L,R,O);if(!g)throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(R)+'\x27\x20of\x20object');}else Reflect['set'](L,R,O);}function P(){return!vmD_50917['_$rmpENu']&&(vmD_50917['_$rmpENu']=new Map()),vmD_50917['_$rmpENu'];}function u(){return vmD_50917['_$rmpENu']||null;}function t(L,R,O){if(L['_$N0WBLY']===undefined||!O)return;let N=L['_$1C0PAq'][L['_$N0WBLY']];!R['_$J71b0M']&&(R['_$J71b0M']=vmM(null)),R['_$J71b0M'][N]=O,L['_$NOebJr']&&(!R['_$10UfP1']&&(R['_$10UfP1']=vmM(null)),R['_$10UfP1'][N]=!![]),E(O,'name',{'value':N,'writable':![],'enumerable':![],'configurable':!![]});}function U(L){return'_$7MlAd3'+L['substring'](0x1)+'_$shTjGS';}function r(L){return'_$uTZHlm'+L['substring'](0x1)+'_$abniIw';}function z(L,R,O,N,g,x){let n;return N?n=function c(){let B0=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];if(this===g)return L(R,arguments,O,n,B0,undefined);return L['call'](this,R,arguments,O,n,B0,x);}:n=function B0(){let B1=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];return L['call'](this,R,arguments,O,n,B1,x);},n;}function H(L,R,O,N,g,x){let n;return N?n=async function c(){let B0=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];if(this===g)return await L(R,arguments,O,n,B0,undefined,undefined);return await L['call'](this,R,arguments,O,n,B0,undefined,x);}:n=async function B0(){let B1=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];return await L['call'](this,R,arguments,O,n,B1,undefined,x);},n;}function o(L,R,O,N,g,x,n){let c;return g?c=function B0(){if(this===x)return L(R,arguments,O,c,undefined,undefined);return L['call'](this,R,arguments,O,c,undefined,n);}:c=function B1(){return L['call'](this,R,arguments,O,c,undefined,n);},N['add'](c),c;}function w(L,R,O,N){let g;return g={'pYNNNW':(...x)=>{return L(R,x,O,g,undefined,N);}}['pYNNNW'],g;}function v(L,R,O,N){let g;return g={'pYNNNW':async(...x)=>{return await L(R,x,O,g,undefined,undefined,N);}}['pYNNNW'],g;}function S(L,R,O,N,g,x){let n;return N?n={'pYNNNW'(){let c=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];if(this===g)return L(R,arguments,O,n,c,undefined);return L['call'](this,R,arguments,O,n,c,x);}}['pYNNNW']:n={'pYNNNW'(){let c=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];return L['call'](this,R,arguments,O,n,c,x);}}['pYNNNW'],n;}function y(L,R,O,N,g,x){let n;return N?n={async 'pYNNNW'(){let c=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];if(this===g)return await L(R,arguments,O,n,c,undefined,undefined);return await L['call'](this,R,arguments,O,n,c,undefined,x);}}['pYNNNW']:n={async 'pYNNNW'(){let c=new.target!==undefined?new.target:vmD_50917['_$qtNl4f'];return await L['call'](this,R,arguments,O,n,c,undefined,x);}}['pYNNNW'],n;}function p(L,R,O,N,g,x){let n=new Array(0x8),c=0x0,B0=new Array((L['_$m5t2Wk']||0x0)+(L['_$ewibdt']||0x0)),B1=0x0,B2=L['_$1C0PAq'],B3=L['_$YuwdPm'],B4=L['_$AmoF55']||T,B5=L['_$i6v1Hn']||T,B6=B3['length']>>0x1,B7=null,B8=null,B9=![],BB=undefined,BA=![],Bm=0x0,Bd=![],Bs=0x0,Be=L['_$DWmq32']||d,BI=!!L['_$IcVVB2'],BX=!!L['_$A5hl43'],BD=!!L['_$tHgD8i'],Bk=!!L['_$THjXh8'],Bf=x,Bj=!!L['_$vwIhct'];!BI&&!Bj&&(x===undefined||x===null)&&(x=vmj);let BC=()=>n[--c],BG=Bl=>Bl,BT={['_$xh1DmH']:O,['_$J71b0M']:null};if(R){let Bl=L['_$m5t2Wk']||0x0;for(let BF=0x0,BZ=R['length']<Bl?R['length']:Bl;BF<BZ;BF++){B0[BF]=R[BF];}}let BM=BI&&R?J(R):null,BK=null,BE=![];Bk&&(!BT['_$WgevKK']&&(BT['_$WgevKK']=vmM(null)),BT['_$WgevKK']['__this__']=!![]);t(L,BT,N);let Ba={['_$LrCOEj']:BI,['_$FSiBY1']:BX,['_$b6v8uc']:BD,['_$r1ZNSs']:Bk,['_$wNUjJH']:BE,['_$2FWV2x']:Bf,['_$KlLbSn']:BM,['_$GLHqZF']:BT};while(B1<B6){try{while(B1<B6){let BY=B1<<0x1,BW=B3[BY],BP=B3[BY+0x1];if(!Bh)var Bi,BJ=null,Bh=[function(Bu){BO:{n[c++]=B2[Bu],B1++;}},function(Bu){BO:{n[c++]=undefined,B1++;}},function(Bu){BO:{n[c++]=null,B1++;}},function(Bu){BO:{n[--c],B1++;}},function(Bu){BO:{let Bt=n[c-0x1];n[c++]=Bt,B1++;}},function(Bu){BO:{let Bt=n[c-0x1];n[c-0x1]=n[c-0x2],n[c-0x2]=Bt,B1++;}},function(Bu){BO:{n[c++]=B0[Bu],B1++;}},function(Bu){BO:{B0[Bu]=n[--c],B1++;}},function(Bu){BO:{n[c++]=R[Bu],B1++;}},function(Bu){BO:{R[Bu]=n[--c],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU+Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU-Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU*Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU/Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU%Bt,B1++;}},function(Bu){BO:{n[c-0x1]=-n[c-0x1],B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=typeof Bt===G?Bt+0x1n:+Bt+0x1,B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=typeof Bt===G?Bt-0x1n:+Bt-0x1,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU**Bt,B1++;}},function(Bu){BO:{n[c-0x1]=+n[c-0x1],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU&Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU|Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU^Bt,B1++;}},function(Bu){BO:{n[c-0x1]=~n[c-0x1],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU<<Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU>>Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU>>>Bt,B1++;}},function(Bu){BO:{let Bt=n[c-0x3],BU=n[c-0x2],Br=n[c-0x1];n[c-0x3]=BU,n[c-0x2]=Br,n[c-0x1]=Bt,B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=typeof Bt===G?Bt:+Bt,B1++;}},function(Bu){BO:{n[c-0x1]=String(n[c-0x1]),B1++;}},,,function(Bu){BO:{n[c-0x1]=!n[c-0x1],B1++;}},,,,,,,,function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU==Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU!=Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU===Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU!==Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU<Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU<=Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU>Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU>=Bt,B1++;}},,,function(Bu){BO:{B1=B4[B1];}},function(Bu){BO:{n[--c]?B1=B4[B1]:B1++;}},function(Bu){BO:{!n[--c]?B1=B4[B1]:B1++;}},function(Bu){BO:{let Bt=n[--c];Bt!==null&&Bt!==undefined?B1=B4[B1]:B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=vmD_50917['_$kTlqI6'];vmD_50917['_$kTlqI6']=undefined;try{let Bz=BU['apply'](undefined,a(BC,Bt));n[c++]=Bz;}finally{vmD_50917['_$kTlqI6']=Br;}B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[--c];if(typeof BU!=='function')throw new TypeError(BU+'\x20is\x20not\x20a\x20function');let Bz=vmD_50917['_$HY450l'],BH=Bz&&Bz['get'](BU),Bo=vmD_50917['_$kTlqI6'];BH&&(vmD_50917['_$e15RX2']=!![],vmD_50917['_$kTlqI6']=BH);try{let Bw=BU['apply'](Br,a(BC,Bt));n[c++]=Bw;}finally{BH&&(vmD_50917['_$e15RX2']=![],vmD_50917['_$kTlqI6']=Bo);}B1++;}},function(Bu){BO:{if(B7&&B7['length']>0x0){let Bt=B7[B7['length']-0x1];if(Bt['_$9BdTvW']!==undefined){B9=!![],BB=n[--c],B1=Bt['_$9BdTvW'];break BO;}}return B9&&(B9=![],BB=undefined),Bi=n[--c],0x1;}},function(Bu){BO:{throw n[--c];}},function(Bu){BO:{let Bt=B5[B1];if(!B7)B7=[];B7['push']({['_$GSYi3g']:Bt[0x0]>=0x0?Bt[0x0]:undefined,['_$9BdTvW']:Bt[0x1]>=0x0?Bt[0x1]:undefined,['_$SzWrak']:Bt[0x2]>=0x0?Bt[0x2]:undefined,['_$89N6Ls']:c}),B1++;}},function(Bu){BO:{B7['pop'](),B1++;}},function(Bu){BO:{let Bt=n[--c];if(Bu!=null){let BU=B2[Bu];!BJ['_$GLHqZF']['_$J71b0M']&&(BJ['_$GLHqZF']['_$J71b0M']=vmM(null)),BJ['_$GLHqZF']['_$J71b0M'][BU]=Bt;}B1++;}},function(Bu){BO:{if(B7&&B7['length']>0x0){let Bt=B7[B7['length']-0x1];Bt['_$9BdTvW']===B1&&(Bt['_$MTK8Ke']!==undefined&&(B8=Bt['_$MTK8Ke']),B7['pop']());}B1++;}},function(Bu){BO:{if(B9){let Bt=BB;return B9=![],BB=undefined,Bi=Bt,0x1;}if(BA){let BU=Bm;BA=![],Bm=0x0,B1=BU;break BO;}if(Bd){let Br=Bs;Bd=![],Bs=0x0,B1=Br;break BO;}if(B8!==null){let Bz=B8;B8=null;throw Bz;}B1++;}},function(Bu){BO:{let Bt=B4[B1];if(B7&&B7['length']>0x0){let BU=B7[B7['length']-0x1];if(BU['_$9BdTvW']!==undefined&&Bt>=BU['_$SzWrak']){BA=!![],Bm=Bt,B1=BU['_$9BdTvW'];break BO;}}B1=Bt;}},function(Bu){BO:{let Bt=B4[B1];if(B7&&B7['length']>0x0){let BU=B7[B7['length']-0x1];if(BU['_$9BdTvW']!==undefined&&Bt>=BU['_$SzWrak']){Bd=!![],Bs=Bt,B1=BU['_$9BdTvW'];break BO;}}B1=Bt;}},,,,,,function(Bu){BO:{let Bt=n[--c],BU=B2[Bu];if(Bt===null||Bt===undefined)throw new TypeError('Cannot\x20read\x20property\x20\x27'+String(BU)+'\x27\x20of\x20'+Bt);n[c++]=Bt[BU],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=B2[Bu];if(BU===null||BU===undefined)throw new TypeError('Cannot\x20set\x20property\x20\x27'+String(Br)+'\x27\x20of\x20'+BU);if(BJ['_$LrCOEj']){if(!Reflect['set'](BU,Br,Bt))throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(Br)+'\x27\x20of\x20object');}else BU[Br]=Bt;n[c++]=Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];if(BU===null||BU===undefined)throw new TypeError('Cannot\x20read\x20property\x20\x27'+String(Bt)+'\x27\x20of\x20'+BU);n[c++]=BU[Bt],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[--c];if(Br===null||Br===undefined)throw new TypeError('Cannot\x20set\x20property\x20\x27'+String(BU)+'\x27\x20of\x20'+Br);if(BJ['_$LrCOEj']){if(!Reflect['set'](Br,BU,Bt))throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(BU)+'\x27\x20of\x20object');}else Br[BU]=Bt;n[c++]=Bt,B1++;}},function(Bu){BO:{let Bt,BU;Bu!=null?(BU=n[--c],Bt=B2[Bu]):(Bt=n[--c],BU=n[--c]);let Br=delete BU[Bt];if(BJ['_$LrCOEj']&&!Br)throw new TypeError('Cannot\x20delete\x20property\x20\x27'+String(Bt)+'\x27\x20of\x20object');n[c++]=Br,B1++;}},function(Bu){BO:{let Bt=B2[Bu],BU;if(vmD_50917['_$b6gIC1']&&Bt in vmD_50917['_$b6gIC1'])throw new ReferenceError('Cannot\x20access\x20\x27'+Bt+'\x27\x20before\x20initialization');if(Bt in vmD_50917)BU=vmD_50917[Bt];else{if(Bt in vmj)BU=vmj[Bt];else throw new ReferenceError(Bt+'\x20is\x20not\x20defined');}n[c++]=BU,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu];if(vmD_50917['_$b6gIC1']&&BU in vmD_50917['_$b6gIC1'])throw new ReferenceError('Cannot\x20access\x20\x27'+BU+'\x27\x20before\x20initialization');let Br=!(BU in vmD_50917)&&!(BU in vmj);vmD_50917[BU]=Bt,BU in vmj&&(vmj[BU]=Bt),Br&&(vmj[BU]=Bt),n[c++]=Bt,B1++;}},function(Bu){BO:{n[c++]={},B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu];Bt===null||Bt===undefined?n[c++]=undefined:n[c++]=Bt[BU],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU in Bt,B1++;}},,function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1];Bt!==null&&Bt!==undefined&&Object['assign'](BU,Bt),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];BU===null||BU===undefined?n[c++]=undefined:n[c++]=BU[Bt],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=B2[Bu];vmT(BU,Br,{'value':Bt,'writable':!![],'enumerable':!![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[--c];vmT(Br,BU,{'value':Bt,'writable':!![],'enumerable':!![],'configurable':!![]}),B1++;}},,,,,,function(Bu){BO:{n[c++]=[],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1];BU['push'](Bt),B1++;}},,function(Bu){BO:{let Bt=n[--c],BU={'value':Bt};M['add'](BU),n[c++]=BU,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1];if(Array['isArray'](Bt))Array['prototype']['push']['apply'](BU,Bt);else for(let Br of Bt){BU['push'](Br);}B1++;}},function(Bu){BO:{let Bt=n[c-0x1];Bt['length']++,B1++;}},,,,,function(Bu){BO:{let Bt=n[--c],BU=m(Bt),Br=BU&&BU['_$vwIhct'],Bz=BU&&BU['_$hXc2am'],BH=BU&&BU['_$24zc5s'],Bo=BU&&BU['_$nxZGB6'],Bw=BU&&BU['_$m5t2Wk']||0x0,Bv=BU&&BU['_$IcVVB2'],BS=Br?BJ['_$2FWV2x']:undefined,By=BJ['_$GLHqZF'],Bp;if(BH)Bp=o(q,Bt,By,K,Bv,vmj,s);else{if(Bz){if(Br)Bp=v(Q,Bt,By,BS);else Bo?Bp=y(Q,Bt,By,Bv,vmj,s):Bp=H(Q,Bt,By,Bv,vmj,s);}else{if(Br)Bp=w(b,Bt,By,BS);else Bo?Bp=S(b,Bt,By,Bv,vmj,s):Bp=z(b,Bt,By,Bv,vmj,s);}}E(Bp,'length',{'value':Bw,'writable':![],'enumerable':![],'configurable':!![]}),n[c++]=Bp,B1++;}},,,,function(Bu){BO:{let Bt=n[--c],BU=a(BC,Bt),Br=n[--c];if(typeof Br!=='function')throw new TypeError(Br+'\x20is\x20not\x20a\x20constructor');if(K['has'](Br))throw new TypeError(Br['name']+'\x20is\x20not\x20a\x20constructor');let Bz=vmD_50917['_$kTlqI6'];vmD_50917['_$kTlqI6']=undefined;let BH;try{BH=Reflect['construct'](Br,BU);}finally{vmD_50917['_$kTlqI6']=Bz;}n[c++]=BH,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=a(BC,Bt),Br=n[--c];if(Bu===0x1){n[c++]=BU,B1++;break BO;}if(vmD_50917['_$3nY8om']){B1++;break BO;}let Bz=vmD_50917['_$OmaYQo'];if(Bz){let BH=Bz['parent'],Bo=Bz['newTarget'],Bw=Reflect['construct'](BH,BU,Bo);x&&x!==Bw&&vmE(x)['forEach'](function(Bv){!(Bv in Bw)&&(Bw[Bv]=x[Bv]);});x=Bw,BJ['_$wNUjJH']=!![];BJ['_$r1ZNSs']&&(Z(BJ['_$GLHqZF'],'__this__'),!BJ['_$GLHqZF']['_$J71b0M']&&(BJ['_$GLHqZF']['_$J71b0M']=vmM(null)),BJ['_$GLHqZF']['_$J71b0M']['__this__']=x);B1++;break BO;}if(typeof Br!=='function')throw new TypeError('Super\x20expression\x20must\x20be\x20a\x20constructor');vmD_50917['_$qtNl4f']=g;try{let Bv=Br['apply'](x,BU);Bv!==undefined&&Bv!==x&&typeof Bv==='object'&&(x&&Object['assign'](Bv,x),x=Bv),BJ['_$wNUjJH']=!![],BJ['_$r1ZNSs']&&(Z(BJ['_$GLHqZF'],'__this__'),!BJ['_$GLHqZF']['_$J71b0M']&&(BJ['_$GLHqZF']['_$J71b0M']=vmM(null)),BJ['_$GLHqZF']['_$J71b0M']['__this__']=x);}catch(BS){if(BS instanceof TypeError&&(BS['message']['includes']('\x27new\x27')||BS['message']['includes']('constructor'))){let By=Reflect['construct'](Br,BU,g);By!==x&&x&&Object['assign'](By,x),x=By,BJ['_$wNUjJH']=!![],BJ['_$r1ZNSs']&&(Z(BJ['_$GLHqZF'],'__this__'),!BJ['_$GLHqZF']['_$J71b0M']&&(BJ['_$GLHqZF']['_$J71b0M']=vmM(null)),BJ['_$GLHqZF']['_$J71b0M']['__this__']=x);}else throw BS;}finally{delete vmD_50917['_$qtNl4f'];}B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=import(Bt),B1++;}},,,,function(Bu){BO:{n[c-0x1]=typeof n[c-0x1],B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c];n[c++]=BU instanceof Bt,B1++;}},function(Bu){BO:{let Bt=B2[Bu];Bt in vmD_50917?n[c++]=typeof vmD_50917[Bt]:n[c++]=typeof vmj[Bt],B1++;}},,,,,,,,,,,function(Bu){BO:{let Bt=n[--c],BU=Bt['next']();n[c++]=BU,B1++;}},function(Bu){BO:{let Bt=n[--c];Bt&&typeof Bt['return']==='function'&&Bt['return'](),B1++;}},,,function(Bu){BO:{let Bt=n[--c];if(Bt==null)throw new TypeError('Cannot\x20iterate\x20over\x20'+Bt);let BU=Bt[Symbol['iterator']];if(typeof BU!=='function')throw new TypeError('Object\x20is\x20not\x20iterable');n[c++]=BU['call'](Bt),B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=!!Bt['done'],B1++;}},function(Bu){BO:{let Bt=n[--c];if(Bt==null)throw new TypeError('Cannot\x20iterate\x20over\x20'+Bt);let BU=Bt[Symbol['asyncIterator']];if(typeof BU==='function')n[c++]=BU['call'](Bt);else{let Br=Bt[Symbol['iterator']];if(typeof Br!=='function')throw new TypeError('Object\x20is\x20not\x20async\x20iterable');n[c++]=Br['call'](Bt);}B1++;}},function(Bu){BO:{let Bt=n[--c],BU=Bt['next']();n[c++]=Promise['resolve'](BU),B1++;}},function(Bu){BO:{let Bt=n[--c];Bt&&typeof Bt['return']==='function'?n[c++]=Promise['resolve'](Bt['return']()):n[c++]=Promise['resolve'](),B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=i(Bt),B1++;}},,,,,,,,function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=Bu,Bz=function(BH,Bo){let Bw=function(){if(BH){Bo&&(vmD_50917['_$Ke6lTw']=Bw);let Bv='_$qtNl4f'in vmD_50917;!Bv&&(vmD_50917['_$qtNl4f']=new.target);try{let BS=BH['apply'](this,J(arguments));if(Bo&&BS!==undefined&&(typeof BS!=='object'||BS===null))throw new TypeError('Derived\x20constructors\x20may\x20only\x20return\x20object\x20or\x20undefined');return BS;}finally{Bo&&delete vmD_50917['_$Ke6lTw'],!Bv&&delete vmD_50917['_$qtNl4f'];}}};return Bw;}(BU,Br);Bt&&vmT(Bz,'name',{'value':Bt,'configurable':!![]}),n[c++]=Bz,B1++;}},function(Bu){BO:{let BU=n[--c],Br=n[c-0x1];if(BU===null){vmi(Br['prototype'],null),vmi(Br,Function['prototype']),Br['_$wbCuKE']=null,B1++;break BO;}let Bz=![];try{let BH=vmM(BU['prototype']),Bo=BU['apply'](BH,[]);Bo!==undefined&&Bo!==BH&&(Bz=!![]);}catch(Bw){Bw instanceof TypeError&&(Bw['message']['includes']('\x27new\x27')||Bw['message']['includes']('constructor')||Bw['message']['includes']('Illegal\x20constructor'))&&(Bz=!![]);}if(Bz){let Bv=Br,BS=vmD_50917,By='_$qtNl4f',Bp='_$Ke6lTw',BV='_$OmaYQo';function Bt(...Bb){let BQ=vmM(BU['prototype']);BS[BV]={'parent':BU,'newTarget':new.target||Bt},BS[Bp]=new.target||Bt;let Bq=By in BS;!Bq&&(BS[By]=new.target);try{let BL=Bv['apply'](BQ,Bb);BL!==undefined&&typeof BL==='object'&&(BQ=BL);}finally{delete BS[BV],delete BS[Bp],!Bq&&delete BS[By];}return BQ;}Bt['prototype']=vmM(BU['prototype']),Bt['prototype']['constructor']=Bt,vmi(Bt,BU),vmE(Bv)['forEach'](function(Bb){Bb!=='prototype'&&Bb!=='length'&&Bb!=='name'&&E(Bt,Bb,vmK(Bv,Bb));});Bv['prototype']&&(vmE(Bv['prototype'])['forEach'](function(Bb){Bb!=='constructor'&&E(Bt['prototype'],Bb,vmK(Bv['prototype'],Bb));}),vma(Bv['prototype'])['forEach'](function(Bb){E(Bt['prototype'],Bb,vmK(Bv['prototype'],Bb));}));n[--c],n[c++]=Bt,Bt['_$wbCuKE']=BU,B1++;break BO;}vmi(Br['prototype'],BU['prototype']),vmi(Br,BU),Br['_$wbCuKE']=BU,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=vmD_50917['_$kTlqI6'],Bz=Br?vmJ(Br):l(BU),BH=F(Bz,Bt);if(BH['desc']&&BH['desc']['get']){let Bw=BH['desc']['get']['call'](BU);n[c++]=Bw,B1++;break BO;}if(BH['desc']&&BH['desc']['set']&&!('value'in BH['desc'])){n[c++]=undefined,B1++;break BO;}let Bo=BH['proto']?BH['proto'][Bt]:Bz[Bt];if(typeof Bo==='function'){let Bv=BH['proto']||Bz,BS=Bo['bind'](BU),By=Bo['constructor']&&Bo['constructor']['name'],Bp=By==='GeneratorFunction'||By==='AsyncFunction'||By==='AsyncGeneratorFunction';!Bp&&(!vmD_50917['_$HY450l']&&(vmD_50917['_$HY450l']=new WeakMap()),vmD_50917['_$HY450l']['set'](BS,Bv)),n[c++]=BS;}else n[c++]=Bo;B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[--c],Bz=l(Br),BH=F(Bz,BU);BH['desc']&&BH['desc']['set']?BH['desc']['set']['call'](Br,Bt):Br[BU]=Bt,n[c++]=Bt,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1],Br=B2[Bu];vmT(BU['prototype'],Br,{'value':Bt,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1],Br=B2[Bu],Bz=h(BU);vmT(Bz,Br,{'get':Bt,'enumerable':Bz===BU,'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1],Br=B2[Bu],Bz=h(BU);vmT(Bz,Br,{'set':Bt,'enumerable':Bz===BU,'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1],Br=B2[Bu];vmT(BU,Br,{'value':Bt,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1],Br=B2[Bu];vmT(BU,Br,{'get':Bt,'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[c-0x1],Br=B2[Bu];vmT(BU,Br,{'set':Bt,'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu],Br=P(),Bz='get_'+BU,BH=Br['get'](Bz);if(BH&&BH['has'](Bt)){let BS=BH['get'](Bt);n[c++]=BS['call'](Bt),B1++;break BO;}let Bo='_$uTZHlm'+'get_'+BU['substring'](0x1)+'_$abniIw';if(Bt['constructor']&&Bo in Bt['constructor']){let By=Bt['constructor'][Bo];n[c++]=By['call'](Bt),B1++;break BO;}let Bw=Br['get'](BU);if(Bw&&Bw['has'](Bt)){n[c++]=Bw['get'](Bt),B1++;break BO;}let Bv=U(BU);if(Bv in Bt){n[c++]=Bt[Bv],B1++;break BO;}throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BU+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=B2[Bu],Bz=P(),BH='set_'+Br,Bo=Bz['get'](BH);if(Bo&&Bo['has'](BU)){let By=Bo['get'](BU);By['call'](BU,Bt),n[c++]=Bt,B1++;break BO;}let Bw='_$uTZHlm'+'set_'+Br['substring'](0x1)+'_$abniIw';if(BU['constructor']&&Bw in BU['constructor']){let Bp=BU['constructor'][Bw];Bp['call'](BU,Bt),n[c++]=Bt,B1++;break BO;}let Bv=Bz['get'](Br);if(Bv&&Bv['has'](BU)){Bv['set'](BU,Bt),n[c++]=Bt,B1++;break BO;}let BS=U(Br);if(BS in BU){BU[BS]=Bt,n[c++]=Bt,B1++;break BO;}throw new TypeError('Cannot\x20write\x20private\x20member\x20'+Br+'\x20to\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=B2[Bu],Bz=P();!Bz['has'](Br)&&Bz['set'](Br,new WeakMap());let BH=Bz['get'](Br);if(BH['has'](BU))throw new TypeError('Cannot\x20initialize\x20'+Br+'\x20twice\x20on\x20the\x20same\x20object');BH['set'](BU,Bt),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu],Br=![],Bz=u();if(Bz){let BH=Bz['get'](BU);BH&&BH['has'](Bt)&&(Br=!![]);}n[c++]=Br,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=B2[Bu],Bz=null,BH=u();if(BH){let Bv=BH['get'](Br);Bv&&Bv['has'](BU)&&(Bz=Bv['get'](BU));}if(Bz===null){let BS=r(Br);BS in BU&&(Bz=BU[BS]);}if(Bz===null)throw new TypeError('Cannot\x20read\x20private\x20member\x20'+Br+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');if(typeof Bz!=='function')throw new TypeError(Br+'\x20is\x20not\x20a\x20function');let Bo=a(BC,Bt),Bw=Bz['apply'](BU,Bo);n[c++]=Bw,B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu];if(Bt==null){n[c++]=undefined,B1++;break BO;}let Br=P(),Bz=Br['get'](BU);if(!Bz||!Bz['has'](Bt))throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BU+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');n[c++]=Bz['get'](Bt),B1++;}},function(Bu){BO:{let Bt=n[--c];n[--c];let BU=n[c-0x1],Br=B2[Bu],Bz=P();!Bz['has'](Br)&&Bz['set'](Br,new WeakMap());let BH=Bz['get'](Br);BH['set'](BU,Bt),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu],Br=u();if(Br){let Bo='get_'+BU,Bw=Br['get'](Bo);if(Bw&&Bw['has'](Bt)){let BS=Bw['get'](Bt);n[c++]=BS['call'](Bt),B1++;break BO;}let Bv=Br['get'](BU);if(Bv&&Bv['has'](Bt)){n[c++]=Bv['get'](Bt),B1++;break BO;}}let Bz='_$uTZHlm'+'get_'+BU['substring'](0x1)+'_$abniIw';if(Bz in Bt){let By=Bt[Bz];n[c++]=By['call'](Bt),B1++;break BO;}let BH=U(BU);if(BH in Bt){n[c++]=Bt[BH],B1++;break BO;}throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BU+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=B2[Bu],Bz=u();if(Bz){let Bw='set_'+Br,Bv=Bz['get'](Bw);if(Bv&&Bv['has'](BU)){let By=Bv['get'](BU);By['call'](BU,Bt),n[c++]=Bt,B1++;break BO;}let BS=Bz['get'](Br);if(BS&&BS['has'](BU)){BS['set'](BU,Bt),n[c++]=Bt,B1++;break BO;}}let BH='_$uTZHlm'+'set_'+Br['substring'](0x1)+'_$abniIw';if(BH in BU){let Bp=BU[BH];Bp['call'](BU,Bt),n[c++]=Bt,B1++;break BO;}let Bo=U(Br);if(Bo in BU){BU[Bo]=Bt,n[c++]=Bt,B1++;break BO;}throw new TypeError('Cannot\x20write\x20private\x20member\x20'+Br+'\x20to\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},,function(Bu){BO:{if(BJ['_$b6v8uc']&&!BJ['_$wNUjJH'])throw new ReferenceError('Must\x20call\x20super\x20constructor\x20in\x20derived\x20class\x20before\x20accessing\x20\x27this\x27\x20or\x20returning\x20from\x20derived\x20constructor');n[c++]=x,B1++;}},function(Bu){BO:{if(BK===null){if(BJ['_$LrCOEj']||!BJ['_$FSiBY1']){BK=[];let Bt=BJ['_$KlLbSn']||R;if(Bt)for(let BU=0x0;BU<Bt['length'];BU++){BK[BU]=Bt[BU];}if(BJ['_$LrCOEj']){let Br=function(){throw new TypeError('\x27caller\x27,\x20\x27callee\x27,\x20and\x20\x27arguments\x27\x20properties\x20may\x20not\x20be\x20accessed\x20on\x20strict\x20mode\x20functions\x20or\x20the\x20arguments\x20objects\x20for\x20calls\x20to\x20them');};vmT(BK,'callee',{'get':Br,'set':Br,'enumerable':![],'configurable':![]});}else vmT(BK,'callee',{'value':N,'writable':!![],'enumerable':![],'configurable':!![]});}else{let Bz=R?R['length']:0x0,BH={},Bo={},Bw=function(Bp){return typeof Bp==='string'?parseInt(Bp,0xa):NaN;},Bv=function(Bp){return!isNaN(Bp)&&Bp>=0x0;},BS=function(Bp){if(Bp in Bo)return undefined;return Bp<R['length']?R[Bp]:BH[Bp];},By=function(Bp){if(Bp in Bo)return![];return Bp<R['length']?Bp in R:Bp in BH;};BK=new Proxy([],{'get':function(Bp,BV,Bb){if(BV==='length')return Bz;if(BV==='callee')return N;if(BV===Symbol['iterator'])return function(){let BL=0x0;return{'next':function(){if(BL<Bz)return{'value':BS(BL++),'done':![]};return{'done':!![]};}};};let BQ=Bw(BV);if(Bv(BQ))return BS(BQ);if(BV==='hasOwnProperty')return function(BL){if(BL==='length'||BL==='callee')return!![];let BR=Bw(BL);return Bv(BR)&&BR<Bz&&By(BR);};let Bq=Array['prototype'][BV];if(typeof Bq==='function')return function(){let BL=[];for(let BR=0x0;BR<Bz;BR++){BL[BR]=BS(BR);}return Bq['apply'](BL,arguments);};return undefined;},'set':function(Bp,BV,Bb){if(BV==='length')return Bz=Bb,!![];let BQ=Bw(BV);if(Bv(BQ)){if(BQ in Bo)delete Bo[BQ],BH[BQ]=Bb;else BQ<R['length']?R[BQ]=Bb:BH[BQ]=Bb;return BQ>=Bz&&(Bz=BQ+0x1),!![];}return!![];},'has':function(Bp,BV){if(BV==='length'||BV==='callee')return!![];let Bb=Bw(BV);if(Bv(Bb)&&Bb<Bz)return By(Bb);return BV in Array['prototype'];},'deleteProperty':function(Bp,BV){let Bb=Bw(BV);return Bv(Bb)&&(Bb<R['length']?Bo[Bb]=0x1:delete BH[Bb]),!![];},'getOwnPropertyDescriptor':function(Bp,BV){if(BV==='callee')return{'value':N,'writable':!![],'enumerable':![],'configurable':!![]};if(BV==='length')return{'value':Bz,'writable':!![],'enumerable':![],'configurable':!![]};let Bb=Bw(BV);if(Bv(Bb)&&Bb<Bz&&By(Bb))return{'value':BS(Bb),'writable':!![],'enumerable':!![],'configurable':!![]};return undefined;},'ownKeys':function(Bp){let BV=[];for(let Bb=0x0;Bb<Bz;Bb++){By(Bb)&&BV['push'](String(Bb));}return BV['push']('length','callee'),BV;}});}}n[c++]=BK,B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>0x10,Br=B2[Bt],Bz=B2[BU];n[c++]=new RegExp(Br,Bz),B1++;}},function(Bu){BO:{n[--c],n[c++]=undefined,B1++;}},function(Bu){BO:{n[c++]=g,B1++;}},function(Bu){BO:{n[c++]=vmC[Bu],B1++;}},function(Bu){BO:{n[c++]=A[Bu],B1++;}},function(Bu){BO:{if(Bu===-0x1)n[c++]=Symbol();else{let Bt=n[--c];n[c++]=Symbol(Bt);}B1++;}},function(Bu){BO:{let Bt=B2[Bu];n[c++]=Symbol['for'](Bt),B1++;}},function(Bu){BO:{let Bt=n[--c];n[c++]=Symbol['keyFor'](Bt),B1++;}},,,,,,,,,,,function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[c-0x1];vmT(Br['prototype'],BU,{'value':Bt,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[c-0x1];vmT(Br,BU,{'value':Bt,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[c-0x1],Bz=h(Br);vmT(Bz,BU,{'get':Bt,'enumerable':Bz===Br,'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[c-0x1],Bz=h(Br);vmT(Bz,BU,{'set':Bt,'enumerable':Bz===Br,'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[c-0x1];vmT(Br,BU,{'get':Bt,'enumerable':![],'configurable':!![]}),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=n[--c],Br=n[c-0x1];vmT(Br,BU,{'set':Bt,'enumerable':![],'configurable':!![]}),B1++;}},,,,,,,,,,,,,,,function(Bu){BO:{debugger;B1++;}},function(Bu){BO:{B1++;}},function(Bu){BO:{return Bi=c>0x0?n[--c]:undefined,0x1;}},,,,,,,,function(Bu){BO:{let Bt=n[--c],BU={['_$J71b0M']:null,['_$gN1LbX']:null,['_$WgevKK']:null,['_$xh1DmH']:Bt};BJ['_$GLHqZF']=BU,B1++;}},function(Bu){BO:{let Bt=B2[Bu];if(Bt==='__this__'){let Bw=BJ['_$GLHqZF'];while(Bw){if(Bw['_$WgevKK']&&'__this__'in Bw['_$WgevKK'])throw new ReferenceError('Cannot\x20access\x20\x27__this__\x27\x20before\x20initialization');if(Bw['_$J71b0M']&&'__this__'in Bw['_$J71b0M'])break;Bw=Bw['_$xh1DmH'];}n[c++]=x,B1++;break BO;}let BU=BJ['_$GLHqZF'],Br,Bz=![],BH=Bt['indexOf']('$$'),Bo=BH!==-0x1?Bt['substring'](0x0,BH):null;while(BU){let Bv=BU['_$WgevKK'],BS=BU['_$J71b0M'];if(Bv&&Bt in Bv)throw new ReferenceError('Cannot\x20access\x20\x27'+Bt+'\x27\x20before\x20initialization');if(Bo&&Bv&&Bo in Bv){if(!(BS&&Bt in BS))throw new ReferenceError('Cannot\x20access\x20\x27'+Bo+'\x27\x20before\x20initialization');}if(BS&&Bt in BS){Br=BS[Bt],Bz=!![];break;}BU=BU['_$xh1DmH'];}!Bz&&(Bt in vmD_50917?Br=vmD_50917[Bt]:Br=vmj[Bt]),n[c++]=Br,B1++;}},function(Bu){BO:{let Bt=B2[Bu],BU=n[--c],Br=BJ['_$GLHqZF'],Bz=![];while(Br){let BH=Br['_$WgevKK'],Bo=Br['_$J71b0M'];if(BH&&Bt in BH)throw new ReferenceError('Cannot\x20access\x20\x27'+Bt+'\x27\x20before\x20initialization');if(Bo&&Bt in Bo){if(Br['_$10UfP1']&&Bt in Br['_$10UfP1']){if(BJ['_$LrCOEj'])throw new TypeError('Assignment\x20to\x20constant\x20variable.');Bz=!![];break;}if(Br['_$gN1LbX']&&Bt in Br['_$gN1LbX'])throw new TypeError('Assignment\x20to\x20constant\x20variable.');Bo[Bt]=BU,Bz=!![];break;}Br=Br['_$xh1DmH'];}if(!Bz){if(Bt in vmD_50917)vmD_50917[Bt]=BU;else Bt in vmj?vmj[Bt]=BU:vmj[Bt]=BU;}B1++;}},function(Bu){BO:{n[c++]=BJ['_$GLHqZF'],B1++;}},function(Bu){BO:{BJ['_$GLHqZF']&&BJ['_$GLHqZF']['_$xh1DmH']&&(BJ['_$GLHqZF']=BJ['_$GLHqZF']['_$xh1DmH']),B1++;}},function(Bu){BO:{let Bt=B2[Bu],BU=n[--c];Z(BJ['_$GLHqZF'],Bt),!BJ['_$GLHqZF']['_$J71b0M']&&(BJ['_$GLHqZF']['_$J71b0M']=vmM(null)),BJ['_$GLHqZF']['_$J71b0M'][Bt]=BU,B1++;}},function(Bu){BO:{let Bt=B2[Bu],BU=n[--c],Br=BJ['_$GLHqZF'],Bz=![];while(Br){if(Br['_$J71b0M']&&Bt in Br['_$J71b0M']){if(Br['_$gN1LbX']&&Bt in Br['_$gN1LbX'])break;Br['_$J71b0M'][Bt]=BU;!Br['_$gN1LbX']&&(Br['_$gN1LbX']=vmM(null));Br['_$gN1LbX'][Bt]=!![],Bz=!![];break;}Br=Br['_$xh1DmH'];}!Bz&&(Y(BJ['_$GLHqZF'],Bt),!BJ['_$GLHqZF']['_$J71b0M']&&(BJ['_$GLHqZF']['_$J71b0M']=vmM(null)),BJ['_$GLHqZF']['_$J71b0M'][Bt]=BU,!BJ['_$GLHqZF']['_$gN1LbX']&&(BJ['_$GLHqZF']['_$gN1LbX']=vmM(null)),BJ['_$GLHqZF']['_$gN1LbX'][Bt]=!![]),B1++;}},function(Bu){BO:{let Bt=B2[Bu],BU=n[--c];Z(BJ['_$GLHqZF'],Bt);if(!BJ['_$GLHqZF']['_$J71b0M'])BJ['_$GLHqZF']['_$J71b0M']=vmM(null);BJ['_$GLHqZF']['_$J71b0M'][Bt]=BU,!BJ['_$GLHqZF']['_$gN1LbX']&&(BJ['_$GLHqZF']['_$gN1LbX']=vmM(null)),BJ['_$GLHqZF']['_$gN1LbX'][Bt]=!![],B1++;}},function(Bu){BO:{let Bt=B2[Bu];!BJ['_$GLHqZF']['_$WgevKK']&&(BJ['_$GLHqZF']['_$WgevKK']=vmM(null)),BJ['_$GLHqZF']['_$WgevKK'][Bt]=!![],B1++;}},function(Bu){BO:{let Bt=B2[Bu],BU=n[--c],Br=BJ['_$GLHqZF']['_$xh1DmH'];Br&&(!Br['_$J71b0M']&&(Br['_$J71b0M']=vmM(null)),Br['_$J71b0M'][Bt]=BU),B1++;}},function(Bu){BO:{let Bt=n[--c],BU=B2[Bu];if(BJ['_$LrCOEj']&&!(BU in vmj)&&!(BU in vmD_50917))throw new ReferenceError(BU+'\x20is\x20not\x20defined');vmD_50917[BU]=Bt,vmj[BU]=Bt,n[c++]=Bt,B1++;}},,,,,,,,,,,,,,,,,,,,,,,,,,,,,,function(Bu){BO:{B0[Bu]=B0[Bu]+0x1,B1++;}},function(Bu){BO:{B0[Bu]=B0[Bu]-0x1,B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10;n[c++]=B0[Bt]+B2[BU],B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10;n[c++]=B0[Bt]-B2[BU],B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10;n[c++]=B0[Bt]*B2[BU],B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10,Br=B0[Bt],Bz=B2[BU];n[c++]=Br[Bz],B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10;n[c++]=B0[Bt]<B2[BU],B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10;B0[Bt]<B2[BU]?B1=B4[B1]:B1++;}},function(Bu){BO:{let Bt=Bu&0xffff,BU=Bu>>>0x10,Br=n[--c],Bz=a(BC,Br),BH=B0[Bt],Bo=B2[BU],Bw=BH[Bo];n[c++]=Bw['apply'](BH,Bz),B1++;}},function(Bu){BO:{B0[Bu]=n[--c],B1++;}},function(Bu){BO:{let Bt=B0[Bu]+0x1;B0[Bu]=Bt,n[c++]=Bt,B1++;}},function(Bu){BO:{let Bt=B0[Bu]-0x1;B0[Bu]=Bt,n[c++]=Bt,B1++;}}];switch(BW){case 0x0:{n[c++]=B2[BP],B1++;continue;}case 0x1:{n[c++]=undefined,B1++;continue;}case 0x3:{n[--c],B1++;continue;}case 0x4:{let Bu=n[c-0x1];n[c++]=Bu,B1++;continue;}case 0x6:{n[c++]=B0[BP],B1++;continue;}case 0x7:{B0[BP]=n[--c],B1++;continue;}case 0x8:{n[c++]=R[BP],B1++;continue;}case 0xa:{let Bt=n[--c],BU=n[--c];n[c++]=BU+Bt,B1++;continue;}case 0xb:{let Br=n[--c],Bz=n[--c];n[c++]=Bz-Br,B1++;continue;}case 0x10:{let BH=n[--c];n[c++]=typeof BH===G?BH+0x1n:+BH+0x1,B1++;continue;}case 0x1c:{let Bo=n[--c];n[c++]=typeof Bo===G?Bo:+Bo,B1++;continue;}case 0x2c:{let Bw=n[--c],Bv=n[--c];n[c++]=Bv<Bw,B1++;continue;}case 0x2e:{let BS=n[--c],By=n[--c];n[c++]=By>BS,B1++;continue;}case 0x32:{B1=B4[B1];continue;}case 0x34:{!n[--c]?B1=B4[B1]:B1++;continue;}case 0x48:{let Bp=n[--c],BV=n[--c];if(BV===null||BV===undefined)throw new TypeError('Cannot\x20read\x20property\x20\x27'+String(Bp)+'\x27\x20of\x20'+BV);n[c++]=BV[Bp],B1++;continue;}case 0x49:{let Bb=n[--c],BQ=n[--c],Bq=n[--c];if(Bq===null||Bq===undefined)throw new TypeError('Cannot\x20set\x20property\x20\x27'+String(BQ)+'\x27\x20of\x20'+Bq);if(BI){if(!Reflect['set'](Bq,BQ,Bb))throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(BQ)+'\x27\x20of\x20object');}else Bq[BQ]=Bb;n[c++]=Bb,B1++;continue;}}BJ=Ba;if(Bh[BW](BP))return Bi;BT=Ba['_$GLHqZF'],BE=Ba['_$wNUjJH'];}break;}catch(BL){if(B7&&B7['length']>0x0){let BR=B7[B7['length']-0x1];c=BR['_$89N6Ls'];if(BR['_$GSYi3g']!==undefined)_push(BL),B1=BR['_$GSYi3g'],BR['_$GSYi3g']=undefined,BR['_$9BdTvW']===undefined&&B7['pop']();else BR['_$9BdTvW']!==undefined?(B1=BR['_$9BdTvW'],BR['_$MTK8Ke']=BL):(B1=BR['_$SzWrak'],B7['pop']());continue;}throw BL;}}return c>0x0?n[--c]:BE?x:undefined;}function*V(L,R,O,N,g,x){let n=new Array(0x8),c=0x0,B0=new Array((L['_$m5t2Wk']||0x0)+(L['_$ewibdt']||0x0)),B1=0x0,B2=L['_$1C0PAq'],B3=L['_$YuwdPm'],B4=L['_$AmoF55']||T,B5=L['_$i6v1Hn']||T,B6=B3['length']>>0x1,B7=null,B8=null,B9=![],BB=undefined,BA=![],Bm=0x0,Bd=![],Bs=0x0,Be=L['_$DWmq32']||d,BI=!!L['_$IcVVB2'],BX=!!L['_$A5hl43'],BD=!!L['_$tHgD8i'],Bk=!!L['_$THjXh8'],Bf=x,Bj=!!L['_$vwIhct'];!BI&&!Bj&&(x===undefined||x===null)&&(x=vmj);let BC=L['_$BcKhgc'],BG,BT,BM,BK,BE,Ba;if(BC!==undefined){let Bu=Bt=>typeof Bt==='number'&&Number['isFinite'](Bt)&&Number['isInteger'](Bt)&&Bt>=-0x80000000&&Bt<=0x7fffffff&&!Object['is'](Bt,-0x0)?Bt^BC|0x0:Bt;BG=Bt=>{n[c++]=Bu(Bt);},BT=()=>Bu(n[--c]),BM=()=>Bu(n[c-0x1]),BK=Bt=>{n[c-0x1]=Bu(Bt);},BE=Bt=>Bu(n[c-Bt]),Ba=(Bt,BU)=>{n[c-Bt]=Bu(BU);};}else BG=Bt=>{n[c++]=Bt;},BT=()=>n[--c],BM=()=>n[c-0x1],BK=Bt=>{n[c-0x1]=Bt;},BE=Bt=>n[c-Bt],Ba=(Bt,BU)=>{n[c-Bt]=BU;};let Bi=Bt=>Bt,BJ={['_$xh1DmH']:O,['_$J71b0M']:null};if(R){let Bt=L['_$m5t2Wk']||0x0;for(let BU=0x0,Br=R['length']<Bt?R['length']:Bt;BU<Br;BU++){B0[BU]=R[BU];}}let Bh=BI&&R?J(R):null,Bl=null,BF=![];Bk&&(!BJ['_$WgevKK']&&(BJ['_$WgevKK']=vmM(null)),BJ['_$WgevKK']['__this__']=!![]);t(L,BJ,N);let BZ={['_$LrCOEj']:BI,['_$FSiBY1']:BX,['_$b6v8uc']:BD,['_$r1ZNSs']:Bk,['_$wNUjJH']:BF,['_$2FWV2x']:Bf,['_$KlLbSn']:Bh,['_$GLHqZF']:BJ};while(B1<B6){try{while(B1<B6){let Bz=B1<<0x1,BH=B3[Bz],Bo=Be[BH],Bw=B3[Bz+0x1];if(BH===C){let Bv=BT(),BS=yield{['_$QsBZt5']:I,['_$g3UD7L']:Bv};BG(BS),B1++;continue;}if(BH===f){let By=BT(),Bp=yield{['_$QsBZt5']:X,['_$g3UD7L']:By};if(Bp&&typeof Bp==='object'&&Bp['_$QsBZt5']===k){let BV=Bp['_$g3UD7L'];if(B7&&B7['length']>0x0){let Bb=B7[B7['length']-0x1];if(Bb['_$9BdTvW']!==undefined){B9=!![],BB=BV,B1=Bb['_$9BdTvW'];continue;}}return BV;}BG(Bp),B1++;continue;}if(BH===j){let BQ=BT(),Bq=yield{['_$QsBZt5']:D,['_$g3UD7L']:BQ};BG(Bq),B1++;continue;}if(!BP)var BY,BW=null,BP=[function(BL){AB:{n[c++]=B2[BL],B1++;}},function(BL){AB:{n[c++]=undefined,B1++;}},function(BL){AB:{n[c++]=null,B1++;}},function(BL){AB:{n[--c],B1++;}},function(BL){AB:{let BR=n[c-0x1];n[c++]=BR,B1++;}},function(BL){AB:{let BR=n[c-0x1];n[c-0x1]=n[c-0x2],n[c-0x2]=BR,B1++;}},function(BL){AB:{n[c++]=B0[BL],B1++;}},function(BL){AB:{B0[BL]=n[--c],B1++;}},function(BL){AB:{n[c++]=R[BL],B1++;}},function(BL){AB:{R[BL]=n[--c],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO+BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO-BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO*BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO/BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO%BR,B1++;}},function(BL){AB:{n[c-0x1]=-n[c-0x1],B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=typeof BR===G?BR+0x1n:+BR+0x1,B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=typeof BR===G?BR-0x1n:+BR-0x1,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO**BR,B1++;}},function(BL){AB:{n[c-0x1]=+n[c-0x1],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO&BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO|BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO^BR,B1++;}},function(BL){AB:{n[c-0x1]=~n[c-0x1],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO<<BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO>>BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO>>>BR,B1++;}},function(BL){AB:{let BR=n[c-0x3],BO=n[c-0x2],BN=n[c-0x1];n[c-0x3]=BO,n[c-0x2]=BN,n[c-0x1]=BR,B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=typeof BR===G?BR:+BR,B1++;}},function(BL){AB:{n[c-0x1]=String(n[c-0x1]),B1++;}},,,function(BL){AB:{n[c-0x1]=!n[c-0x1],B1++;}},,,,,,,,function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO==BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO!=BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO===BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO!==BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO<BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO<=BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO>BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO>=BR,B1++;}},,,function(BL){AB:{B1=B4[B1];}},function(BL){AB:{n[--c]?B1=B4[B1]:B1++;}},function(BL){AB:{!n[--c]?B1=B4[B1]:B1++;}},function(BL){AB:{let BR=n[--c];BR!==null&&BR!==undefined?B1=B4[B1]:B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=vmD_50917['_$kTlqI6'];vmD_50917['_$kTlqI6']=undefined;try{let Bg=BO['apply'](undefined,a(BT,BR));n[c++]=Bg;}finally{vmD_50917['_$kTlqI6']=BN;}B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[--c];if(typeof BO!=='function')throw new TypeError(BO+'\x20is\x20not\x20a\x20function');let Bg=vmD_50917['_$HY450l'],Bx=Bg&&Bg['get'](BO),Bn=vmD_50917['_$kTlqI6'];Bx&&(vmD_50917['_$e15RX2']=!![],vmD_50917['_$kTlqI6']=Bx);try{let Bc=BO['apply'](BN,a(BT,BR));n[c++]=Bc;}finally{Bx&&(vmD_50917['_$e15RX2']=![],vmD_50917['_$kTlqI6']=Bn);}B1++;}},function(BL){AB:{if(B7&&B7['length']>0x0){let BR=B7[B7['length']-0x1];if(BR['_$9BdTvW']!==undefined){B9=!![],BB=n[--c],B1=BR['_$9BdTvW'];break AB;}}return B9&&(B9=![],BB=undefined),BY=n[--c],0x1;}},function(BL){AB:{throw n[--c];}},function(BL){AB:{let BR=B5[B1];if(!B7)B7=[];B7['push']({['_$GSYi3g']:BR[0x0]>=0x0?BR[0x0]:undefined,['_$9BdTvW']:BR[0x1]>=0x0?BR[0x1]:undefined,['_$SzWrak']:BR[0x2]>=0x0?BR[0x2]:undefined,['_$89N6Ls']:c}),B1++;}},function(BL){AB:{B7['pop'](),B1++;}},function(BL){AB:{let BR=n[--c];if(BL!=null){let BO=B2[BL];!BW['_$GLHqZF']['_$J71b0M']&&(BW['_$GLHqZF']['_$J71b0M']=vmM(null)),BW['_$GLHqZF']['_$J71b0M'][BO]=BR;}B1++;}},function(BL){AB:{if(B7&&B7['length']>0x0){let BR=B7[B7['length']-0x1];BR['_$9BdTvW']===B1&&(BR['_$MTK8Ke']!==undefined&&(B8=BR['_$MTK8Ke']),B7['pop']());}B1++;}},function(BL){AB:{if(B9){let BR=BB;return B9=![],BB=undefined,BY=BR,0x1;}if(BA){let BO=Bm;BA=![],Bm=0x0,B1=BO;break AB;}if(Bd){let BN=Bs;Bd=![],Bs=0x0,B1=BN;break AB;}if(B8!==null){let Bg=B8;B8=null;throw Bg;}B1++;}},function(BL){AB:{let BR=B4[B1];if(B7&&B7['length']>0x0){let BO=B7[B7['length']-0x1];if(BO['_$9BdTvW']!==undefined&&BR>=BO['_$SzWrak']){BA=!![],Bm=BR,B1=BO['_$9BdTvW'];break AB;}}B1=BR;}},function(BL){AB:{let BR=B4[B1];if(B7&&B7['length']>0x0){let BO=B7[B7['length']-0x1];if(BO['_$9BdTvW']!==undefined&&BR>=BO['_$SzWrak']){Bd=!![],Bs=BR,B1=BO['_$9BdTvW'];break AB;}}B1=BR;}},,,,,,function(BL){AB:{let BR=n[--c],BO=B2[BL];if(BR===null||BR===undefined)throw new TypeError('Cannot\x20read\x20property\x20\x27'+String(BO)+'\x27\x20of\x20'+BR);n[c++]=BR[BO],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=B2[BL];if(BO===null||BO===undefined)throw new TypeError('Cannot\x20set\x20property\x20\x27'+String(BN)+'\x27\x20of\x20'+BO);if(BW['_$LrCOEj']){if(!Reflect['set'](BO,BN,BR))throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(BN)+'\x27\x20of\x20object');}else BO[BN]=BR;n[c++]=BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];if(BO===null||BO===undefined)throw new TypeError('Cannot\x20read\x20property\x20\x27'+String(BR)+'\x27\x20of\x20'+BO);n[c++]=BO[BR],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[--c];if(BN===null||BN===undefined)throw new TypeError('Cannot\x20set\x20property\x20\x27'+String(BO)+'\x27\x20of\x20'+BN);if(BW['_$LrCOEj']){if(!Reflect['set'](BN,BO,BR))throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(BO)+'\x27\x20of\x20object');}else BN[BO]=BR;n[c++]=BR,B1++;}},function(BL){AB:{let BR,BO;BL!=null?(BO=n[--c],BR=B2[BL]):(BR=n[--c],BO=n[--c]);let BN=delete BO[BR];if(BW['_$LrCOEj']&&!BN)throw new TypeError('Cannot\x20delete\x20property\x20\x27'+String(BR)+'\x27\x20of\x20object');n[c++]=BN,B1++;}},function(BL){AB:{let BR=B2[BL],BO;if(vmD_50917['_$b6gIC1']&&BR in vmD_50917['_$b6gIC1'])throw new ReferenceError('Cannot\x20access\x20\x27'+BR+'\x27\x20before\x20initialization');if(BR in vmD_50917)BO=vmD_50917[BR];else{if(BR in vmj)BO=vmj[BR];else throw new ReferenceError(BR+'\x20is\x20not\x20defined');}n[c++]=BO,B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL];if(vmD_50917['_$b6gIC1']&&BO in vmD_50917['_$b6gIC1'])throw new ReferenceError('Cannot\x20access\x20\x27'+BO+'\x27\x20before\x20initialization');let BN=!(BO in vmD_50917)&&!(BO in vmj);vmD_50917[BO]=BR,BO in vmj&&(vmj[BO]=BR),BN&&(vmj[BO]=BR),n[c++]=BR,B1++;}},function(BL){AB:{n[c++]={},B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL];BR===null||BR===undefined?n[c++]=undefined:n[c++]=BR[BO],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO in BR,B1++;}},,function(BL){AB:{let BR=n[--c],BO=n[c-0x1];BR!==null&&BR!==undefined&&Object['assign'](BO,BR),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];BO===null||BO===undefined?n[c++]=undefined:n[c++]=BO[BR],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=B2[BL];vmT(BO,BN,{'value':BR,'writable':!![],'enumerable':!![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[--c];vmT(BN,BO,{'value':BR,'writable':!![],'enumerable':!![],'configurable':!![]}),B1++;}},,,,,,function(BL){AB:{n[c++]=[],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1];BO['push'](BR),B1++;}},,function(BL){AB:{let BR=n[--c],BO={'value':BR};M['add'](BO),n[c++]=BO,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1];if(Array['isArray'](BR))Array['prototype']['push']['apply'](BO,BR);else for(let BN of BR){BO['push'](BN);}B1++;}},function(BL){AB:{let BR=n[c-0x1];BR['length']++,B1++;}},,,,,function(BL){AB:{let BR=n[--c],BO=m(BR),BN=BO&&BO['_$vwIhct'],Bg=BO&&BO['_$hXc2am'],Bx=BO&&BO['_$24zc5s'],Bn=BO&&BO['_$nxZGB6'],Bc=BO&&BO['_$m5t2Wk']||0x0,A0=BO&&BO['_$IcVVB2'],A1=BN?BW['_$2FWV2x']:undefined,A2=BW['_$GLHqZF'],A3;if(Bx)A3=o(q,BR,A2,K,A0,vmj,s);else{if(Bg){if(BN)A3=v(Q,BR,A2,A1);else Bn?A3=y(Q,BR,A2,A0,vmj,s):A3=H(Q,BR,A2,A0,vmj,s);}else{if(BN)A3=w(b,BR,A2,A1);else Bn?A3=S(b,BR,A2,A0,vmj,s):A3=z(b,BR,A2,A0,vmj,s);}}E(A3,'length',{'value':Bc,'writable':![],'enumerable':![],'configurable':!![]}),n[c++]=A3,B1++;}},,,,function(BL){AB:{let BR=n[--c],BO=a(BT,BR),BN=n[--c];if(typeof BN!=='function')throw new TypeError(BN+'\x20is\x20not\x20a\x20constructor');if(K['has'](BN))throw new TypeError(BN['name']+'\x20is\x20not\x20a\x20constructor');let Bg=vmD_50917['_$kTlqI6'];vmD_50917['_$kTlqI6']=undefined;let Bx;try{Bx=Reflect['construct'](BN,BO);}finally{vmD_50917['_$kTlqI6']=Bg;}n[c++]=Bx,B1++;}},function(BL){AB:{let BR=n[--c],BO=a(BT,BR),BN=n[--c];if(BL===0x1){n[c++]=BO,B1++;break AB;}if(vmD_50917['_$3nY8om']){B1++;break AB;}let Bg=vmD_50917['_$OmaYQo'];if(Bg){let Bx=Bg['parent'],Bn=Bg['newTarget'],Bc=Reflect['construct'](Bx,BO,Bn);x&&x!==Bc&&vmE(x)['forEach'](function(A0){!(A0 in Bc)&&(Bc[A0]=x[A0]);});x=Bc,BW['_$wNUjJH']=!![];BW['_$r1ZNSs']&&(Z(BW['_$GLHqZF'],'__this__'),!BW['_$GLHqZF']['_$J71b0M']&&(BW['_$GLHqZF']['_$J71b0M']=vmM(null)),BW['_$GLHqZF']['_$J71b0M']['__this__']=x);B1++;break AB;}if(typeof BN!=='function')throw new TypeError('Super\x20expression\x20must\x20be\x20a\x20constructor');vmD_50917['_$qtNl4f']=g;try{let A0=BN['apply'](x,BO);A0!==undefined&&A0!==x&&typeof A0==='object'&&(x&&Object['assign'](A0,x),x=A0),BW['_$wNUjJH']=!![],BW['_$r1ZNSs']&&(Z(BW['_$GLHqZF'],'__this__'),!BW['_$GLHqZF']['_$J71b0M']&&(BW['_$GLHqZF']['_$J71b0M']=vmM(null)),BW['_$GLHqZF']['_$J71b0M']['__this__']=x);}catch(A1){if(A1 instanceof TypeError&&(A1['message']['includes']('\x27new\x27')||A1['message']['includes']('constructor'))){let A2=Reflect['construct'](BN,BO,g);A2!==x&&x&&Object['assign'](A2,x),x=A2,BW['_$wNUjJH']=!![],BW['_$r1ZNSs']&&(Z(BW['_$GLHqZF'],'__this__'),!BW['_$GLHqZF']['_$J71b0M']&&(BW['_$GLHqZF']['_$J71b0M']=vmM(null)),BW['_$GLHqZF']['_$J71b0M']['__this__']=x);}else throw A1;}finally{delete vmD_50917['_$qtNl4f'];}B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=import(BR),B1++;}},,,,function(BL){AB:{n[c-0x1]=typeof n[c-0x1],B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c];n[c++]=BO instanceof BR,B1++;}},function(BL){AB:{let BR=B2[BL];BR in vmD_50917?n[c++]=typeof vmD_50917[BR]:n[c++]=typeof vmj[BR],B1++;}},,,,,,,,,,,function(BL){AB:{let BR=n[--c],BO=BR['next']();n[c++]=BO,B1++;}},function(BL){AB:{let BR=n[--c];BR&&typeof BR['return']==='function'&&BR['return'](),B1++;}},,,function(BL){AB:{let BR=n[--c];if(BR==null)throw new TypeError('Cannot\x20iterate\x20over\x20'+BR);let BO=BR[Symbol['iterator']];if(typeof BO!=='function')throw new TypeError('Object\x20is\x20not\x20iterable');n[c++]=BO['call'](BR),B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=!!BR['done'],B1++;}},function(BL){AB:{let BR=n[--c];if(BR==null)throw new TypeError('Cannot\x20iterate\x20over\x20'+BR);let BO=BR[Symbol['asyncIterator']];if(typeof BO==='function')n[c++]=BO['call'](BR);else{let BN=BR[Symbol['iterator']];if(typeof BN!=='function')throw new TypeError('Object\x20is\x20not\x20async\x20iterable');n[c++]=BN['call'](BR);}B1++;}},function(BL){AB:{let BR=n[--c],BO=BR['next']();n[c++]=Promise['resolve'](BO),B1++;}},function(BL){AB:{let BR=n[--c];BR&&typeof BR['return']==='function'?n[c++]=Promise['resolve'](BR['return']()):n[c++]=Promise['resolve'](),B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=i(BR),B1++;}},,,,,,,,function(BL){AB:{let BR=n[--c],BO=n[--c],BN=BL,Bg=function(Bx,Bn){let Bc=function(){if(Bx){Bn&&(vmD_50917['_$Ke6lTw']=Bc);let A0='_$qtNl4f'in vmD_50917;!A0&&(vmD_50917['_$qtNl4f']=new.target);try{let A1=Bx['apply'](this,J(arguments));if(Bn&&A1!==undefined&&(typeof A1!=='object'||A1===null))throw new TypeError('Derived\x20constructors\x20may\x20only\x20return\x20object\x20or\x20undefined');return A1;}finally{Bn&&delete vmD_50917['_$Ke6lTw'],!A0&&delete vmD_50917['_$qtNl4f'];}}};return Bc;}(BO,BN);BR&&vmT(Bg,'name',{'value':BR,'configurable':!![]}),n[c++]=Bg,B1++;}},function(BL){AB:{let BO=n[--c],BN=n[c-0x1];if(BO===null){vmi(BN['prototype'],null),vmi(BN,Function['prototype']),BN['_$wbCuKE']=null,B1++;break AB;}let Bg=![];try{let Bx=vmM(BO['prototype']),Bn=BO['apply'](Bx,[]);Bn!==undefined&&Bn!==Bx&&(Bg=!![]);}catch(Bc){Bc instanceof TypeError&&(Bc['message']['includes']('\x27new\x27')||Bc['message']['includes']('constructor')||Bc['message']['includes']('Illegal\x20constructor'))&&(Bg=!![]);}if(Bg){let A0=BN,A1=vmD_50917,A2='_$qtNl4f',A3='_$Ke6lTw',A4='_$OmaYQo';function BR(...A5){let A6=vmM(BO['prototype']);A1[A4]={'parent':BO,'newTarget':new.target||BR},A1[A3]=new.target||BR;let A7=A2 in A1;!A7&&(A1[A2]=new.target);try{let A8=A0['apply'](A6,A5);A8!==undefined&&typeof A8==='object'&&(A6=A8);}finally{delete A1[A4],delete A1[A3],!A7&&delete A1[A2];}return A6;}BR['prototype']=vmM(BO['prototype']),BR['prototype']['constructor']=BR,vmi(BR,BO),vmE(A0)['forEach'](function(A5){A5!=='prototype'&&A5!=='length'&&A5!=='name'&&E(BR,A5,vmK(A0,A5));});A0['prototype']&&(vmE(A0['prototype'])['forEach'](function(A5){A5!=='constructor'&&E(BR['prototype'],A5,vmK(A0['prototype'],A5));}),vma(A0['prototype'])['forEach'](function(A5){E(BR['prototype'],A5,vmK(A0['prototype'],A5));}));n[--c],n[c++]=BR,BR['_$wbCuKE']=BO,B1++;break AB;}vmi(BN['prototype'],BO['prototype']),vmi(BN,BO),BN['_$wbCuKE']=BO,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=vmD_50917['_$kTlqI6'],Bg=BN?vmJ(BN):l(BO),Bx=F(Bg,BR);if(Bx['desc']&&Bx['desc']['get']){let Bc=Bx['desc']['get']['call'](BO);n[c++]=Bc,B1++;break AB;}if(Bx['desc']&&Bx['desc']['set']&&!('value'in Bx['desc'])){n[c++]=undefined,B1++;break AB;}let Bn=Bx['proto']?Bx['proto'][BR]:Bg[BR];if(typeof Bn==='function'){let A0=Bx['proto']||Bg,A1=Bn['bind'](BO),A2=Bn['constructor']&&Bn['constructor']['name'],A3=A2==='GeneratorFunction'||A2==='AsyncFunction'||A2==='AsyncGeneratorFunction';!A3&&(!vmD_50917['_$HY450l']&&(vmD_50917['_$HY450l']=new WeakMap()),vmD_50917['_$HY450l']['set'](A1,A0)),n[c++]=A1;}else n[c++]=Bn;B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[--c],Bg=l(BN),Bx=F(Bg,BO);Bx['desc']&&Bx['desc']['set']?Bx['desc']['set']['call'](BN,BR):BN[BO]=BR,n[c++]=BR,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1],BN=B2[BL];vmT(BO['prototype'],BN,{'value':BR,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1],BN=B2[BL],Bg=h(BO);vmT(Bg,BN,{'get':BR,'enumerable':Bg===BO,'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1],BN=B2[BL],Bg=h(BO);vmT(Bg,BN,{'set':BR,'enumerable':Bg===BO,'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1],BN=B2[BL];vmT(BO,BN,{'value':BR,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1],BN=B2[BL];vmT(BO,BN,{'get':BR,'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[c-0x1],BN=B2[BL];vmT(BO,BN,{'set':BR,'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL],BN=P(),Bg='get_'+BO,Bx=BN['get'](Bg);if(Bx&&Bx['has'](BR)){let A1=Bx['get'](BR);n[c++]=A1['call'](BR),B1++;break AB;}let Bn='_$uTZHlm'+'get_'+BO['substring'](0x1)+'_$abniIw';if(BR['constructor']&&Bn in BR['constructor']){let A2=BR['constructor'][Bn];n[c++]=A2['call'](BR),B1++;break AB;}let Bc=BN['get'](BO);if(Bc&&Bc['has'](BR)){n[c++]=Bc['get'](BR),B1++;break AB;}let A0=U(BO);if(A0 in BR){n[c++]=BR[A0],B1++;break AB;}throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BO+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=B2[BL],Bg=P(),Bx='set_'+BN,Bn=Bg['get'](Bx);if(Bn&&Bn['has'](BO)){let A2=Bn['get'](BO);A2['call'](BO,BR),n[c++]=BR,B1++;break AB;}let Bc='_$uTZHlm'+'set_'+BN['substring'](0x1)+'_$abniIw';if(BO['constructor']&&Bc in BO['constructor']){let A3=BO['constructor'][Bc];A3['call'](BO,BR),n[c++]=BR,B1++;break AB;}let A0=Bg['get'](BN);if(A0&&A0['has'](BO)){A0['set'](BO,BR),n[c++]=BR,B1++;break AB;}let A1=U(BN);if(A1 in BO){BO[A1]=BR,n[c++]=BR,B1++;break AB;}throw new TypeError('Cannot\x20write\x20private\x20member\x20'+BN+'\x20to\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=B2[BL],Bg=P();!Bg['has'](BN)&&Bg['set'](BN,new WeakMap());let Bx=Bg['get'](BN);if(Bx['has'](BO))throw new TypeError('Cannot\x20initialize\x20'+BN+'\x20twice\x20on\x20the\x20same\x20object');Bx['set'](BO,BR),B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL],BN=![],Bg=u();if(Bg){let Bx=Bg['get'](BO);Bx&&Bx['has'](BR)&&(BN=!![]);}n[c++]=BN,B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=B2[BL],Bg=null,Bx=u();if(Bx){let A0=Bx['get'](BN);A0&&A0['has'](BO)&&(Bg=A0['get'](BO));}if(Bg===null){let A1=r(BN);A1 in BO&&(Bg=BO[A1]);}if(Bg===null)throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BN+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');if(typeof Bg!=='function')throw new TypeError(BN+'\x20is\x20not\x20a\x20function');let Bn=a(BT,BR),Bc=Bg['apply'](BO,Bn);n[c++]=Bc,B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL];if(BR==null){n[c++]=undefined,B1++;break AB;}let BN=P(),Bg=BN['get'](BO);if(!Bg||!Bg['has'](BR))throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BO+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');n[c++]=Bg['get'](BR),B1++;}},function(BL){AB:{let BR=n[--c];n[--c];let BO=n[c-0x1],BN=B2[BL],Bg=P();!Bg['has'](BN)&&Bg['set'](BN,new WeakMap());let Bx=Bg['get'](BN);Bx['set'](BO,BR),B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL],BN=u();if(BN){let Bn='get_'+BO,Bc=BN['get'](Bn);if(Bc&&Bc['has'](BR)){let A1=Bc['get'](BR);n[c++]=A1['call'](BR),B1++;break AB;}let A0=BN['get'](BO);if(A0&&A0['has'](BR)){n[c++]=A0['get'](BR),B1++;break AB;}}let Bg='_$uTZHlm'+'get_'+BO['substring'](0x1)+'_$abniIw';if(Bg in BR){let A2=BR[Bg];n[c++]=A2['call'](BR),B1++;break AB;}let Bx=U(BO);if(Bx in BR){n[c++]=BR[Bx],B1++;break AB;}throw new TypeError('Cannot\x20read\x20private\x20member\x20'+BO+'\x20from\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=B2[BL],Bg=u();if(Bg){let Bc='set_'+BN,A0=Bg['get'](Bc);if(A0&&A0['has'](BO)){let A2=A0['get'](BO);A2['call'](BO,BR),n[c++]=BR,B1++;break AB;}let A1=Bg['get'](BN);if(A1&&A1['has'](BO)){A1['set'](BO,BR),n[c++]=BR,B1++;break AB;}}let Bx='_$uTZHlm'+'set_'+BN['substring'](0x1)+'_$abniIw';if(Bx in BO){let A3=BO[Bx];A3['call'](BO,BR),n[c++]=BR,B1++;break AB;}let Bn=U(BN);if(Bn in BO){BO[Bn]=BR,n[c++]=BR,B1++;break AB;}throw new TypeError('Cannot\x20write\x20private\x20member\x20'+BN+'\x20to\x20an\x20object\x20whose\x20class\x20did\x20not\x20declare\x20it');}},,function(BL){AB:{if(BW['_$b6v8uc']&&!BW['_$wNUjJH'])throw new ReferenceError('Must\x20call\x20super\x20constructor\x20in\x20derived\x20class\x20before\x20accessing\x20\x27this\x27\x20or\x20returning\x20from\x20derived\x20constructor');n[c++]=x,B1++;}},function(BL){AB:{if(Bl===null){if(BW['_$LrCOEj']||!BW['_$FSiBY1']){Bl=[];let BR=BW['_$KlLbSn']||R;if(BR)for(let BO=0x0;BO<BR['length'];BO++){Bl[BO]=BR[BO];}if(BW['_$LrCOEj']){let BN=function(){throw new TypeError('\x27caller\x27,\x20\x27callee\x27,\x20and\x20\x27arguments\x27\x20properties\x20may\x20not\x20be\x20accessed\x20on\x20strict\x20mode\x20functions\x20or\x20the\x20arguments\x20objects\x20for\x20calls\x20to\x20them');};vmT(Bl,'callee',{'get':BN,'set':BN,'enumerable':![],'configurable':![]});}else vmT(Bl,'callee',{'value':N,'writable':!![],'enumerable':![],'configurable':!![]});}else{let Bg=R?R['length']:0x0,Bx={},Bn={},Bc=function(A3){return typeof A3==='string'?parseInt(A3,0xa):NaN;},A0=function(A3){return!isNaN(A3)&&A3>=0x0;},A1=function(A3){if(A3 in Bn)return undefined;return A3<R['length']?R[A3]:Bx[A3];},A2=function(A3){if(A3 in Bn)return![];return A3<R['length']?A3 in R:A3 in Bx;};Bl=new Proxy([],{'get':function(A3,A4,A5){if(A4==='length')return Bg;if(A4==='callee')return N;if(A4===Symbol['iterator'])return function(){let A8=0x0;return{'next':function(){if(A8<Bg)return{'value':A1(A8++),'done':![]};return{'done':!![]};}};};let A6=Bc(A4);if(A0(A6))return A1(A6);if(A4==='hasOwnProperty')return function(A8){if(A8==='length'||A8==='callee')return!![];let A9=Bc(A8);return A0(A9)&&A9<Bg&&A2(A9);};let A7=Array['prototype'][A4];if(typeof A7==='function')return function(){let A8=[];for(let A9=0x0;A9<Bg;A9++){A8[A9]=A1(A9);}return A7['apply'](A8,arguments);};return undefined;},'set':function(A3,A4,A5){if(A4==='length')return Bg=A5,!![];let A6=Bc(A4);if(A0(A6)){if(A6 in Bn)delete Bn[A6],Bx[A6]=A5;else A6<R['length']?R[A6]=A5:Bx[A6]=A5;return A6>=Bg&&(Bg=A6+0x1),!![];}return!![];},'has':function(A3,A4){if(A4==='length'||A4==='callee')return!![];let A5=Bc(A4);if(A0(A5)&&A5<Bg)return A2(A5);return A4 in Array['prototype'];},'deleteProperty':function(A3,A4){let A5=Bc(A4);return A0(A5)&&(A5<R['length']?Bn[A5]=0x1:delete Bx[A5]),!![];},'getOwnPropertyDescriptor':function(A3,A4){if(A4==='callee')return{'value':N,'writable':!![],'enumerable':![],'configurable':!![]};if(A4==='length')return{'value':Bg,'writable':!![],'enumerable':![],'configurable':!![]};let A5=Bc(A4);if(A0(A5)&&A5<Bg&&A2(A5))return{'value':A1(A5),'writable':!![],'enumerable':!![],'configurable':!![]};return undefined;},'ownKeys':function(A3){let A4=[];for(let A5=0x0;A5<Bg;A5++){A2(A5)&&A4['push'](String(A5));}return A4['push']('length','callee'),A4;}});}}n[c++]=Bl,B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>0x10,BN=B2[BR],Bg=B2[BO];n[c++]=new RegExp(BN,Bg),B1++;}},function(BL){AB:{n[--c],n[c++]=undefined,B1++;}},function(BL){AB:{n[c++]=g,B1++;}},function(BL){AB:{n[c++]=vmC[BL],B1++;}},function(BL){AB:{n[c++]=A[BL],B1++;}},function(BL){AB:{if(BL===-0x1)n[c++]=Symbol();else{let BR=n[--c];n[c++]=Symbol(BR);}B1++;}},function(BL){AB:{let BR=B2[BL];n[c++]=Symbol['for'](BR),B1++;}},function(BL){AB:{let BR=n[--c];n[c++]=Symbol['keyFor'](BR),B1++;}},,,,,,,,,,,function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[c-0x1];vmT(BN['prototype'],BO,{'value':BR,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[c-0x1];vmT(BN,BO,{'value':BR,'writable':!![],'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[c-0x1],Bg=h(BN);vmT(Bg,BO,{'get':BR,'enumerable':Bg===BN,'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[c-0x1],Bg=h(BN);vmT(Bg,BO,{'set':BR,'enumerable':Bg===BN,'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[c-0x1];vmT(BN,BO,{'get':BR,'enumerable':![],'configurable':!![]}),B1++;}},function(BL){AB:{let BR=n[--c],BO=n[--c],BN=n[c-0x1];vmT(BN,BO,{'set':BR,'enumerable':![],'configurable':!![]}),B1++;}},,,,,,,,,,,,,,,function(BL){AB:{debugger;B1++;}},function(BL){AB:{B1++;}},function(BL){AB:{return BY=c>0x0?n[--c]:undefined,0x1;}},,,,,,,,function(BL){AB:{let BR=n[--c],BO={['_$J71b0M']:null,['_$gN1LbX']:null,['_$WgevKK']:null,['_$xh1DmH']:BR};BW['_$GLHqZF']=BO,B1++;}},function(BL){AB:{let BR=B2[BL];if(BR==='__this__'){let Bc=BW['_$GLHqZF'];while(Bc){if(Bc['_$WgevKK']&&'__this__'in Bc['_$WgevKK'])throw new ReferenceError('Cannot\x20access\x20\x27__this__\x27\x20before\x20initialization');if(Bc['_$J71b0M']&&'__this__'in Bc['_$J71b0M'])break;Bc=Bc['_$xh1DmH'];}n[c++]=x,B1++;break AB;}let BO=BW['_$GLHqZF'],BN,Bg=![],Bx=BR['indexOf']('$$'),Bn=Bx!==-0x1?BR['substring'](0x0,Bx):null;while(BO){let A0=BO['_$WgevKK'],A1=BO['_$J71b0M'];if(A0&&BR in A0)throw new ReferenceError('Cannot\x20access\x20\x27'+BR+'\x27\x20before\x20initialization');if(Bn&&A0&&Bn in A0){if(!(A1&&BR in A1))throw new ReferenceError('Cannot\x20access\x20\x27'+Bn+'\x27\x20before\x20initialization');}if(A1&&BR in A1){BN=A1[BR],Bg=!![];break;}BO=BO['_$xh1DmH'];}!Bg&&(BR in vmD_50917?BN=vmD_50917[BR]:BN=vmj[BR]),n[c++]=BN,B1++;}},function(BL){AB:{let BR=B2[BL],BO=n[--c],BN=BW['_$GLHqZF'],Bg=![];while(BN){let Bx=BN['_$WgevKK'],Bn=BN['_$J71b0M'];if(Bx&&BR in Bx)throw new ReferenceError('Cannot\x20access\x20\x27'+BR+'\x27\x20before\x20initialization');if(Bn&&BR in Bn){if(BN['_$10UfP1']&&BR in BN['_$10UfP1']){if(BW['_$LrCOEj'])throw new TypeError('Assignment\x20to\x20constant\x20variable.');Bg=!![];break;}if(BN['_$gN1LbX']&&BR in BN['_$gN1LbX'])throw new TypeError('Assignment\x20to\x20constant\x20variable.');Bn[BR]=BO,Bg=!![];break;}BN=BN['_$xh1DmH'];}if(!Bg){if(BR in vmD_50917)vmD_50917[BR]=BO;else BR in vmj?vmj[BR]=BO:vmj[BR]=BO;}B1++;}},function(BL){AB:{n[c++]=BW['_$GLHqZF'],B1++;}},function(BL){AB:{BW['_$GLHqZF']&&BW['_$GLHqZF']['_$xh1DmH']&&(BW['_$GLHqZF']=BW['_$GLHqZF']['_$xh1DmH']),B1++;}},function(BL){AB:{let BR=B2[BL],BO=n[--c];Z(BW['_$GLHqZF'],BR),!BW['_$GLHqZF']['_$J71b0M']&&(BW['_$GLHqZF']['_$J71b0M']=vmM(null)),BW['_$GLHqZF']['_$J71b0M'][BR]=BO,B1++;}},function(BL){AB:{let BR=B2[BL],BO=n[--c],BN=BW['_$GLHqZF'],Bg=![];while(BN){if(BN['_$J71b0M']&&BR in BN['_$J71b0M']){if(BN['_$gN1LbX']&&BR in BN['_$gN1LbX'])break;BN['_$J71b0M'][BR]=BO;!BN['_$gN1LbX']&&(BN['_$gN1LbX']=vmM(null));BN['_$gN1LbX'][BR]=!![],Bg=!![];break;}BN=BN['_$xh1DmH'];}!Bg&&(Y(BW['_$GLHqZF'],BR),!BW['_$GLHqZF']['_$J71b0M']&&(BW['_$GLHqZF']['_$J71b0M']=vmM(null)),BW['_$GLHqZF']['_$J71b0M'][BR]=BO,!BW['_$GLHqZF']['_$gN1LbX']&&(BW['_$GLHqZF']['_$gN1LbX']=vmM(null)),BW['_$GLHqZF']['_$gN1LbX'][BR]=!![]),B1++;}},function(BL){AB:{let BR=B2[BL],BO=n[--c];Z(BW['_$GLHqZF'],BR);if(!BW['_$GLHqZF']['_$J71b0M'])BW['_$GLHqZF']['_$J71b0M']=vmM(null);BW['_$GLHqZF']['_$J71b0M'][BR]=BO,!BW['_$GLHqZF']['_$gN1LbX']&&(BW['_$GLHqZF']['_$gN1LbX']=vmM(null)),BW['_$GLHqZF']['_$gN1LbX'][BR]=!![],B1++;}},function(BL){AB:{let BR=B2[BL];!BW['_$GLHqZF']['_$WgevKK']&&(BW['_$GLHqZF']['_$WgevKK']=vmM(null)),BW['_$GLHqZF']['_$WgevKK'][BR]=!![],B1++;}},function(BL){AB:{let BR=B2[BL],BO=n[--c],BN=BW['_$GLHqZF']['_$xh1DmH'];BN&&(!BN['_$J71b0M']&&(BN['_$J71b0M']=vmM(null)),BN['_$J71b0M'][BR]=BO),B1++;}},function(BL){AB:{let BR=n[--c],BO=B2[BL];if(BW['_$LrCOEj']&&!(BO in vmj)&&!(BO in vmD_50917))throw new ReferenceError(BO+'\x20is\x20not\x20defined');vmD_50917[BO]=BR,vmj[BO]=BR,n[c++]=BR,B1++;}},,,,,,,,,,,,,,,,,,,,,,,,,,,,,,function(BL){AB:{B0[BL]=B0[BL]+0x1,B1++;}},function(BL){AB:{B0[BL]=B0[BL]-0x1,B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10;n[c++]=B0[BR]+B2[BO],B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10;n[c++]=B0[BR]-B2[BO],B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10;n[c++]=B0[BR]*B2[BO],B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10,BN=B0[BR],Bg=B2[BO];n[c++]=BN[Bg],B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10;n[c++]=B0[BR]<B2[BO],B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10;B0[BR]<B2[BO]?B1=B4[B1]:B1++;}},function(BL){AB:{let BR=BL&0xffff,BO=BL>>>0x10,BN=n[--c],Bg=a(BT,BN),Bx=B0[BR],Bn=B2[BO],Bc=Bx[Bn];n[c++]=Bc['apply'](Bx,Bg),B1++;}},function(BL){AB:{B0[BL]=n[--c],B1++;}},function(BL){AB:{let BR=B0[BL]+0x1;B0[BL]=BR,n[c++]=BR,B1++;}},function(BL){AB:{let BR=B0[BL]-0x1;B0[BL]=BR,n[c++]=BR,B1++;}}];switch(BH){case 0x0:{n[c++]=B2[Bw],B1++;continue;}case 0x1:{n[c++]=undefined,B1++;continue;}case 0x3:{n[--c],B1++;continue;}case 0x4:{let BL=n[c-0x1];n[c++]=BL,B1++;continue;}case 0x6:{n[c++]=B0[Bw],B1++;continue;}case 0x7:{B0[Bw]=n[--c],B1++;continue;}case 0x8:{n[c++]=R[Bw],B1++;continue;}case 0xa:{let BR=n[--c],BO=n[--c];n[c++]=BO+BR,B1++;continue;}case 0xb:{let BN=n[--c],Bg=n[--c];n[c++]=Bg-BN,B1++;continue;}case 0x10:{let Bx=n[--c];n[c++]=typeof Bx===G?Bx+0x1n:+Bx+0x1,B1++;continue;}case 0x1c:{let Bn=n[--c];n[c++]=typeof Bn===G?Bn:+Bn,B1++;continue;}case 0x2c:{let Bc=n[--c],A0=n[--c];n[c++]=A0<Bc,B1++;continue;}case 0x2e:{let A1=n[--c],A2=n[--c];n[c++]=A2>A1,B1++;continue;}case 0x32:{B1=B4[B1];continue;}case 0x34:{!n[--c]?B1=B4[B1]:B1++;continue;}case 0x48:{let A3=n[--c],A4=n[--c];if(A4===null||A4===undefined)throw new TypeError('Cannot\x20read\x20property\x20\x27'+String(A3)+'\x27\x20of\x20'+A4);n[c++]=A4[A3],B1++;continue;}case 0x49:{let A5=n[--c],A6=n[--c],A7=n[--c];if(A7===null||A7===undefined)throw new TypeError('Cannot\x20set\x20property\x20\x27'+String(A6)+'\x27\x20of\x20'+A7);if(BI){if(!Reflect['set'](A7,A6,A5))throw new TypeError('Cannot\x20assign\x20to\x20read\x20only\x20property\x20\x27'+String(A6)+'\x27\x20of\x20object');}else A7[A6]=A5;n[c++]=A5,B1++;continue;}}BW=BZ;if(BP[BH](Bw))return BY;BJ=BZ['_$GLHqZF'],BF=BZ['_$wNUjJH'];}break;}catch(A8){if(B7&&B7['length']>0x0){let A9=B7[B7['length']-0x1];c=A9['_$89N6Ls'];if(A9['_$GSYi3g']!==undefined)BG(A8),B1=A9['_$GSYi3g'],A9['_$GSYi3g']=undefined,A9['_$9BdTvW']===undefined&&B7['pop']();else A9['_$9BdTvW']!==undefined?(B1=A9['_$9BdTvW'],A9['_$MTK8Ke']=A8):(B1=A9['_$SzWrak'],B7['pop']());continue;}throw A8;}}return c>0x0?n[--c]:BF?x:undefined;}let b=function(L,R,O,N,g,x){vmD_50917['_$e15RX2']?vmD_50917['_$e15RX2']=![]:vmD_50917['_$kTlqI6']=undefined;let n=x===s?this:x,c=typeof L==='object'?L:m(L);return p(c,R,O,N,g,n);},Q=async function(L,R,O,N,g,x,n){let c=n===s?this:n,B0=typeof L==='object'?L:m(L),B1=V(B0,R,O,N,g,c),B2=B1['next']();while(!B2['done']){if(B2['value']['_$QsBZt5']!==I)throw new Error('Unexpected\x20yield\x20in\x20async\x20context');try{let B3=await Promise['resolve'](B2['value']['_$g3UD7L']);vmD_50917['_$kTlqI6']=x,B2=B1['next'](B3);}catch(B4){vmD_50917['_$kTlqI6']=x,B2=B1['throw'](B4);}}return B2['value'];},q=function(L,R,O,N,g,x){let n=x===s?this:x,c=typeof L==='object'?L:m(L),B0=V(c,R,O,N,undefined,n),B1=![],B2=null,B3=undefined,B4=![];function B5(BA,Bm){if(B1)return{'value':undefined,'done':!![]};vmD_50917['_$kTlqI6']=g;if(B2){let Bs;try{Bs=Bm?typeof B2['throw']==='function'?B2['throw'](BA):(B2=null,(function(){throw BA;}())):B2['next'](BA);}catch(Be){B2=null;try{let BI=B0['throw'](Be);return B6(BI);}catch(BX){B1=!![];throw BX;}}if(!Bs['done'])return{'value':Bs['value'],'done':![]};B2=null,BA=Bs['value'],Bm=![];}let Bd;try{Bd=Bm?B0['throw'](BA):B0['next'](BA);}catch(BD){B1=!![];throw BD;}return B6(Bd);}function B6(BA){if(BA['done']){B1=!![];if(B4)return B4=![],{'value':B3,'done':!![]};return{'value':BA['value'],'done':!![]};}let Bm=BA['value'];if(Bm['_$QsBZt5']===X)return{'value':Bm['_$g3UD7L'],'done':![]};if(Bm['_$QsBZt5']===D){let Bd=Bm['_$g3UD7L'],Bs=Bd;Bs&&typeof Bs[Symbol['iterator']]==='function'&&(Bs=Bs[Symbol['iterator']]());if(Bs&&typeof Bs['next']==='function'){let Be=Bs['next']();if(!Be['done'])return B2=Bs,{'value':Be['value'],'done':![]};return B5(Be['value'],![]);}return B5(undefined,![]);}throw new Error('Unexpected\x20signal\x20in\x20generator');}let B7=c&&c['_$hXc2am'],B8=async function(BA){if(B1)return{'value':BA,'done':!![]};if(B2&&typeof B2['return']==='function'){try{await B2['return']();}catch(Bd){}B2=null;}let Bm;try{vmD_50917['_$kTlqI6']=g,Bm=B0['next']({['_$QsBZt5']:k,['_$g3UD7L']:BA});}catch(Bs){B1=!![];throw Bs;}while(!Bm['done']){let Be=Bm['value'];if(Be['_$QsBZt5']===I)try{let BI=await Promise['resolve'](Be['_$g3UD7L']);vmD_50917['_$kTlqI6']=g,Bm=B0['next'](BI);}catch(BX){vmD_50917['_$kTlqI6']=g,Bm=B0['throw'](BX);}else{if(Be['_$QsBZt5']===X)try{vmD_50917['_$kTlqI6']=g,Bm=B0['next']();}catch(BD){B1=!![];throw BD;}else break;}}return B1=!![],{'value':Bm['value'],'done':!![]};},B9=function(BA){if(B1)return{'value':BA,'done':!![]};if(B2&&typeof B2['return']==='function'){try{B2['return']();}catch(Bd){}B2=null;}B3=BA,B4=!![];let Bm;try{vmD_50917['_$kTlqI6']=g,Bm=B0['next']({['_$QsBZt5']:k,['_$g3UD7L']:BA});}catch(Bs){B1=!![],B4=![];throw Bs;}if(!Bm['done']&&Bm['value']&&Bm['value']['_$QsBZt5']===X)return{'value':Bm['value']['_$g3UD7L'],'done':![]};return B1=!![],B4=![],{'value':Bm['value'],'done':!![]};};if(B7){let BA=async function(Bm,Bd){if(B1)return{'value':undefined,'done':!![]};vmD_50917['_$kTlqI6']=g;if(B2){let Be;try{Be=Bd?typeof B2['throw']==='function'?await B2['throw'](Bm):(B2=null,(function(){throw Bm;}())):await B2['next'](Bm);}catch(BI){B2=null;try{vmD_50917['_$kTlqI6']=g;let BX=B0['throw'](BI);return await BB(BX);}catch(BD){B1=!![];throw BD;}}if(!Be['done'])return{'value':Be['value'],'done':![]};B2=null,Bm=Be['value'],Bd=![];}let Bs;try{Bs=Bd?B0['throw'](Bm):B0['next'](Bm);}catch(Bk){B1=!![];throw Bk;}return await BB(Bs);};async function BB(Bm){while(!Bm['done']){let Bd=Bm['value'];if(Bd['_$QsBZt5']===I){let Bs;try{Bs=await Promise['resolve'](Bd['_$g3UD7L']),vmD_50917['_$kTlqI6']=g,Bm=B0['next'](Bs);}catch(Be){vmD_50917['_$kTlqI6']=g,Bm=B0['throw'](Be);}continue;}if(Bd['_$QsBZt5']===X)return{'value':Bd['_$g3UD7L'],'done':![]};if(Bd['_$QsBZt5']===D){let BI=Bd['_$g3UD7L'],BX=BI;if(BX&&typeof BX[Symbol['asyncIterator']]==='function')BX=BX[Symbol['asyncIterator']]();else BX&&typeof BX[Symbol['iterator']]==='function'&&(BX=BX[Symbol['iterator']]());if(BX&&typeof BX['next']==='function'){let BD=await BX['next']();if(!BD['done'])return B2=BX,{'value':BD['value'],'done':![]};vmD_50917['_$kTlqI6']=g,Bm=B0['next'](BD['value']);continue;}vmD_50917['_$kTlqI6']=g,Bm=B0['next'](undefined);continue;}throw new Error('Unexpected\x20signal\x20in\x20async\x20generator');}B1=!![];if(B4)return B4=![],{'value':B3,'done':!![]};return{'value':Bm['value'],'done':!![]};}return{'next':function(Bm){return BA(Bm,![]);},'return':B8,'throw':function(Bm){if(B1)return Promise['reject'](Bm);return BA(Bm,!![]);},[Symbol['asyncIterator']]:function(){return this;}};}else return{'next':function(Bm){return B5(Bm,![]);},'return':B9,'throw':function(Bm){if(B1)throw Bm;return B5(Bm,!![]);},[Symbol['iterator']]:function(){return this;}};};return function(L,R,O,N,g){let x=m(L);if(x&&x['_$24zc5s']){let n=vmD_50917['_$kTlqI6'];return q['call'](this,x,R,O,N,n,s);}if(x&&x['_$hXc2am']){let c=vmD_50917['_$kTlqI6'];return Q['call'](this,x,R,O,N,g,c,s);}if(x&&x['_$IcVVB2']&&this===vmj)return b(x,R,O,N,g,undefined);return b['call'](this,x,R,O,N,g,s);};}());try{Math,Object['defineProperty'](vmD_50917,'Math',{'get':function(){return Math;},'set':function(B){Math=B;},'configurable':!![]});}catch(vmAB){}try{setTimeout,Object['defineProperty'](vmD_50917,'setTimeout',{'get':function(){return setTimeout;},'set':function(B){setTimeout=B;},'configurable':!![]});}catch(vmAA){}try{process,Object['defineProperty'](vmD_50917,'process',{'get':function(){return process;},'set':function(B){process=B;},'configurable':!![]});}catch(vmAm){}try{undefined,Object['defineProperty'](vmD_50917,'undefined',{'get':function(){return undefined;},'set':function(B){undefined=B;},'configurable':!![]});}catch(vmAd){}try{Array,Object['defineProperty'](vmD_50917,'Array',{'get':function(){return Array;},'set':function(B){Array=B;},'configurable':!![]});}catch(vmAs){}try{console,Object['defineProperty'](vmD_50917,'console',{'get':function(){return console;},'set':function(B){console=B;},'configurable':!![]});}catch(vmAe){}vmD_50917['_$b6gIC1']={'isJidGroup':!![],'isJidStatusBroadcast':!![],'MessageHelper':!![],'config':!![],'WELCOME_IMAGE':!![],'CHANNEL_LINK':!![]};const {isJidGroup,isJidStatusBroadcast}=require('gifted-baileys');vmD_50917['isJidStatusBroadcast']=isJidStatusBroadcast;globalThis['isJidStatusBroadcast']=vmD_50917['isJidStatusBroadcast'];vmD_50917['isJidGroup']=isJidGroup;globalThis['isJidGroup']=vmD_50917['isJidGroup'];vmD_50917['isJidGroup']=isJidGroup;globalThis['isJidGroup']=isJidGroup;delete vmD_50917['_$b6gIC1']['isJidGroup'],vmD_50917['isJidStatusBroadcast']=isJidStatusBroadcast;globalThis['isJidStatusBroadcast']=isJidStatusBroadcast;delete vmD_50917['_$b6gIC1']['isJidStatusBroadcast'];const MessageHelper=require('../lib/message');vmD_50917['MessageHelper']=MessageHelper;globalThis['MessageHelper']=vmD_50917['MessageHelper'];vmD_50917['MessageHelper']=MessageHelper;globalThis['MessageHelper']=MessageHelper;delete vmD_50917['_$b6gIC1']['MessageHelper'];const config=require('../config');vmD_50917['config']=config;globalThis['config']=vmD_50917['config'];vmD_50917['config']=config;globalThis['config']=config;delete vmD_50917['_$b6gIC1']['config'];const WELCOME_IMAGE='https://files.catbox.moe/kubc8p.png';vmD_50917['WELCOME_IMAGE']=WELCOME_IMAGE;globalThis['WELCOME_IMAGE']=vmD_50917['WELCOME_IMAGE'];vmD_50917['WELCOME_IMAGE']=WELCOME_IMAGE;globalThis['WELCOME_IMAGE']=WELCOME_IMAGE;delete vmD_50917['_$b6gIC1']['WELCOME_IMAGE'];const CHANNEL_LINK='https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';vmD_50917['CHANNEL_LINK']=CHANNEL_LINK;globalThis['CHANNEL_LINK']=vmD_50917['CHANNEL_LINK'];vmD_50917['CHANNEL_LINK']=CHANNEL_LINK;globalThis['CHANNEL_LINK']=CHANNEL_LINK;delete vmD_50917['_$b6gIC1']['CHANNEL_LINK'];class EventHandler{constructor(B,A,m,d){return vms_2f7a4e['call'](this,0x0,Array['from'](arguments),undefined,undefined,new.target);}async['handleMessage'](B){return vms_2f7a4e['call'](this,0x4,Array['from'](arguments),{['_$xh1DmH']:undefined,['_$J71b0M']:{'isJidGroup':isJidGroup,'isJidStatusBroadcast':isJidStatusBroadcast,'MessageHelper':MessageHelper,'config':config},['_$gN1LbX']:{['isJidGroup']:!![],['isJidStatusBroadcast']:!![],['MessageHelper']:!![],['config']:!![]}},undefined,new.target);}async['handleCommand'](B,A,m,d,s){return vms_2f7a4e['call'](this,0x5,Array['from'](arguments),{['_$xh1DmH']:undefined,['_$J71b0M']:{'MessageHelper':MessageHelper,'config':config},['_$gN1LbX']:{['MessageHelper']:!![],['config']:!![]}},undefined,new.target);}['isOwner'](B){return vms_2f7a4e['call'](this,0x6,Array['from'](arguments),{['_$xh1DmH']:undefined,['_$J71b0M']:{'config':config},['_$gN1LbX']:{['config']:!![]}},undefined,new.target);}async['handleMessageUpdate'](B){return vms_2f7a4e['call'](this,0x7,Array['from'](arguments),undefined,undefined,new.target);}async['handleMessageDelete'](B){return vms_2f7a4e['call'](this,0x8,Array['from'](arguments),undefined,undefined,new.target);}async['handleGroupUpdate'](B){return vms_2f7a4e['call'](this,0x10,Array['from'](arguments),{['_$xh1DmH']:undefined,['_$J71b0M']:{'WELCOME_IMAGE':WELCOME_IMAGE,'CHANNEL_LINK':CHANNEL_LINK},['_$gN1LbX']:{['WELCOME_IMAGE']:!![],['CHANNEL_LINK']:!![]}},undefined,new.target);}}vmD_50917['EventHandler']=EventHandler;globalThis['EventHandler']=vmD_50917['EventHandler'];module['exports']=EventHandler;
+// MEGAN-MD Event Handler - Complete Anti-Delete Fix
+
+const {
+    isJidGroup,
+    isJidStatusBroadcast,
+    downloadMediaMessage,
+    areJidsSameUser
+} = require('gifted-baileys');
+
+const MessageHelper = require('../lib/message');
+const config = require('../config');
+const fs = require('fs-extra');
+const path = require('path');
+const Uploader = require('../lib/upload');
+const axios = require('axios');
+const OwnerManager = require('../helpers/OwnerManager');
+const { initializeLidStore, getLidMapping, storeLidMapping } = require('../lib/groupCache');
+const { resolveRealJid } = require('../lib/lidResolver');
+const timeUtils = require('../lib/timeUtils');
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+class EventHandler {
+    constructor(bot, logger, cache, features) {
+        this.bot = bot;
+        this.sock = bot.sock;
+        this.logger = logger;
+        this.cache = cache;
+        this.features = features;
+        this.tempDir = path.join(__dirname, '../../temp');
+        this.presenceTimers = new Map();
+        this.ownerManager = new OwnerManager();
+        fs.ensureDirSync(this.tempDir);
+    }
+
+    async initOwnerManager(db, ownerJid, ownerLid) {
+        await this.ownerManager.initialize(db, ownerJid, ownerLid);
+    }
+
+    async initLidStore() {
+        if (this.sock) {
+            const count = await initializeLidStore(this.sock);
+            this.logger.info(`📊 LID store initialized with ${count} mappings`);
+        }
+    }
+
+    async isOwner(jid) {
+        if (!jid) return false;
+        const resolvedJid = await resolveRealJid(this.sock, jid);
+        const phoneNumber = resolvedJid.split('@')[0].split(':')[0].replace(/\D/g, '');
+        const ownerNumber = config.OWNER_NUMBER.replace(/\D/g, '');
+
+        if (phoneNumber === ownerNumber) return true;
+        if (this.ownerManager && this.ownerManager.initialized) {
+            return this.ownerManager.isOwner(resolvedJid);
+        }
+        if (this.bot.ownerJid && areJidsSameUser(resolvedJid, this.bot.ownerJid)) return true;
+        if (this.bot.ownerLid && areJidsSameUser(resolvedJid, this.bot.ownerLid)) return true;
+        return false;
+    }
+
+    // ==================== BUTTON HELPER ====================
+    async sendButtonMessage(sock, from, text, quotedMsg, buttons = null) {
+        const { sendButtons } = require('gifted-btns');
+        
+        const finalButtons = (buttons && buttons.length > 0) ? buttons : [
+            { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+            { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+        ];
+        
+        try {
+            return await sendButtons(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: text,
+                footer: '> created by wanga',
+                image: { url: BOT_LOGO },
+                buttons: finalButtons
+            }, { quoted: quotedMsg });
+        } catch (error) {
+            await sock.sendMessage(from, { text: text }, { quoted: quotedMsg });
+        }
+    }
+
+    // ==================== CONVERSATION HELPERS ====================
+    async setActiveConversation(chatId, command, context = {}) {
+        if (this.bot.setActiveConversation) {
+            this.bot.setActiveConversation(chatId, command, context);
+        }
+    }
+
+    async clearActiveConversation(chatId) {
+        if (this.bot.clearActiveConversation) {
+            this.bot.clearActiveConversation(chatId);
+        }
+    }
+
+    async sendModeIndicator(chatId, command, isActive = true) {
+        const modeMessages = {
+            'gpt': '🤖 *AI MODE ACTIVE*\nSend messages without prefix to continue chatting!\nType *!end* or *.end* to stop.',
+            'megan': '🤖 *AI MODE ACTIVE*\nSend messages without prefix to continue chatting!\nType *!end* or *.end* to stop.',
+            'gemini': '🤖 *AI MODE ACTIVE*\nSend messages without prefix to continue chatting!\nType *!end* or *.end* to stop.',
+            'play': '🎵 *PLAY MODE ACTIVE*\nSend song names without prefix to download!\nType *!end* or *.end* to stop.',
+            'imagine': '🎨 *IMAGE MODE ACTIVE*\nSend prompts without prefix to generate images!\nType *!end* or *.end* to stop.',
+            'google': '🔍 *SEARCH MODE ACTIVE*\nSend search queries without prefix!\nType *!end* or *.end* to stop.',
+            'youtube': '🎬 *YOUTUBE MODE ACTIVE*\nSend video names without prefix to search!\nType *!end* or *.end* to stop.',
+            'weather': '🌤️ *WEATHER MODE ACTIVE*\nSend city names without prefix!\nType *!end* or *.end* to stop.'
+        };
+
+        const defaultMsg = `✨ *${command.toUpperCase()} MODE ACTIVE*\nSend messages without prefix to continue!\nType *!end* or *.end* to stop.`;
+
+        if (isActive && this.sock) {
+            await this.sock.sendMessage(chatId, { text: modeMessages[command] || defaultMsg });
+        }
+    }
+
+    async handleEndCommand(chatId) {
+        const active = this.bot.getActiveConversation?.(chatId);
+        if (active) {
+            await this.clearActiveConversation(chatId);
+            await this.sock.sendMessage(chatId, {
+                text: `✅ *${active.command.toUpperCase()} mode ended*\n\nYou can start a new command anytime.`
+            });
+            return true;
+        }
+        return false;
+    }
+
+    // ==================== IMPROVED PROCESS MEDIA MESSAGE ====================
+    async processMediaMessage(deletedMsg, maxRetries = 3) {
+        let mediaType = null;
+        let mediaInfo = null;
+        
+        const mediaTypes = {
+            imageMessage: 'image',
+            videoMessage: 'video',
+            audioMessage: 'audio',
+            stickerMessage: 'sticker',
+            documentMessage: 'document'
+        };
+
+        for (const [key, type] of Object.entries(mediaTypes)) {
+            if (deletedMsg.message?.[key]) {
+                mediaType = type;
+                mediaInfo = deletedMsg.message[key];
+                break;
+            }
+        }
+
+        if (!mediaType || !mediaInfo) return null;
+
+        let buffer = null;
+        let attempts = 0;
+
+        while (attempts < maxRetries && !buffer) {
+            try {
+                attempts++;
+                buffer = await downloadMediaMessage(deletedMsg, 'buffer', {}, {
+                    logger: console,
+                    reuploadRequest: true
+                });
+                
+                if (!buffer && attempts < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+                }
+            } catch (error) {
+                console.log(`Download attempt ${attempts} failed: ${error.message}`);
+                if (attempts < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+                }
+            }
+        }
+
+        if (!buffer) return null;
+
+        const extensions = {
+            image: 'jpg',
+            video: 'mp4',
+            audio: mediaInfo.mimetype?.includes('mpeg') ? 'mp3' : 'ogg',
+            sticker: 'webp',
+            document: mediaInfo.fileName?.split('.').pop() || 'bin'
+        };
+
+        const ext = extensions[mediaType] || 'bin';
+        const filename = `deleted_${Date.now()}.${ext}`;
+        const uploadResult = await Uploader.uploadAuto(buffer, filename);
+
+        return {
+            buffer: buffer,
+            type: mediaType,
+            caption: mediaInfo.caption || '',
+            mimetype: mediaInfo.mimetype,
+            fileName: mediaInfo.fileName || filename,
+            ptt: mediaInfo.ptt,
+            url: uploadResult?.success ? uploadResult.url : null,
+            uploadSuccess: uploadResult?.success || false,
+            uploadService: uploadResult?.service || null
+        };
+    }
+
+    // ==================== IMPROVED ANTI-DELETE ====================
+    async handleAntiDelete(deletedMsg, key, deleter, sender) {
+        try {
+            const antiDelete = await this.bot.db?.getSetting('antidelete', 'on');
+            if (antiDelete !== 'on') return;
+            if (!this.bot.ownerJid) return;
+
+            const resolvedDeleter = await resolveRealJid(this.sock, deleter);
+            const resolvedSender = await resolveRealJid(this.sock, sender);
+            const isGroup = key.remoteJid.endsWith('@g.us');
+            const currentTime = await this.getFormattedTime(Date.now());
+            const currentDate = await this.getFormattedDate(Date.now());
+            const deleterShort = resolvedDeleter.split('@')[0];
+            const senderShort = resolvedSender.split('@')[0];
+
+            let senderName = senderShort, deleterName = deleterShort;
+            try {
+                if (resolvedSender) {
+                    const contact = await this.sock.getContact(resolvedSender);
+                    if (contact?.name) senderName = contact.name;
+                }
+                if (resolvedDeleter) {
+                    const contact = await this.sock.getContact(resolvedDeleter);
+                    if (contact?.name) deleterName = contact.name;
+                }
+            } catch (e) {}
+
+            let chatInfo = 'Private Chat', groupName = '';
+            if (isGroup) {
+                try {
+                    const metadata = await this.sock.groupMetadata(key.remoteJid);
+                    groupName = metadata.subject;
+                    chatInfo = `Group: ${groupName}`;
+                } catch (e) {}
+            }
+
+            const baseAlert = `🚨 *DELETED MESSAGE DETECTED*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_👤 Sent By:_ @${senderName} (@${senderShort})\n` +
+                `_🗑️ Deleted By:_ @${deleterName} (@${deleterShort})\n` +
+                `_⏰ Time:_ ${currentTime}\n` +
+                `_📅 Date:_ ${currentDate}\n` +
+                `_💬 Chat:_ ${chatInfo}\n\n`;
+
+            // Handle text messages
+            const textContent = deletedMsg.message?.conversation || 
+                               deletedMsg.message?.extendedTextMessage?.text ||
+                               deletedMsg.message?.imageMessage?.caption ||
+                               deletedMsg.message?.videoMessage?.caption;
+
+            if (textContent && typeof textContent === 'string' && textContent.length > 0) {
+                const text = textContent.length > 2000 ? textContent.substring(0, 2000) + '...' : textContent;
+                
+                const alertText = `${baseAlert}📝 *Content:*\n${text}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+                
+                await this.sendButtonMessage(this.sock, this.bot.ownerJid, alertText, null);
+                
+                await this.bot.db?.logDeletedMessage({
+                    messageId: key.id,
+                    chatJid: key.remoteJid,
+                    senderJid: resolvedSender,
+                    deleterJid: resolvedDeleter,
+                    messageType: 'text',
+                    content: text
+                });
+                return;
+            }
+            
+            // Handle media messages
+            const media = await this.processMediaMessage(deletedMsg);
+            
+            if (media && media.buffer) {
+                let caption = `${baseAlert}📎 *Type:* ${media.type.toUpperCase()}\n`;
+                if (media.caption) caption += `_📝 Caption:_ ${media.caption}\n\n`;
+                if (media.url) {
+                    caption += `🔗 *Backup Link:* ${media.url}\n`;
+                    if (media.uploadService) caption += `📡 *Service:* ${media.uploadService}\n`;
+                }
+                caption += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+                const buttons = [
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ];
+                
+                if (media.url) {
+                    buttons.unshift({
+                        name: 'cta_copy',
+                        buttonParamsJson: JSON.stringify({ display_text: '📋 Copy URL', copy_code: media.url })
+                    });
+                }
+
+                if (media.type === 'image') {
+                    await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                    await this.sock.sendMessage(this.bot.ownerJid, {
+                        image: media.buffer,
+                        caption: caption
+                    });
+                } else if (media.type === 'video') {
+                    await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                    await this.sock.sendMessage(this.bot.ownerJid, {
+                        video: media.buffer,
+                        caption: caption
+                    });
+                } else if (media.type === 'audio') {
+                    await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                    await this.sock.sendMessage(this.bot.ownerJid, {
+                        audio: media.buffer,
+                        mimetype: 'audio/mpeg',
+                        ptt: media.ptt || false,
+                        caption: caption
+                    });
+                } else {
+                    await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                    await this.sock.sendMessage(this.bot.ownerJid, {
+                        document: media.buffer,
+                        fileName: media.fileName,
+                        mimetype: media.mimetype,
+                        caption: caption
+                    });
+                }
+
+                await this.bot.db?.logDeletedMessage({
+                    messageId: key.id,
+                    chatJid: key.remoteJid,
+                    senderJid: resolvedSender,
+                    deleterJid: resolvedDeleter,
+                    messageType: media.type,
+                    content: media.caption,
+                    mediaUrl: media.url
+                });
+            } else if (media && media.url) {
+                const caption = `${baseAlert}📎 *Type:* ${media.type?.toUpperCase() || 'MEDIA'}\n` +
+                    (media.caption ? `_📝 Caption:_ ${media.caption}\n\n` : '\n') +
+                    `🔗 *URL:* ${media.url}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+                
+                await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, [
+                    { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy URL', copy_code: media.url }) },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]);
+            } else {
+                const caption = `${baseAlert}📎 *Type:* MEDIA\n❌ Could not retrieve content.\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+                await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null);
+            }
+        } catch (error) {
+            this.logger.error(`AntiDelete error: ${error.message}`);
+        }
+    }
+
+    // ==================== IMPROVED STATUS DELETE HANDLER ====================
+    async handleStatusDelete(deletedMsg, key, deleter) {
+        try {
+            const antiDeleteStatus = await this.bot.db?.getSetting('status_anti_delete', 'on');
+            if (antiDeleteStatus !== 'on') return;
+
+            const sender = await resolveRealJid(this.sock, deletedMsg.key?.participant || deletedMsg.key?.remoteJid);
+            const deleterResolved = await resolveRealJid(this.sock, deleter);
+            const senderShort = sender?.split('@')[0] || 'Unknown';
+            const deleterShort = deleterResolved?.split('@')[0] || 'Unknown';
+            const text = this.extractText(deletedMsg.message);
+            const mediaType = this.getMediaType(deletedMsg.message);
+            const currentTime = await this.getFormattedTime(Date.now());
+            const currentDate = await this.getFormattedDate(Date.now());
+
+            if (!this.bot.ownerJid) return;
+
+            const baseAlert = `📱 *STATUS DELETED*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                `_👤 From:_ @${senderShort}\n` +
+                `_🗑️ Deleted by:_ @${deleterShort}\n` +
+                `_⏰ Time:_ ${currentTime}\n` +
+                `_📅 Date:_ ${currentDate}\n\n`;
+
+            // Handle text status
+            if (text && !mediaType) {
+                const caption = `${baseAlert}📝 *Content:*\n${text}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+                await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null);
+                return;
+            }
+
+            // Try to recover media
+            if (mediaType) {
+                const media = await this.processMediaMessage(deletedMsg);
+                
+                if (media && media.buffer) {
+                    let caption = `${baseAlert}📎 *Type:* ${mediaType.toUpperCase()}\n`;
+                    if (text) caption += `_📝 Caption:_ ${text}\n\n`;
+                    if (media.url) {
+                        caption += `🔗 *Backup Link:* ${media.url}\n`;
+                        if (media.uploadService) caption += `📡 *Service:* ${media.uploadService}\n`;
+                    }
+                    caption += `\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+                    const buttons = [
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ];
+                    
+                    if (media.url) {
+                        buttons.unshift({
+                            name: 'cta_copy',
+                            buttonParamsJson: JSON.stringify({ display_text: '📋 Copy URL', copy_code: media.url })
+                        });
+                    }
+
+                    if (mediaType === 'image') {
+                        await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                        await this.sock.sendMessage(this.bot.ownerJid, {
+                            image: media.buffer,
+                            caption: caption
+                        });
+                    } else if (mediaType === 'video') {
+                        await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                        await this.sock.sendMessage(this.bot.ownerJid, {
+                            video: media.buffer,
+                            caption: caption
+                        });
+                    } else if (mediaType === 'audio') {
+                        await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                        await this.sock.sendMessage(this.bot.ownerJid, {
+                            audio: media.buffer,
+                            mimetype: 'audio/mpeg',
+                            ptt: false,
+                            caption: caption
+                        });
+                    } else {
+                        await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, buttons);
+                        await this.sock.sendMessage(this.bot.ownerJid, {
+                            document: media.buffer,
+                            fileName: media.fileName,
+                            mimetype: media.mimetype,
+                            caption: caption
+                        });
+                    }
+                    return;
+                } else if (media && media.url) {
+                    const caption = `${baseAlert}📎 *Type:* ${mediaType.toUpperCase()}\n` +
+                        (text ? `_📝 Caption:_ ${text}\n\n` : '\n') +
+                        `🔗 *URL:* ${media.url}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+                    
+                    await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null, [
+                        { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: '📋 Copy URL', copy_code: media.url }) },
+                        { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                        { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                    ]);
+                    return;
+                }
+            }
+
+            // Fallback
+            const caption = `${baseAlert}${text ? `_📝 Content:_ ${text}\n\n` : '_📎 No content recovered_\n\n'}_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+            await this.sendButtonMessage(this.sock, this.bot.ownerJid, caption, null);
+            
+        } catch (error) {
+            this.logger.error(`Status delete error: ${error.message}`);
+        }
+    }
+
+    // ==================== BUTTON RESPONSE HANDLER ====================
+    async handleButtonResponse(msg, from, sender) {
+        try {
+            const templateButton = msg.message?.templateButtonReplyMessage;
+            const buttonsResponse = msg.message?.buttonsResponseMessage;
+            const interactiveResponse = msg.message?.interactiveResponseMessage?.nativeFlowResponseMessage;
+
+            let buttonId = null;
+            let buttonText = null;
+
+            if (templateButton) {
+                buttonId = templateButton.selectedId;
+                buttonText = templateButton.selectedDisplayText;
+                this.logger.info(`🔘 Template button clicked: ID=${buttonId}, Text=${buttonText}`);
+            } else if (buttonsResponse) {
+                buttonId = buttonsResponse.selectedButtonId;
+                buttonText = buttonsResponse.selectedDisplayText;
+                this.logger.info(`🔘 Buttons response: ID=${buttonId}, Text=${buttonText}`);
+            } else if (interactiveResponse) {
+                buttonId = interactiveResponse.params?.id;
+                buttonText = interactiveResponse.params?.display_text;
+                this.logger.info(`🔘 Interactive response: ID=${buttonId}, Text=${buttonText}`);
+            }
+
+            if (!buttonId && !buttonText) return false;
+
+            const buttonToCommandMap = {
+                '🤖 AI': 'aimenu', 'AI': 'aimenu',
+                '🎨 AI Image': 'imagemen', 'AI Image': 'imagemen',
+                '⬇️ Downloader': 'downloadhelp', 'Downloader': 'downloadhelp',
+                '👥 Group': 'grouphelp', 'Group': 'grouphelp',
+                '🎵 Media': 'media', 'Media': 'media',
+                '🔍 Search': 'searchhelp', 'Search': 'searchhelp',
+                '🛠️ Tools': 'tools', 'Tools': 'tools',
+                '⚙️ Features': 'features', 'Features': 'features',
+                '📋 Menu': 'menu', 'Menu': 'menu',
+                '◀️ Back': 'menu', 'Back': 'menu',
+                '📢 Channel': 'channel', 'Channel': 'channel'
+            };
+
+            let commandToExecute = null;
+            let args = [];
+
+            if (buttonId) {
+                if (buttonId.startsWith(config.PREFIX)) {
+                    commandToExecute = buttonId.slice(config.PREFIX.length);
+                } else if (this.bot.commands.has(buttonId)) {
+                    commandToExecute = buttonId;
+                } else if (this.bot.commands.has(buttonId.toLowerCase())) {
+                    commandToExecute = buttonId.toLowerCase();
+                }
+            }
+
+            if (!commandToExecute && buttonText) {
+                const cleanText = buttonText.replace(/[^\w\s]/g, '').trim().toLowerCase();
+                const mappedCommand = buttonToCommandMap[buttonText] || buttonToCommandMap[cleanText];
+                
+                if (mappedCommand && this.bot.commands.has(mappedCommand)) {
+                    commandToExecute = mappedCommand;
+                }
+                
+                if (!commandToExecute && this.bot.commands.has(buttonText.toLowerCase())) {
+                    commandToExecute = buttonText.toLowerCase();
+                }
+            }
+
+            if (!commandToExecute && buttonText && buttonText.includes('🤖')) {
+                const aiCommandMap = {
+                    'Megan': 'megan', 'Gemini': 'gemini', 'GPT': 'gpt',
+                    'DeepSeek': 'deepseek', 'Mistral': 'mistral', 'DuckAI': 'duckai',
+                    'CodeLlama': 'codellama', 'Teacher': 'teacher',
+                    'BibleAI': 'bibleai', 'Gita': 'gita'
+                };
+                const aiName = buttonText.replace('🤖', '').trim();
+                if (aiCommandMap[aiName]) {
+                    commandToExecute = aiCommandMap[aiName];
+                    args = [];
+                }
+            }
+
+            if (!commandToExecute && buttonText && (buttonText.includes('🎨') || buttonText.includes('✨'))) {
+                const imageCommandMap = {
+                    'Image Search': 'image', 'Bing Images': 'images', 'Pinterest': 'pinterest',
+                    'Wallpaper': 'wallpaper', 'Imagine AI': 'imagine', 'Create Logo': 'create',
+                    'Beautiful': 'beautiful', 'Circle Image': 'circle', 'Remove BG': 'removebg',
+                    'TextPro': 'textpro'
+                };
+                const imageName = buttonText.replace(/[🎨✨]/g, '').trim();
+                if (imageCommandMap[imageName]) {
+                    commandToExecute = imageCommandMap[imageName];
+                }
+            }
+
+            if (commandToExecute) {
+                const cmd = this.bot.commands.get(commandToExecute);
+                if (cmd) {
+                    const resolvedSender = await resolveRealJid(this.sock, sender);
+                    const isOwner = await this.isOwner(resolvedSender);
+                    const isGroup = isJidGroup(from);
+
+                    this.logger.info(`🎯 Executing command from button: ${commandToExecute}`);
+
+                    const context = {
+                        msg, from, sender: resolvedSender, isOwner, isGroup, args,
+                        command: commandToExecute, text: buttonText || commandToExecute,
+                        bot: this.bot, sock: this.sock, buttons: this.bot.buttons,
+                        reply: MessageHelper.createReply(this.sock, from, msg),
+                        react: MessageHelper.createReact(this.sock, msg.key),
+                        db: this.bot.db, logger: this.logger, cache: this.cache,
+                        ownerManager: this.ownerManager,
+                        resolveRealJid: (jid) => resolveRealJid(this.sock, jid),
+                        getFormattedTime: () => this.getFormattedTime(Date.now()),
+                        getFormattedDate: () => this.getFormattedDate(Date.now()),
+                        quoted: this.buildQuotedMessage(msg)
+                    };
+                    
+                    await cmd.execute(context);
+                    return true;
+                }
+            }
+
+            this.logger.info(`⚠️ No command found for button: ID=${buttonId}, Text=${buttonText}`);
+            return false;
+            
+        } catch (error) {
+            this.logger.error(`Button response error: ${error.message}`);
+            return false;
+        }
+    }
+
+    // ==================== EXISTING METHODS ====================
+    buildQuotedMessage(msg) {
+        try {
+            const contextInfo = msg.message?.extendedTextMessage?.contextInfo ||
+                               msg.message?.imageMessage?.contextInfo ||
+                               msg.message?.videoMessage?.contextInfo ||
+                               msg.message?.audioMessage?.contextInfo ||
+                               msg.message?.documentMessage?.contextInfo;
+
+            if (!contextInfo) return null;
+            const quotedMessage = contextInfo.quotedMessage;
+            if (!quotedMessage) return null;
+
+            const quotedStanzaId = contextInfo.stanzaId;
+            const quotedParticipant = contextInfo.participant || msg.key.participant;
+
+            return {
+                key: {
+                    remoteJid: msg.key.remoteJid,
+                    id: quotedStanzaId,
+                    participant: quotedParticipant,
+                    fromMe: false
+                },
+                message: quotedMessage,
+                participant: quotedParticipant,
+                pushName: contextInfo.pushName || msg.pushName,
+                sender: quotedParticipant || msg.key.remoteJid
+            };
+        } catch (error) {
+            return null;
+        }
+    }
+
+    async getFormattedTime(timestamp) {
+        return await timeUtils.formatTime12h(timestamp, this.bot.db);
+    }
+
+    async getFormattedDate(timestamp) {
+        return await timeUtils.formatDate(timestamp, this.bot.db);
+    }
+
+    getTimeBlock() {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) return "morning";
+        if (hour >= 12 && hour < 17) return "afternoon";
+        if (hour >= 17 && hour < 20) return "evening";
+        if (hour >= 20 || hour < 2) return "night";
+        return "latenight";
+    }
+
+    getQuotes() {
+        return {
+            morning: [
+                "☀️ Rise and shine. Great things never came from comfort zones.",
+                "🌅 Each morning we are born again. What we do today is what matters most.",
+                "⚡ Start your day with determination, end it with satisfaction.",
+                "🌞 The sun is up, the day is yours.",
+                "📖 Every morning is a new page of your story. Make it count."
+            ],
+            afternoon: [
+                "⏳ Keep going. You're halfway to greatness.",
+                "🔄 Stay focused. The grind doesn't stop at noon.",
+                "🏗️ Success is built in the hours nobody talks about.",
+                "🔥 Push through. Champions are made in the middle of the day.",
+                "⏰ Don't watch the clock, do what it does—keep going."
+            ],
+            evening: [
+                "🛌 Rest is part of the process. Recharge wisely.",
+                "🌇 Evening brings silence that speaks louder than daylight.",
+                "✨ You did well today. Prepare for an even better tomorrow.",
+                "🌙 Let the night settle in, but keep your dreams wide awake.",
+                "🧠 Growth doesn't end at sunset. It sleeps with you."
+            ],
+            night: [
+                "🌌 The night is silent, but your dreams are loud.",
+                "⭐ Stars shine brightest in the dark. So can you.",
+                "🧘‍♂️ Let go of the noise. Embrace the peace.",
+                "✅ You made it through the day. Now dream big.",
+                "🌠 Midnight thoughts are the blueprint of tomorrow's greatness."
+            ],
+            latenight: [
+                "🕶️ While the world sleeps, the minds of legends wander.",
+                "⏱️ Late nights teach the deepest lessons.",
+                "🔕 Silence isn't empty—it's full of answers.",
+                "✨ Creativity whispers when the world is quiet.",
+                "🌌 Rest or reflect, but never waste the night."
+            ]
+        };
+    }
+
+    getRandomQuote() {
+        const block = this.getTimeBlock();
+        const quotes = this.getQuotes()[block];
+        return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    getEmojis() {
+        return ['🔥', '✅', '❤️', '💯', '👍', '🙌', '👏', '🎉', '⭐', '💫', '✨', '⚡', '💪', '👑', '💎', '🔮', '🎯', '🏆', '💝', '💖'];
+    }
+
+    getRandomEmoji() {
+        const emojis = this.getEmojis();
+        return emojis[Math.floor(Math.random() * emojis.length)];
+    }
+
+    extractText(message) {
+        if (!message) return '';
+        if (message.conversation) return message.conversation;
+        if (message.extendedTextMessage?.text) return message.extendedTextMessage.text;
+        if (message.imageMessage?.caption) return message.imageMessage.caption;
+        if (message.videoMessage?.caption) return message.videoMessage.caption;
+        if (message.documentMessage?.caption) return message.documentMessage.caption;
+        return '';
+    }
+
+    getMediaType(message) {
+        if (!message) return null;
+        if (message.imageMessage) return 'image';
+        if (message.videoMessage) return 'video';
+        if (message.audioMessage) return 'audio';
+        if (message.stickerMessage) return 'sticker';
+        if (message.documentMessage) return 'document';
+        return null;
+    }
+
+    getExtension(mediaType) {
+        const extensions = { 'image': 'jpg', 'video': 'mp4', 'audio': 'mp3', 'sticker': 'webp', 'document': 'bin' };
+        return extensions[mediaType] || 'bin';
+    }
+
+    async markAsRead(key) {
+        try {
+            await this.sock.readMessages([key]);
+        } catch (error) {}
+    }
+
+    async autoReactToStatus(message, sender) {
+        try {
+            const emojisString = await this.bot.db?.getSetting('status_react_emojis', '💛,❤️,💜,💙,👍,🔥');
+            const emojis = emojisString.split(',').map(e => e.trim());
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            await this.sock.sendMessage('status@broadcast', { react: { key: message.key, text: randomEmoji } });
+        } catch (error) {}
+    }
+
+    async autoReplyToStatus(message, sender) {
+        try {
+            const replyText = await this.bot.db?.getSetting('status_reply_text', '✅ Status viewed via Megan-MD');
+            await this.sock.sendMessage(sender, { text: replyText });
+        } catch (error) {}
+    }
+
+    async downloadAndSaveStatus(message, sender, text, mediaType) {
+        try {
+            const buffer = await downloadMediaMessage(message, 'buffer', {}, { logger: console });
+            if (!buffer) return;
+            const ext = this.getExtension(mediaType);
+            const filename = `status_${Date.now()}.${ext}`;
+            const { url, success } = await Uploader.uploadAuto(buffer, filename);
+            if (success && url && this.bot.ownerJid) {
+                const senderShort = sender.split('@')[0];
+                const currentTime = await this.getFormattedTime(Date.now());
+                await this.sock.sendMessage(this.bot.ownerJid, {
+                    text: `📥 *STATUS DOWNLOADED*\n\n👤 *From:* @${senderShort}\n📎 *Type:* ${mediaType}\n📝 *Caption:* ${text || 'None'}\n🔗 *URL:* ${url}\n⏰ *Time:* ${currentTime}`,
+                    mentions: [sender]
+                });
+            }
+        } catch (error) {}
+    }
+
+    async handleViewOnce(message, from, sender) {
+        try {
+            const autoViewOnce = await this.bot.db?.getSetting('autoviewonce', 'on');
+            if (autoViewOnce !== 'on') return;
+
+            const msgContent = message.message;
+            let viewOnceContent = null;
+            let mediaType = null;
+
+            if (msgContent.imageMessage?.viewOnce || msgContent.videoMessage?.viewOnce || msgContent.audioMessage?.viewOnce) {
+                mediaType = Object.keys(msgContent).find(key => key.endsWith("Message") && ["image", "video", "audio"].some(t => key.includes(t)));
+                if (mediaType) viewOnceContent = { [mediaType]: msgContent[mediaType] };
+            } else if (msgContent.viewOnceMessage) {
+                viewOnceContent = msgContent.viewOnceMessage.message;
+                mediaType = viewOnceContent ? Object.keys(viewOnceContent).find(key => key.endsWith("Message") && ["image", "video", "audio"].some(t => key.includes(t))) : null;
+            } else if (msgContent.viewOnceMessageV2) {
+                viewOnceContent = msgContent.viewOnceMessageV2.message;
+                mediaType = viewOnceContent ? Object.keys(viewOnceContent).find(key => key.endsWith("Message") && ["image", "video", "audio"].some(t => key.includes(t))) : null;
+            } else if (msgContent.viewOnceMessageV2Extension) {
+                viewOnceContent = msgContent.viewOnceMessageV2Extension.message;
+                mediaType = viewOnceContent ? Object.keys(viewOnceContent).find(key => key.endsWith("Message") && ["image", "video", "audio"].some(t => key.includes(t))) : null;
+            }
+
+            if (!viewOnceContent || !mediaType || !viewOnceContent[mediaType]) return;
+
+            const resolvedSender = await resolveRealJid(this.sock, sender);
+            const senderNum = resolvedSender.split('@')[0].split(':')[0];
+            const botName = await this.bot.db.getSetting('bot_name', 'MEGAN-MD');
+            const mediaMessage = { ...viewOnceContent[mediaType], viewOnce: false };
+            const buffer = await downloadMediaMessage({ message: viewOnceContent[mediaType] }, 'buffer', {}, { logger: console, reuploadRequest: true });
+            if (!buffer) return;
+
+            let ext = 'bin';
+            const type = mediaType.toLowerCase();
+            if (type.includes('image')) ext = 'jpg';
+            else if (type.includes('video')) ext = 'mp4';
+            else if (type.includes('audio')) ext = 'mp3';
+
+            const filename = `viewonce_${Date.now()}.${ext}`;
+            const { url, success } = await Uploader.uploadAuto(buffer, filename);
+            if (!success || !url) return;
+
+            const originalCaption = mediaMessage.caption || '';
+            const currentTime = await this.getFormattedTime(Date.now());
+            const caption = `👁️ *VIEW ONCE REVEALED*\n\n📤 *From:* @${senderNum}\n${originalCaption ? `📝 *Caption:* ${originalCaption}\n` : ''}🔗 *Link:* ${url}\n⏰ *Time:* ${currentTime}\n\n> _Revealed by ${botName}_`;
+
+            if (this.bot.ownerJid) {
+                if (type.includes('image')) {
+                    await this.sock.sendMessage(this.bot.ownerJid, { image: buffer, caption: caption, mentions: [`${senderNum}@s.whatsapp.net`] });
+                } else if (type.includes('video')) {
+                    await this.sock.sendMessage(this.bot.ownerJid, { video: buffer, caption: caption, mentions: [`${senderNum}@s.whatsapp.net`] });
+                } else if (type.includes('audio')) {
+                    await this.sock.sendMessage(this.bot.ownerJid, { audio: buffer, ptt: true, mimetype: "audio/mp4", caption: caption, mentions: [`${senderNum}@s.whatsapp.net`] });
+                }
+            }
+        } catch (error) {}
+    }
+
+    isAnyLink(text) {
+        const linkPattern = /https?:\/\/[^\s]+|www\.[^\s]+|bit\.ly\/[^\s]+/gi;
+        return linkPattern.test(text);
+    }
+
+    async handleAntiLink(msg, groupJid, sender) {
+        try {
+            const group = await this.bot.db?.getGroup(groupJid);
+            if (!group || group.antilink === 'off') return false;
+
+            const metadata = await this.sock.groupMetadata(groupJid);
+            const isAdmin = metadata.participants.some(p => p.id === sender && (p.admin === 'admin' || p.admin === 'superadmin'));
+            if (isAdmin) return false;
+
+            const body = msg.message.conversation || msg.message.extendedTextMessage?.text || msg.message.imageMessage?.caption || '';
+            if (!body || !this.isAnyLink(body)) return false;
+
+            await this.sock.sendMessage(groupJid, { delete: msg.key });
+            const action = group.antilink;
+
+            if (action === 'kick') {
+                await this.sock.groupParticipantsUpdate(groupJid, [sender], 'remove');
+                await this.sock.sendMessage(groupJid, { text: `⚠️ @${sender.split('@')[0]} was kicked for sending a link!`, mentions: [sender] });
+            } else if (action === 'warn') {
+                await this.sock.sendMessage(groupJid, { text: `⚠️ @${sender.split('@')[0]} Links are not allowed! Warning issued.`, mentions: [sender] });
+                await this.bot.db?.addWarning(sender, groupJid, 'Sent link', 'auto');
+            } else if (action === 'delete') {
+                await this.sock.sendMessage(groupJid, { text: `⚠️ @${sender.split('@')[0]} Links are not allowed! Message deleted.`, mentions: [sender] });
+            }
+            return true;
+        } catch (error) { return false; }
+    }
+
+    async handleAntiCall(callData) {
+        try {
+            const antiCall = await this.bot.db?.getSetting('anticall', 'false');
+            if (antiCall === 'false') return;
+            for (const call of callData) {
+                if (call.status === 'offer') {
+                    const callMsg = await this.bot.db?.getSetting('anticall_msg', '📞 Calls are not allowed!');
+                    await this.sock.sendMessage(call.from, { text: callMsg });
+                    await this.sock.rejectCall(call.id, call.from);
+                    if (antiCall === 'block') { await this.sock.updateBlockStatus(call.from, 'block'); }
+                }
+            }
+        } catch (error) {}
+    }
+
+    async updateAutoBio() {
+        try {
+            const setting = await this.bot.db?.getSetting('auto_bio', 'false');
+            if (setting !== 'true') return;
+            const block = this.getTimeBlock();
+            const date = await this.getFormattedDate(Date.now());
+            const quote = this.getRandomQuote();
+            const bio = `${config.BOT_NAME} Online • ${date} • ${quote}`.substring(0, 139);
+            await this.sock.updateProfileStatus(bio);
+        } catch (error) {}
+    }
+
+    async setPresence(jid) {
+        try {
+            if (jid === 'status@broadcast') return;
+            const isGroup = jid.endsWith('@g.us');
+            let presence = await this.bot.db?.getSetting(isGroup ? 'presence_group' : 'presence_dm', isGroup ? 'typing' : 'typing');
+            if (!presence || typeof presence !== 'string') presence = isGroup ? 'typing' : 'typing';
+            let whatsappPresence;
+            switch(presence.toLowerCase()) {
+                case 'online': whatsappPresence = 'available'; break;
+                case 'typing': whatsappPresence = 'composing'; break;
+                case 'recording': whatsappPresence = 'recording'; break;
+                default: whatsappPresence = 'available';
+            }
+            if (this.presenceTimers.has(jid)) clearTimeout(this.presenceTimers.get(jid));
+            await this.sock.sendPresenceUpdate(whatsappPresence, jid);
+            const timer = setTimeout(() => this.presenceTimers.delete(jid), 15 * 60 * 1000);
+            this.presenceTimers.set(jid, timer);
+        } catch (error) {}
+    }
+
+    async autoRead(msg) {
+        try {
+            const setting = await this.bot.db?.getSetting('autoread', 'off');
+            if (setting !== 'on') return;
+            if (!msg.key) return;
+            if (msg.key.fromMe) return;
+            if (msg.key.remoteJid === 'status@broadcast') return;
+            await this.sock.readMessages([msg.key]);
+        } catch (error) {}
+    }
+
+    async handleAutoTyping(msg, from, isGroup) {
+        try {
+            const setting = await this.bot.db?.getSetting(isGroup ? 'autotyping_group' : 'autotyping_dm', 'off');
+            if (setting !== 'on') return;
+            if (msg.key.fromMe) return;
+            await this.sock.sendPresenceUpdate('composing', from);
+        } catch (error) {}
+    }
+
+    async handleAutoRecording(msg, from, isGroup) {
+        try {
+            const setting = await this.bot.db?.getSetting(isGroup ? 'autorecording_group' : 'autorecording_dm', 'off');
+            if (setting !== 'on') return;
+            if (msg.key.fromMe) return;
+            await this.sock.sendPresenceUpdate('recording', from);
+        } catch (error) {}
+    }
+
+    // ==================== COMMAND HANDLER ====================
+    async handleCommand(msg, text, from, sender, isGroup) {
+        const parsed = MessageHelper.parseCommand(text, config.PREFIX);
+        if (!parsed) return;
+
+        const { name: commandName, args, fullText } = parsed;
+        const resolvedSender = await resolveRealJid(this.sock, sender);
+        const isOwner = await this.isOwner(resolvedSender);
+
+        const mode = await this.bot.db?.getSetting('mode', 'public');
+        if (mode === 'private' && !isOwner) {
+            return;
+        }
+
+        const quoted = this.buildQuotedMessage(msg);
+
+        let cmd = this.bot.commands.get(commandName);
+        if (!cmd && this.bot.aliases.has(commandName)) {
+            cmd = this.bot.commands.get(this.bot.aliases.get(commandName));
+        }
+
+        if (cmd) {
+            try {
+                const context = {
+                    msg, from, sender: resolvedSender, isGroup, args,
+                    command: commandName, text: fullText,
+                    bot: this.bot, sock: this.sock,
+                    buttons: this.bot.buttons,
+                    reply: MessageHelper.createReply(this.sock, from, msg),
+                    react: MessageHelper.createReact(this.sock, msg.key),
+                    isOwner,
+                    uploader: Uploader,
+                    db: this.bot.db,
+                    logger: this.logger,
+                    cache: this.cache,
+                    ownerManager: this.ownerManager,
+                    resolveRealJid: (jid) => resolveRealJid(this.sock, jid),
+                    getFormattedTime: () => this.getFormattedTime(Date.now()),
+                    getFormattedDate: () => this.getFormattedDate(Date.now()),
+                    quoted: quoted,
+                    setActiveConversation: (chatId, command, context) => this.setActiveConversation(chatId, command, context),
+                    clearActiveConversation: (chatId) => this.clearActiveConversation(chatId),
+                    sendModeIndicator: (chatId, command) => this.sendModeIndicator(chatId, command)
+                };
+                await cmd.execute(context);
+            } catch (error) {
+                this.logger.error(`Command error (${commandName}): ${error.message}`);
+                if (isOwner) {
+                    await this.sock.sendMessage(from, { text: `❌ Error: ${error.message}` }, { quoted: msg });
+                }
+            }
+        }
+    }
+
+    async handleMessageUpdate(update, originalMsg = null) {
+        try {
+            const { key, update: msgUpdate } = update;
+
+            if (msgUpdate?.message?.protocolMessage?.type === 0) {
+                const deletedId = msgUpdate.message.protocolMessage.key.id;
+                const deletedMsg = this.bot.messageStore?.getMessage(key.remoteJid, deletedId);
+                if (deletedMsg) {
+                    this.logger.info(`🗑️ Deleted message detected in ${key.remoteJid}`);
+                    
+                    if (key.remoteJid === 'status@broadcast') {
+                        const deleter = key.participant || key.remoteJid;
+                        await this.handleStatusDelete(deletedMsg, key, deleter);
+                    } else {
+                        const deleter = key.participant || key.remoteJid;
+                        const sender = deletedMsg.key?.participant || deletedMsg.key?.remoteJid;
+                        await this.handleAntiDelete(deletedMsg, key, deleter, sender);
+                    }
+                    this.bot.messageStore?.removeMessage(key.remoteJid, deletedId);
+                }
+            }
+
+            if (msgUpdate?.message?.protocolMessage?.type === 1 && originalMsg) {
+                const antiEdit = await this.bot.db?.getSetting('antiedit', 'on');
+                if (antiEdit !== 'on') return;
+
+                const editedMsg = msgUpdate.message;
+                const originalText = this.extractText(originalMsg.message);
+                const editedText = this.extractText(editedMsg);
+                if (originalText === editedText) return;
+
+                this.logger.info(`✏️ Edited message detected in ${key.remoteJid}`);
+
+                const sender = key.participant || key.remoteJid;
+                const resolvedSender = await resolveRealJid(this.sock, sender);
+                const senderShort = resolvedSender.split('@')[0];
+                const currentTime = await this.getFormattedTime(Date.now());
+                const currentDate = await this.getFormattedDate(Date.now());
+
+                const isGroup = isJidGroup(key.remoteJid);
+                let chatInfo = 'Private Chat';
+                if (isGroup) {
+                    try { const metadata = await this.sock.groupMetadata(key.remoteJid); chatInfo = `Group: ${metadata.subject}`; } catch (e) {}
+                }
+
+                const alertMsg = `✏️ *EDITED MESSAGE DETECTED*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `_👤 Sender:_ @${senderShort}\n` +
+                    `_💬 Chat:_ ${chatInfo}\n` +
+                    `_⏰ Time:_ ${currentTime}\n` +
+                    `_📅 Date:_ ${currentDate}\n\n` +
+                    `*Original:*\n${originalText}\n\n` +
+                    `*Edited to:*\n${editedText}\n\n` +
+                    `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+                if (this.bot.ownerJid) {
+                    await this.sendButtonMessage(this.sock, this.bot.ownerJid, alertMsg, null);
+                }
+            }
+
+            if (msgUpdate?.reaction) {
+                this.logger.message(`Reaction on ${key.id.substring(0, 8)}: ${msgUpdate.reaction.text}`);
+            }
+
+            if (msgUpdate?.status !== undefined) {
+                const statuses = { 1: '📤 Sent', 2: '✅ Delivered', 3: '👁️ Read', 4: '🕒 Pending' };
+                this.logger.message(`Status update for ${key.id.substring(0, 8)}: ${statuses[msgUpdate.status] || msgUpdate.status}`);
+            }
+        } catch (error) {
+            this.logger.error(`Message update error: ${error.message}`);
+        }
+    }
+
+    async handleMessageDelete(deleteData) {
+        try {
+            const keys = deleteData.keys || deleteData;
+            if (!keys || !Array.isArray(keys)) return;
+            for (const key of keys) {
+                const cachedMsg = this.bot.messageStore?.getMessage(key.remoteJid, key.id);
+                if (cachedMsg && this.bot.db) {
+                    const deleter = key.participant || key.remoteJid;
+                    const sender = cachedMsg.key?.participant || cachedMsg.key?.remoteJid;
+                    const antiDelete = await this.bot.db.getSetting('antidelete', 'off');
+                    if (antiDelete === 'on') {
+                        await this.handleAntiDelete(cachedMsg, key, deleter, sender);
+                    }
+                    this.bot.messageStore?.removeMessage(key.remoteJid, key.id);
+                }
+            }
+        } catch (error) {}
+    }
+
+    async handleGroupUpdate(update) {
+        const { id: groupJid, participants, action } = update;
+        this.logger.group(`Participants ${action} in ${groupJid?.split('@')[0] || 'unknown'}:`);
+        if (participants) {
+            this.logger.group(`   └ ${participants.map(p => p.split('@')[0]).join(', ')}`);
+        }
+
+        if (action === 'add') {
+            const welcomeEnabled = await this.bot.db?.getSetting('welcome', 'off');
+            if (welcomeEnabled === 'on') {
+                const welcomeMsg = await this.bot.db?.getSetting('welcomemessage', 'Hey @user welcome to our group! Hope you enjoy and connect with everyone.');
+                for (const participant of participants) {
+                    const resolvedParticipant = await resolveRealJid(this.sock, participant);
+                    const userNumber = resolvedParticipant.split('@')[0];
+                    await this.sock.sendMessage(groupJid, { text: welcomeMsg.replace(/@user/g, `@${userNumber}`), mentions: [resolvedParticipant] });
+                }
+            }
+        } else if (action === 'remove') {
+            const goodbyeEnabled = await this.bot.db?.getSetting('goodbye', 'off');
+            if (goodbyeEnabled === 'on') {
+                const goodbyeMsg = await this.bot.db?.getSetting('goodbyemessage', 'Goodbye @user! 👋');
+                for (const participant of participants) {
+                    const resolvedParticipant = await resolveRealJid(this.sock, participant);
+                    const userNumber = resolvedParticipant.split('@')[0];
+                    await this.sock.sendMessage(groupJid, { text: goodbyeMsg.replace(/@user/g, `@${userNumber}`), mentions: [resolvedParticipant] });
+                }
+            }
+        }
+    }
+}
+
+module.exports = EventHandler;

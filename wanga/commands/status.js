@@ -1,1 +1,639 @@
-const config=require("../../megan/config"),{createNewsletterContext:createNewsletterContext}=require("../../megan/helpers/newsletter"),{downloadMediaMessage:downloadMediaMessage}=require("gifted-baileys"),{uploadToCatbox:uploadToCatbox}=require("../../megan/lib/upload"),commands=[],extractViewOnceContent=e=>e.viewOnceMessage?.message?e.viewOnceMessage.message:e.viewOnceMessageV2?.message?e.viewOnceMessageV2.message:e.viewOnceMessageV2Extension?.message?e.viewOnceMessageV2Extension.message:e,isViewOnce=e=>!!(e?.imageMessage?.viewOnce||e?.videoMessage?.viewOnce||e?.audioMessage?.viewOnce||e?.viewOnceMessage||e?.viewOnceMessageV2||e?.viewOnceMessageV2Extension);commands.push({name:"autoviewstatus",description:"Toggle auto-view status (on/off) - Owner Only",aliases:["avs"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_auto_view",config.STATUS.AUTO_VIEW),r=!0===a||"true"===a?"ON":"OFF";await i("ℹ️");const d=`👁️ *Auto View Status*\n\nCurrent: ${r}\n\nOptions: on, off`;return await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"Status Settings",body:"Auto View"})},{quoted:e})}const c=a[0].toLowerCase();if(!["on","off"].includes(c)){await i("❌");const a="❌ Invalid option! Use: on, off";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Status Settings",body:"Invalid Option"})},{quoted:e})}await i("🔄"),await n.db.setSetting("status_auto_view","on"===c?"true":"false"),await i("✅");const u=`✅ Auto-view status turned ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:`Auto View ${c.toUpperCase()}`})},{quoted:e})}}),commands.push({name:"autodownloadstatus",description:"Toggle auto-download status (on/off) - Owner Only",aliases:["ads"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_auto_download",config.STATUS.AUTO_DOWNLOAD),r=!0===a||"true"===a?"ON":"OFF";await i("ℹ️");const d=`📥 *Auto Download Status*\n\nCurrent: ${r}\n\nOptions: on, off`;return await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"Status Settings",body:"Auto Download"})},{quoted:e})}const c=a[0].toLowerCase();if(!["on","off"].includes(c)){await i("❌");const a="❌ Invalid option! Use: on, off";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Status Settings",body:"Invalid Option"})},{quoted:e})}await i("🔄"),await n.db.setSetting("status_auto_download","on"===c?"true":"false"),await i("✅");const u=`✅ Auto-download status turned ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:`Auto Download ${c.toUpperCase()}`})},{quoted:e})}}),commands.push({name:"autoreactstatus",description:"Toggle auto-react status (on/off) - Owner Only",aliases:["ars"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_auto_react",config.STATUS.AUTO_REACT),r=!0===a||"true"===a?"ON":"OFF";await i("ℹ️");const d=`🎯 *Auto React Status*\n\nCurrent: ${r}\n\nOptions: on, off`;return await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"Status Settings",body:"Auto React"})},{quoted:e})}const c=a[0].toLowerCase();if(!["on","off"].includes(c)){await i("❌");const a="❌ Invalid option! Use: on, off";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Status Settings",body:"Invalid Option"})},{quoted:e})}await i("🔄"),await n.db.setSetting("status_auto_react","on"===c?"true":"false"),await i("✅");const u=`✅ Auto-react status turned ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:`Auto React ${c.toUpperCase()}`})},{quoted:e})}}),commands.push({name:"setstatusemoji",description:"Set emojis for status reactions - Owner Only",aliases:["sse"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_react_emojis",config.STATUS.REACT_EMOJIS);await i("ℹ️");const r=`🎯 *Status Reaction Emojis*\n\nCurrent: ${a}\n\nUsage: .setstatusemoji ❤️,👍,🔥,💯`;return await o.sendMessage(t,{text:r,...createNewsletterContext(s,{title:"Status Settings",body:"Reaction Emojis"})},{quoted:e})}const c=a.join(" ");await i("🔄"),await n.db.setSetting("status_react_emojis",c),await i("✅");const u=`✅ Status reaction emojis set to: ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:"Emojis Updated"})},{quoted:e})}}),commands.push({name:"autoreplystatus",description:"Toggle auto-reply status (on/off) - Owner Only",aliases:["arsr"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_auto_reply",config.STATUS.AUTO_REPLY),r=!0===a||"true"===a?"ON":"OFF";await i("ℹ️");const d=`💬 *Auto Reply Status*\n\nCurrent: ${r}\n\nOptions: on, off`;return await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"Status Settings",body:"Auto Reply"})},{quoted:e})}const c=a[0].toLowerCase();if(!["on","off"].includes(c)){await i("❌");const a="❌ Invalid option! Use: on, off";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Status Settings",body:"Invalid Option"})},{quoted:e})}await i("🔄"),await n.db.setSetting("status_auto_reply","on"===c?"true":"false"),await i("✅");const u=`✅ Auto-reply status turned ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:`Auto Reply ${c.toUpperCase()}`})},{quoted:e})}}),commands.push({name:"setstatusreply",description:"Set text for auto-reply to status - Owner Only",aliases:["ssr"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_reply_text",config.STATUS.REPLY_TEXT);await i("ℹ️");const r=`💬 *Status Reply Text*\n\nCurrent: ${a}\n\nUsage: .setstatusreply Thank you for your status!`;return await o.sendMessage(t,{text:r,...createNewsletterContext(s,{title:"Status Settings",body:"Reply Text"})},{quoted:e})}const c=a.join(" ");await i("🔄"),await n.db.setSetting("status_reply_text",c),await i("✅");const u=`✅ Status reply text set to: ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:"Reply Text Updated"})},{quoted:e})}}),commands.push({name:"antideletestatus",description:"Toggle anti-delete for status (on/off) - Owner Only",aliases:["ads"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("status_anti_delete",config.STATUS.ANTI_DELETE),r=!0===a||"true"===a?"ON":"OFF";await i("ℹ️");const d=`🚨 *Anti-Delete Status*\n\nCurrent: ${r}\n\nWhen ON, deleted statuses will be sent to your DM\n\nOptions: on, off`;return await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"Status Settings",body:"Anti-Delete"})},{quoted:e})}const c=a[0].toLowerCase();if(!["on","off"].includes(c)){await i("❌");const a="❌ Invalid option! Use: on, off";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Status Settings",body:"Invalid Option"})},{quoted:e})}await i("🔄"),await n.db.setSetting("status_anti_delete","on"===c?"true":"false"),await i("✅");const u=`✅ Anti-delete status turned ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"Status Settings",body:`Anti-Delete ${c.toUpperCase()}`})},{quoted:e})}}),commands.push({name:"autoviewonce",description:"Toggle auto-save view once media (on/off) - Owner Only",aliases:["avo"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r,isOwner:d}){if(!d){await i("❌");const a=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n❌ *Owner Only Command*\n\nThis command can only be used by the bot owner.\n\n> created by wanga`;return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Access Denied",body:"Owner Only"})},{quoted:e})}if(0===a.length){const a=await n.db.getSetting("auto_view_once",config.FEATURES.AUTO_VIEW_ONCE),r=!0===a||"true"===a?"ON":"OFF";await i("ℹ️");const d=`🔐 *Auto View Once*\n\nCurrent: ${r}\n\nWhen ON, view once media will be saved to your DM\n\nOptions: on, off`;return await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"View Once Settings",body:"Auto Save"})},{quoted:e})}const c=a[0].toLowerCase();if(!["on","off"].includes(c)){await i("❌");const a="❌ Invalid option! Use: on, off";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once Settings",body:"Invalid Option"})},{quoted:e})}await i("🔄"),await n.db.setSetting("auto_view_once","on"===c?"true":"false"),await i("✅");const u=`✅ Auto view once turned ${c}`;await o.sendMessage(t,{text:u,...createNewsletterContext(s,{title:"View Once Settings",body:`Auto Save ${c.toUpperCase()}`})},{quoted:e})}}),commands.push({name:"save",description:"Save a status media to your DM",aliases:["savestatus"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r}){const d=e.message?.extendedTextMessage?.contextInfo?.quotedMessage,c=e.message?.extendedTextMessage?.contextInfo?.stanzaId;if(!d||!c){await i("❌");const a="❌ Please reply to a status message with .save";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Save Status",body:"Usage Error"})},{quoted:e})}await i("🔄");const u=n.messageStore?.getMessage("status@broadcast",c);if(!u){await i("❌");const a="❌ Could not find the status message. It may have expired.";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Save Status",body:"Not Found"})},{quoted:e})}if(n.statusHandler)await n.statusHandler.saveStatusForUser(u,s,u),await i("✅");else{await i("❌");const a="❌ Status handler not initialized";await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"Save Status",body:"Error"})},{quoted:e})}}}),commands.push({name:"vv",description:"Reveal view once media to your DM",aliases:["reveal"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r}){const d=e.message?.extendedTextMessage?.contextInfo?.quotedMessage,c=e.message?.extendedTextMessage?.contextInfo?.stanzaId;if(!d||!c){await i("❌");const a="❌ Please reply to a view once message";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once",body:"Usage Error"})},{quoted:e})}await i("🔄");try{const a=e.key.remoteJid;let r=n.messageStore?.getMessage(a,c);if(!r){await i("❌");const a="❌ Could not find the original message. View once messages expire quickly.";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once",body:"Not Found"})},{quoted:e})}let d=null,u=null;if(r.message?.imageMessage?(d=r.message.imageMessage,u="image"):r.message?.videoMessage?(d=r.message.videoMessage,u="video"):r.message?.audioMessage?(d=r.message.audioMessage,u="audio"):r.originalMessage?.message?.imageMessage?(d=r.originalMessage.message.imageMessage,u="image"):r.originalMessage?.message?.videoMessage?(d=r.originalMessage.message.videoMessage,u="video"):r.originalMessage?.message?.audioMessage&&(d=r.originalMessage.message.audioMessage,u="audio"),!d||!u){await i("❌");const a="❌ Could not extract media from this view once message";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once",body:"Extraction Failed"})},{quoted:e})}const g=await downloadMediaMessage(r.originalMessage||r,"buffer",{},{logger:console,reuploadRequest:!0});if(!g)throw new Error("Failed to download media");const l="image"===u?"jpg":"video"===u?"mp4":"mp3",w=`viewonce_${Date.now()}.${l}`,{url:m,success:f}=await uploadToCatbox(g,w);if(!f||!m)throw new Error("Upload failed");const y=d.caption||"",x=s.split("@")[0];await o.sendMessage(s,{text:`🔐 *VIEW ONCE REVEALED* 🔐\n\n👤 *Requested by:* @${x}\n💬 *Chat:* ${a.includes("@g.us")?"Group":"Private"}\n📎 *Type:* ${u.toUpperCase()}\n📝 *Caption:* ${y||"None"}\n🔗 *URL:* ${m}\n⏰ *Time:* ${(new Date).toLocaleTimeString()}`,mentions:[s],...createNewsletterContext(s,{title:"View Once Revealed",body:"Media Saved"})}),await i("✅");const M="✅ View once media saved to your DM! Check your private messages.";await o.sendMessage(t,{text:M,...createNewsletterContext(s,{title:"View Once",body:"Success"})},{quoted:e})}catch(a){console.error("VV error:",a),await i("❌");const n=`❌ Error: ${a.message}`;await o.sendMessage(t,{text:n,...createNewsletterContext(s,{title:"View Once",body:"Error"})},{quoted:e})}}}),commands.push({name:"vv2",description:"Reveal view once media in current chat",aliases:["reveal2"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r}){const d=e.message?.extendedTextMessage?.contextInfo?.quotedMessage,c=e.message?.extendedTextMessage?.contextInfo?.stanzaId;if(!d||!c){await i("❌");const a="❌ Please reply to a view once message";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once",body:"Usage Error"})},{quoted:e})}await i("🔄");try{const a=e.key.remoteJid;let r=n.messageStore?.getMessage(a,c);if(!r){await i("❌");const a="❌ Could not find the original message. View once messages expire quickly.";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once",body:"Not Found"})},{quoted:e})}let d=null,u=null;if(r.message?.imageMessage?(d=r.message.imageMessage,u="image"):r.message?.videoMessage?(d=r.message.videoMessage,u="video"):r.message?.audioMessage?(d=r.message.audioMessage,u="audio"):r.originalMessage?.message?.imageMessage?(d=r.originalMessage.message.imageMessage,u="image"):r.originalMessage?.message?.videoMessage?(d=r.originalMessage.message.videoMessage,u="video"):r.originalMessage?.message?.audioMessage&&(d=r.originalMessage.message.audioMessage,u="audio"),!d||!u){await i("❌");const a="❌ Could not extract media from this view once message";return await o.sendMessage(t,{text:a,...createNewsletterContext(s,{title:"View Once",body:"Extraction Failed"})},{quoted:e})}const g=await downloadMediaMessage(r.originalMessage||r,"buffer",{},{logger:console,reuploadRequest:!0});if(!g)throw new Error("Failed to download media");const l="image"===u?"jpg":"video"===u?"mp4":"mp3",w=`viewonce_${Date.now()}.${l}`,{url:m,success:f}=await uploadToCatbox(g,w);if(!f||!m)throw new Error("Upload failed");const y=d.caption||"";await o.sendMessage(t,{text:`🔓 *VIEW ONCE REVEALED*\n\n📎 *Type:* ${u.toUpperCase()}\n📝 *Caption:* ${y||"None"}\n🔗 *URL:* ${m}\n\n> _This link will expire when Catbox deletes it_`,...createNewsletterContext(s,{title:"View Once Revealed",body:`${u.toUpperCase()} Media`})}),await i("✅")}catch(a){console.error("VV2 error:",a),await i("❌");const n=`❌ Error: ${a.message}`;await o.sendMessage(t,{text:n,...createNewsletterContext(s,{title:"View Once",body:"Error"})},{quoted:e})}}}),commands.push({name:"statushelp",description:"Show all status-related commands",aliases:["helpstatus"],async execute({msg:e,from:t,sender:s,args:a,bot:n,sock:o,react:i,reply:r}){const d=`┏━━━━━━━━━━━━━━━━━━━┓\n\n┃ *${config.BOT_NAME}*\n\n┗━━━━━━━━━━━━━━━━━━━┛\n\n📱 *STATUS COMMANDS*\n\n━━━━━━━━━━━━━━━━━━━\n\n*Owner Only Settings:*\n\n━━━━━━━━━━━━━━━━━━━\n\n• ${config.PREFIX}autoviewstatus <on/off> - Auto-view statuses\n\n• ${config.PREFIX}autodownloadstatus <on/off> - Auto-download status media\n\n• ${config.PREFIX}autoreactstatus <on/off> - Auto-react to statuses\n\n• ${config.PREFIX}setstatusemoji <emojis> - Set reaction emojis\n\n• ${config.PREFIX}autoreplystatus <on/off> - Auto-reply to statuses\n\n• ${config.PREFIX}setstatusreply <text> - Set auto-reply text\n\n• ${config.PREFIX}antideletestatus <on/off> - Anti-delete for status\n\n• ${config.PREFIX}autoviewonce <on/off> - Auto-save view once media\n\n━━━━━━━━━━━━━━━━━━━\n\n*Public Commands:*\n\n━━━━━━━━━━━━━━━━━━━\n\n• ${config.PREFIX}save - Save a status (reply to status)\n\n• ${config.PREFIX}vv - Reveal view once to DM (reply)\n\n• ${config.PREFIX}vv2 - Reveal view once in chat (reply)\n\n━━━━━━━━━━━━━━━━━━━\n\n> created by wanga`;await o.sendMessage(t,{text:d,...createNewsletterContext(s,{title:"Status Commands",body:"Help Menu"})},{quoted:e}),await i("✅")}}),module.exports={commands:commands};
+// MEGAN-MD Status Commands - Consistent styling with buttons
+
+const config = require('../../megan/config');
+const timeUtils = require('../../megan/lib/timeUtils');
+
+const commands = [];
+
+const CHANNEL_LINK = 'https://whatsapp.com/channel/0029VbCWWXi9hXF2SXUHgZ1b';
+const BOT_LOGO = 'https://files.catbox.moe/0v8bkv.png';
+
+async function sendButtonMenu(sock, from, options, quotedMsg) {
+    const { sendButtons } = require('gifted-btns');
+    
+    try {
+        return await sendButtons(sock, from, {
+            title: options.title || '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: options.text,
+            footer: options.footer || '> created by wanga',
+            image: options.image ? { url: options.image } : null,
+            buttons: options.buttons || []
+        }, { quoted: quotedMsg });
+    } catch (error) {
+        console.error('Button error:', error);
+        await sock.sendMessage(from, { text: options.text }, { quoted: quotedMsg });
+    }
+}
+
+// ============================================
+// STATUSCHECK - Show current status settings
+// ============================================
+commands.push({
+    name: 'statuscheck',
+    description: 'Check current status feature settings',
+    aliases: ['sc', 'statuscfg'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        const statusView = await bot.db.getSetting('status_auto_view', 'on');
+        const statusReact = await bot.db.getSetting('status_auto_react', 'off');
+        const statusDownload = await bot.db.getSetting('status_auto_download', 'off');
+        const statusEmojis = await bot.db.getSetting('status_react_emojis', '💛,❤️,💜,💙,👍,🔥');
+
+        const ownerNumber = bot.config.OWNER_NUMBER;
+        const yourNumber = sender.match(/(\d+)/)?.[1] || 'unknown';
+
+        const message = `📱 *STATUS FEATURE SETTINGS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `_👑 Owner:_ ${ownerNumber}\n` +
+            `_👤 Your Number:_ ${yourNumber}\n` +
+            `_🔑 Is Owner:_ ${isActuallyOwner ? '✅ YES' : '❌ NO'}\n\n` +
+            `_👁️ Auto-View Status:_ ${statusView === 'on' ? '✅ ON' : '❌ OFF'}\n` +
+            `_❤️ Auto-React Status:_ ${statusReact === 'on' ? '✅ ON' : '❌ OFF'}\n` +
+            `_📥 Auto-Download Status:_ ${statusDownload === 'on' ? '✅ ON' : '❌ OFF'}\n\n` +
+            `_😊 Status React Emojis:_\n${statusEmojis}\n\n` +
+            `*To change settings (Owner only):*\n` +
+            `• Old style: .set statusview on/off\n` +
+            `• New style: .autoviewstatus on/off\n` +
+            `• .set statusreact on/off OR .autoreactstatus on/off\n` +
+            `• .set statusdownload on/off OR .autodownloadstatus on/off\n` +
+            `• .set statusemojis 💛,❤️,💜\n\n` +
+            `_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: message,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        if (react) await react('✅');
+    }
+});
+
+// ============================================
+// OLD STYLE: SET COMMAND
+// ============================================
+commands.push({
+    name: 'set',
+    description: 'Change status settings (Owner only) - Old style',
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            const ownerNumber = bot.config.OWNER_NUMBER;
+            const yourNumber = sender.match(/(\d+)/)?.[1] || 'unknown';
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner only command!*\n━━━━━━━━━━━━━━━━━━━\n_Your number:_ ${yourNumber}\n_Owner number:_ ${ownerNumber}\n\n_Use .statuscheck to see your status._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length < 2) {
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📝 *Usage:*\n━━━━━━━━━━━━━━━━━━━\n.set statusview on/off\n.set statusreact on/off\n.set statusdownload on/off\n.set statusemojis 💛,❤️,💜\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const setting = args[0].toLowerCase();
+        const value = args.slice(1).join(' ');
+
+        if (setting === 'statusview') {
+            const newValue = value === 'on' ? 'on' : 'off';
+            await bot.db.setSetting('status_auto_view', newValue);
+            await react('✅');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `✅ *Status auto-view set to:* ${newValue === 'on' ? 'ON' : 'OFF'}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (setting === 'statusreact') {
+            const newValue = value === 'on' ? 'on' : 'off';
+            await bot.db.setSetting('status_auto_react', newValue);
+            await react('✅');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `✅ *Status auto-react set to:* ${newValue === 'on' ? 'ON' : 'OFF'}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (setting === 'statusdownload') {
+            const newValue = value === 'on' ? 'on' : 'off';
+            await bot.db.setSetting('status_auto_download', newValue);
+            await react('✅');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `✅ *Status auto-download set to:* ${newValue === 'on' ? 'ON' : 'OFF'}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (setting === 'statusemojis') {
+            await bot.db.setSetting('status_react_emojis', value);
+            await react('✅');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `✅ *Status react emojis set to:* ${value}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `❌ *Unknown setting:* ${setting}\n_Available:_ statusview, statusreact, statusdownload, statusemojis\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// NEW STYLE: AUTO VIEW STATUS
+// ============================================
+commands.push({
+    name: 'autoviewstatus',
+    description: 'Toggle auto-view status (on/off) - Owner Only',
+    aliases: ['avs'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length === 0) {
+            const current = await bot.db.getSetting('status_auto_view', 'on');
+            const status = current === 'on' ? 'ON' : 'OFF';
+            await react('ℹ️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `👁️ *AUTO VIEW STATUS*\n━━━━━━━━━━━━━━━━━━━\n_Current:_ *${status}*\n_Options:_ on, off\n\n_Usage:_ ${config.PREFIX}autoviewstatus on/off\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const option = args[0].toLowerCase();
+        if (!['on', 'off'].includes(option)) {
+            await react('❌');
+            return reply(`❌ *Invalid Option*\n\nUse: on or off\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+        await bot.db.setSetting('status_auto_view', option);
+        await react('✅');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *AUTO VIEW UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_Auto-view status turned *${option}*_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// NEW STYLE: AUTO DOWNLOAD STATUS
+// ============================================
+commands.push({
+    name: 'autodownloadstatus',
+    description: 'Toggle auto-download status (on/off) - Owner Only',
+    aliases: ['ads'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length === 0) {
+            const current = await bot.db.getSetting('status_auto_download', 'off');
+            const status = current === 'on' ? 'ON' : 'OFF';
+            await react('ℹ️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `📥 *AUTO DOWNLOAD STATUS*\n━━━━━━━━━━━━━━━━━━━\n_Current:_ *${status}*\n_Options:_ on, off\n\n_Usage:_ ${config.PREFIX}autodownloadstatus on/off\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const option = args[0].toLowerCase();
+        if (!['on', 'off'].includes(option)) {
+            await react('❌');
+            return reply(`❌ *Invalid Option*\n\nUse: on or off\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+        await bot.db.setSetting('status_auto_download', option);
+        await react('✅');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *AUTO DOWNLOAD UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_Auto-download status turned *${option}*_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+        }, msg);
+    }
+});
+
+// ============================================
+// NEW STYLE: AUTO REACT STATUS
+// ============================================
+commands.push({
+    name: 'autoreactstatus',
+    description: 'Toggle auto-react status (on/off) - Owner Only',
+    aliases: ['ars'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length === 0) {
+            const current = await bot.db.getSetting('status_auto_react', 'off');
+            const status = current === 'on' ? 'ON' : 'OFF';
+            await react('ℹ️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❤️ *AUTO REACT STATUS*\n━━━━━━━━━━━━━━━━━━━\n_Current:_ *${status}*\n_Options:_ on, off\n\n_Usage:_ ${config.PREFIX}autoreactstatus on/off\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const option = args[0].toLowerCase();
+        if (!['on', 'off'].includes(option)) {
+            await react('❌');
+            return reply(`❌ *Invalid Option*\n\nUse: on or off\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+        await bot.db.setSetting('status_auto_react', option);
+        await react('✅');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *AUTO REACT UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_Auto-react status turned *${option}*_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// NEW STYLE: SET STATUS EMOJI
+// ============================================
+commands.push({
+    name: 'setstatusemoji',
+    description: 'Set emojis for status reactions - Owner Only',
+    aliases: ['sse'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length === 0) {
+            const current = await bot.db.getSetting('status_react_emojis', '💛,❤️,💜,💙,👍,🔥');
+            await react('ℹ️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🎯 *STATUS REACTION EMOJIS*\n━━━━━━━━━━━━━━━━━━━\n_Current:_ ${current}\n_Usage:_ ${config.PREFIX}setstatusemoji ❤️,👍,🔥,💯\n_Example:_ ${config.PREFIX}setstatusemoji ❤️,👍,🔥,✨\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const emojis = args.join(' ');
+        await react('🔄');
+        await bot.db.setSetting('status_react_emojis', emojis);
+        await react('✅');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *EMOJIS UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_Status reaction emojis set to:_\n${emojis}\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// NEW STYLE: ANTI DELETE STATUS
+// ============================================
+commands.push({
+    name: 'antideletestatus',
+    description: 'Toggle anti-delete for status (on/off) - Owner Only',
+    aliases: ['ads2'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length === 0) {
+            const current = await bot.db.getSetting('status_anti_delete', 'off');
+            const status = current === 'on' ? 'ON' : 'OFF';
+            await react('ℹ️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🚨 *ANTI-DELETE STATUS*\n━━━━━━━━━━━━━━━━━━━\n_Current:_ *${status}*\n_When ON, deleted statuses will be sent to your DM_\n\n_Options:_ on, off\n_Usage:_ ${config.PREFIX}antideletestatus on/off\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const option = args[0].toLowerCase();
+        if (!['on', 'off'].includes(option)) {
+            await react('❌');
+            return reply(`❌ *Invalid Option*\n\nUse: on or off\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+        await bot.db.setSetting('status_anti_delete', option);
+        await react('✅');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *ANTI-DELETE UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_Anti-delete status turned *${option}*_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// NEW STYLE: AUTO VIEW ONCE
+// ============================================
+commands.push({
+    name: 'autoviewonce',
+    description: 'Toggle auto-save view once media (on/off) - Owner Only',
+    aliases: ['avo'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, isOwner, ownerManager, buttons }) {
+
+        let isActuallyOwner = isOwner;
+        if (ownerManager && !isActuallyOwner) {
+            isActuallyOwner = ownerManager.isOwner(sender);
+        }
+
+        if (!isActuallyOwner) {
+            await react('❌');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `❌ *Owner Only Command*\n━━━━━━━━━━━━━━━━━━━\n_This command can only be used by the bot owner._\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        if (args.length === 0) {
+            const current = await bot.db.getSetting('autoviewonce', 'on');
+            const status = current === 'on' ? 'ON' : 'OFF';
+            await react('ℹ️');
+            return sendButtonMenu(sock, from, {
+                title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+                text: `🔐 *AUTO VIEW ONCE*\n━━━━━━━━━━━━━━━━━━━\n_Current:_ *${status}*\n_When ON, view once media will be saved to your DM_\n\n_Options:_ on, off\n_Usage:_ ${config.PREFIX}autoviewonce on/off\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+                image: BOT_LOGO,
+                buttons: [
+                    { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                    { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                    { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+                ]
+            }, msg);
+        }
+
+        const option = args[0].toLowerCase();
+        if (!['on', 'off'].includes(option)) {
+            await react('❌');
+            return reply(`❌ *Invalid Option*\n\nUse: on or off\n\n> created by wanga`);
+        }
+
+        await react('🔄');
+        await bot.db.setSetting('autoviewonce', option);
+        await react('✅');
+
+        return sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: `✅ *AUTO VIEW ONCE UPDATED*\n━━━━━━━━━━━━━━━━━━━\n_Auto view once turned *${option}*_\n\n_ᴄʀᴇᴀᴛᴇᴅ ʙʏ:_ Wanga`,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}statushelp`, text: '📱 Status Help' },
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+    }
+});
+
+// ============================================
+// STATUS HELP - Show all commands
+// ============================================
+commands.push({
+    name: 'statushelp',
+    description: 'Show all status-related commands',
+    aliases: ['helpstatus'],
+    async execute({ msg, from, sender, args, bot, sock, react, reply, buttons }) {
+        const prefix = config.PREFIX;
+
+        const helpText = `📱 *STATUS COMMANDS*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+            `*👑 OWNER ONLY SETTINGS*\n` +
+            `_${prefix}statuscheck_ - Show current settings\n` +
+            `_${prefix}set statusview on/off_ - Old style\n` +
+            `_${prefix}autoviewstatus on/off_ - New style\n` +
+            `_${prefix}set statusreact on/off_ - Old style\n` +
+            `_${prefix}autoreactstatus on/off_ - New style\n` +
+            `_${prefix}set statusdownload on/off_ - Old style\n` +
+            `_${prefix}autodownloadstatus on/off_ - New style\n` +
+            `_${prefix}set statusemojis ❤️,👍,🔥_ - Set reaction emojis\n` +
+            `_${prefix}setstatusemoji ❤️,👍,🔥_ - New style\n` +
+            `_${prefix}antideletestatus on/off_ - Anti-delete for status\n` +
+            `_${prefix}autoviewonce on/off_ - Auto-save view once\n\n` +
+
+            `*📝 NOTE:*\n` +
+            `_Both old and new style commands work!_\n` +
+            `_They update the same database settings_\n\n` +
+
+            `> created by wanga`;
+
+        await sendButtonMenu(sock, from, {
+            title: '𝐌𝐄𝐆𝐀𝐍-𝐌𝐃',
+            text: helpText,
+            image: BOT_LOGO,
+            buttons: [
+                { id: `${config.PREFIX}menu`, text: '📋 Menu' },
+                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: '📢 Channel', url: CHANNEL_LINK }) }
+            ]
+        }, msg);
+        await react('✅');
+    }
+});
+
+module.exports = { commands };
